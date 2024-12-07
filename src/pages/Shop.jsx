@@ -16,7 +16,7 @@ function Shop() {
 
   const [visibleCount, setVisibleCount] = useState(8);
   const [modalProduct, setModalProduct] = useState(null);
-  const [showFilter, setShowFilter] = useState(true)
+  const [showFilter, setShowFilter] = useState(false)
   const [popup, setPopup] = useState({ show: false, type: "", itemName: "" });
   const [dataSource, setDataSource] = useState(products.slice(0, visibleCount))
 
