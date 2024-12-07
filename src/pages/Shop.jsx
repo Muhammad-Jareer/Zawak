@@ -6,7 +6,9 @@ import ProductModal from "../components/ProductModal";
 import AddToCartWishlistPopup from "../components/AddToCartWishlistPopup";
 import Product from "../components/Product";
 import InfiniteScroll from "react-infinite-scroll-component";
+import Filter from "../components/Filter";
 import { FAST_SPINNER } from '../components/Logos'
+import { ShipWheel, SlidersHorizontal, X } from 'lucide-react';
 
 function Shop() {
   const dispatch = useDispatch();
@@ -14,6 +16,7 @@ function Shop() {
 
   const [visibleCount, setVisibleCount] = useState(8);
   const [modalProduct, setModalProduct] = useState(null);
+  const [showFilter, setShowFilter] = useState(true)
   const [popup, setPopup] = useState({ show: false, type: "", itemName: "" });
   const [dataSource, setDataSource] = useState(products.slice(0, visibleCount))
 
@@ -45,10 +48,24 @@ function Shop() {
 
   return (
     <div className="container mx-auto px-4 mt-16">
-      <h1 className="font-serif text-4xl text-primary-600 mb-6">
-        Shop Our Collection
-      </h1>
+      <div className="flex justify-between">
+        <h1 className="font-serif text-4xl text-primary-600 mb-6">
+          Shop Our Collection
+        </h1>
 
+        <button 
+          onClick={() => setShowFilter(!showFilter)}
+          className="text-gray-600 hover:text-primary-600 cursor-pointer">
+          {showFilter ? <X /> : <SlidersHorizontal /> }
+        </button>
+      </div>
+
+      {/* Conditionally Render Filter Component  */}
+
+      {showFilter && (
+        <Filter />
+      )}
+      
         <InfiniteScroll
           dataLength={dataSource.length}
           next={fetchMoreData}
