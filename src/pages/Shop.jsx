@@ -5,6 +5,8 @@ import { products } from "../data/products";
 import ProductModal from "../components/ProductModal";
 import AddToCartWishlistPopup from "../components/AddToCartWishlistPopup";
 import Product from "../components/Product";
+import InfiniteScroll from "react-infinite-scroll-component";
+import { FAST_SPINNER } from '../components/Logos'
 
 function Shop() {
   const dispatch = useDispatch();
@@ -13,6 +15,7 @@ function Shop() {
   const [visibleCount, setVisibleCount] = useState(8);
   const [modalProduct, setModalProduct] = useState(null);
   const [popup, setPopup] = useState({ show: false, type: "", itemName: "" });
+  const [dataSource, setDataSource] = useState(products.slice(0, visibleCount))
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -32,34 +35,38 @@ function Shop() {
     }
   };
 
+  const fetchMoreData = () => {
+    //MAKING THE API CALL HERE
+    setTimeout(()=>{
+      setDataSource(dataSource.concat(products.slice(visibleCount, visibleCount + 8)))
+      setVisibleCount(pre => pre + 8)
+    }, 2000);
+  }
+
   return (
     <div className="container mx-auto px-4 mt-16">
       <h1 className="font-serif text-4xl text-primary-600 mb-6">
         Shop Our Collection
       </h1>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-        {products.slice(0, visibleCount).map((product) => (
-          <Product
-            key={product.id}
-            product={product}
-            handleAddToCart={handleAddToCart}
-            handleAddToWishlist={handleAddToWishlist}
-            setModalProduct={setModalProduct}
-          />
-        ))}
-      </div>
-
-      {visibleCount < products.length && (
-        <div className="text-center mt-8">
-          <button
-            onClick={() => setVisibleCount(visibleCount + 8)}
-            className="px-6 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition"
-          >
-            Show More
-          </button>
-        </div>
-      )}
+        <InfiniteScroll
+          dataLength={dataSource.length}
+          next={fetchMoreData}
+          hasMore={(visibleCount < products.length)}
+          loader={<Loader />}
+        >
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {dataSource.map((product) => (
+              <Product
+                key={product.id}
+                product={product}
+                handleAddToCart={handleAddToCart}
+                handleAddToWishlist={handleAddToWishlist}
+                setModalProduct={setModalProduct}
+              />
+            ))}
+          </div>
+        </InfiniteScroll>
 
       {popup.show && (
         <AddToCartWishlistPopup
@@ -80,3 +87,11 @@ function Shop() {
 }
 
 export default Shop;
+
+const Loader = () => {
+  return (
+    <div className="mt-20 flex items-center justify-center">
+      <FAST_SPINNER />
+    </div>
+  )
+}
