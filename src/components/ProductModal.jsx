@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { useDispatch } from "react-redux";
 import { X, Heart, ShoppingBag } from 'lucide-react';
 import AddToCartWishlistPopup from '../components/AddToCartWishlistPopup';
 
 const ProductModal = ({ product, onClose }) => {
+  const dispatch = useDispatch();
   const [quantity, setQuantity] = useState(1);
   const [popupInfo, setPopupInfo] = useState(null); // State to manage popup visibility and type
 
@@ -18,12 +20,12 @@ const ProductModal = ({ product, onClose }) => {
   };
 
   const handleAddToCart = () => {
-    // Simulate adding to cart
+    dispatch({ type: "cart/addToCart", payload: product });
     setPopupInfo({ type: 'cart', itemName: product.name });
   };
 
   const handleAddToWishlist = () => {
-    // Simulate adding to wishlist
+    dispatch({ type: "wishlist/addToWishlist", payload: product });
     setPopupInfo({ type: 'wishlist', itemName: product.name });
   };
 
