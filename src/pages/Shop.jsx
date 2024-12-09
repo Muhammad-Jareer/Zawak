@@ -7,8 +7,8 @@ import AddToCartWishlistPopup from "../components/AddToCartWishlistPopup";
 import Product from "../components/Product";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Filter from "../components/Filter";
-import { FAST_SPINNER } from '../components/Logos'
 import { ShipWheel, SlidersHorizontal, X } from 'lucide-react';
+import InfiniteLoader from "../components/InfiniteLoader";
 
 function Shop() {
   const dispatch = useDispatch();
@@ -70,7 +70,7 @@ function Shop() {
           dataLength={dataSource.length}
           next={fetchMoreData}
           hasMore={(visibleCount < products.length)}
-          loader={<Loader />}
+          loader={<InfiniteLoader />}
         >
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {dataSource.map((product) => (
@@ -105,10 +105,3 @@ function Shop() {
 
 export default Shop;
 
-const Loader = () => {
-  return (
-    <div className="mt-20 flex items-center justify-center">
-      <FAST_SPINNER />
-    </div>
-  )
-}
