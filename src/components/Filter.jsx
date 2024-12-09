@@ -4,57 +4,62 @@ import { ChevronRight } from 'lucide-react';
 const Filter = () => {
   const categories = [
     {
-      name: "Home Decor",
+      name: "Home & Living",
       subCategories: [
-        "Wall Art",
-        "Textiles",
-        "Woodcraft",
-        "Rugs & Carpets"
-      ]
-    },
-    {
-      name: "Kitchen & Dining",
-      subCategories: [
-        "Kitchenware"
+        "Home Decor",
+        "Aromatherapy",
+        "Show Case"
       ]
     },
     {
       name: "Fashion",
       subCategories: [
+        "Decoration",
         "Jewelry",
-        "Footwear",
-        "Clothing",
-        "Accessories"
+        "Clothes"
       ]
     },
     {
-      name: "Personal Care",
+      name: "Cultural",
       subCategories: [
-        "Bath & Body"
+        "Beautiful",
+        "Home Use"
       ]
     },
     {
-      name: "Pottery"
+      name: "Textile",
+      subCategories: [
+        "For Home",
+        "Amazing"
+      ]
+    },
+    {
+      name: "Accessories",
+      subCategories: [
+        "Decoration",
+        "Computer",
+        "Kitchen"
+      ]
     }
   ];
   
   const tags = [
-    "fashion",
-    "kitchen",
-    "decoration",
-    "jewelry",
-    "textile",
+    "featured",
+    "best selling",
+    "top rated"
   ]
+
   const priceRanges = [
     "$0 - $50",
     "$50 - $100",
     "$100 - $150",
     "$150 - $200+",
   ];
+
   const sortBy = ["Price: Low to High", "Price: High to Low", "Sort by Name: Alphabetical (A-Z)", "Sort by Name: Alphabetical (Z-A)"]
 
   return (
-    <div className="p-6 flex justify-between bg-accent-warm-beige">
+    <div className="p-6 flex justify-between bg-accent-warm-beige my-4">
       {/* Sort By Section */}
       <div className="mb-6">
         <h3 className="text-lg font-semibold mb-2 text-primary-600">Sort By</h3>
@@ -126,7 +131,7 @@ const Filter = () => {
           {tags.map((tag) => (
             <span
               key={tag}
-              className="px-3 py-1 text-sm border-2 border-gray-600 text-gray-600 rounded-full cursor-pointer hover:border-primary-600 hover:text-primary-600"
+              className="px-3 py-1 text-sm text-center border-2 border-gray-600 text-gray-600 rounded-full cursor-pointer hover:border-primary-600 hover:text-primary-600"
             >
               {tag}
             </span>
