@@ -1,3 +1,9 @@
+import image_1 from '../assets/img_3.avif'
+import image_2 from '../assets/hero5.jpg'
+import image_3 from '../assets/img_2.avif'
+
+const vairentImages = [image_1, image_2, image_3]
+
 export const products = [
   {
     id: '1',
@@ -9,6 +15,7 @@ export const products = [
     tags: ['featured', 'best selling', 'top rated'],
     description: 'Beautifully handwoven Afghan basket crafted from natural fibers. Perfect for storage and decoration.',
     image: 'https://images.unsplash.com/photo-1604298002502-5ca0b81c5f4e?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    vairentImages
   },
   {
     id: '2',
@@ -20,6 +27,7 @@ export const products = [
     tags: ['featured', 'best selling', 'top rated'],
     description: 'Handcrafted vase with intricate Pashtun embroidery patterns. A true reflection of Afghan culture.',
     image: 'https://images.unsplash.com/photo-1721109890030-00faaa68981f?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    vairentImages
   },
   {
     id: '3',
@@ -31,6 +39,7 @@ export const products = [
     tags: ['featured', 'best selling', 'top rated'],
     description: 'Intricate Pashtun-inspired macrame wall hanging made with organic cotton rope.',
     image: 'https://images.unsplash.com/photo-1534349762230-e0cadf78f5da?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    vairentImages
   },
   {
     id: '4',
@@ -42,6 +51,7 @@ export const products = [
     tags: ['featured', 'best selling', 'top rated'],
     description: 'Sterling silver necklace with hand-carved pendant, inspired by Afghan traditional designs.',
     image: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&q=80&w=600',
+    vairentImages
   },
   {
     id: '5',
@@ -53,6 +63,7 @@ export const products = [
     tags: ['featured', 'best selling', 'top rated'],
     description: 'Hand-loomed table runner with traditional Pashtun patterns, showcasing rich Afghan artistry.',
     image: 'https://plus.unsplash.com/premium_photo-1680632913180-58542119bc99?q=80&w=1888&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    vairentImages
   },
   {
     id: '6',
@@ -64,6 +75,7 @@ export const products = [
     tags: ['featured', 'best selling', 'top rated'],
     description: 'Complete handmade ceramic dinner set for four, featuring Afghan design motifs.',
     image: 'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?auto=format&fit=crop&q=80&w=600',
+    vairentImages
   },
   {
     id: '7',
@@ -75,6 +87,7 @@ export const products = [
     tags: ['featured', 'best selling', 'top rated'],
     description: 'Hand-embroidered cushion cover with floral Pashtun motifs, adding a cultural touch to any home.',
     image: 'https://plus.unsplash.com/premium_photo-1725381929596-e913d09d8c53?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    vairentImages
   },
   {
     id: '8',
@@ -86,6 +99,7 @@ export const products = [
     tags: ['featured', 'best selling', 'top rated'],
     description: 'Natural handmade soap set infused with essential oils, handcrafted by Afghan artisans.',
     image: 'https://plus.unsplash.com/premium_photo-1677626248998-1a6a203902df?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    vairentImages
   },
   {
     id: '9',
@@ -97,6 +111,7 @@ export const products = [
     tags: ['featured', 'best selling', 'top rated'],
     description: 'Stylish and durable tote bag made from 100% recycled materials, featuring Pashtun embroidery.',
     image: 'https://i.pinimg.com/1200x/e1/ad/3c/e1ad3c5367933561ec80288a5d538149.jpg',
+    vairentImages
   },
   {
     id: '10',
@@ -108,6 +123,7 @@ export const products = [
     tags: ['featured', 'best selling', 'top rated'],
     description: 'Vibrant ceramic mug with hand-painted Afghan patterns.',
     image: 'https://i.pinimg.com/1200x/b5/e8/62/b5e862a6deff91907796c536d55b7e1c.jpg',
+    vairentImages
   },
   {
     id: '11',
@@ -119,6 +135,7 @@ export const products = [
     tags: ['featured', 'best selling', 'top rated'],
     description: 'Traditional Ajrak shawl with intricate block-print patterns, handmade in Sindh.',
     image: 'https://i.pinimg.com/736x/2e/dc/9d/2edc9d83b31f7fbc0a339b1f5b589fe6.jpg',
+    vairentImages
   },
   {
     id: '12',
@@ -130,6 +147,7 @@ export const products = [
     tags: ['featured', 'best selling', 'top rated'],
     description: 'Handcrafted lamp made from camel skin, illuminating homes with a warm Afghan glow.',
     image: 'https://i.pinimg.com/736x/33/65/a1/3365a1782e605429487825ea9a48591a.jpg',
+    vairentImages
   },
   {
     id: '13',
@@ -141,6 +159,7 @@ export const products = [
     tags: ['featured', 'best selling', 'top rated'],
     description: 'Beautiful blue ceramic vase from Multan, known for its intricate glaze and patterns.',
     image: 'https://i.pinimg.com/736x/cd/68/fc/cd68fce8d7d5cc2a937ee89084a231ca.jpg',
+    vairentImages
   },
   {
     id: '14',
@@ -152,6 +171,7 @@ export const products = [
     tags: ['featured', 'best selling', 'top rated'],
     description: 'Traditional leather sandals hand-stitched by Pashtun artisans in Peshawar.',
     image: 'https://i.pinimg.com/736x/1a/8b/43/1a8b430a24a52d6c45ec4af3c3d4de44.jpg',
+    vairentImages
   },
   {
     id: '15',
@@ -163,6 +183,7 @@ export const products = [
     tags: ['featured', 'best selling', 'top rated'],
     description: 'Luxurious woolen shawl embroidered with traditional Kashmiri floral patterns.',
     image: 'https://i.pinimg.com/736x/db/88/0a/db880ad8e9376b0de19202edc6e1a025.jpg',
+    vairentImages
   },
   {
     id: '16',
@@ -174,6 +195,7 @@ export const products = [
     tags: ['featured', 'best selling', 'top rated'],
     description: 'Elegant jewelry box carved from Sheesham wood with traditional motifs.',
     image: 'https://plus.unsplash.com/premium_photo-1667635308108-e0f6770cd512?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    vairentImages
   },
   {
     id: '17',
@@ -185,6 +207,7 @@ export const products = [
     tags: ['featured', 'best selling', 'top rated'],
     description: 'Colorful key holder adorned with vibrant Pakistani truck art designs.',
     image: 'https://i.pinimg.com/736x/ec/d3/95/ecd3954d525480adf05382058fbc2f82.jpg',
+    vairentImages
   },
   {
     id: '18',
@@ -196,6 +219,7 @@ export const products = [
     tags: ['featured', 'best selling', 'top rated'],
     description: 'Handcrafted wool rug featuring Pashtun tribal designs, made by artisans in the mountains of Afghanistan.',
     image: 'https://i.pinimg.com/736x/7e/89/a3/7e89a3c22f19ab3488299fb6db10a4d8.jpg',
+    vairentImages
   },
   {
     id: '19',
@@ -207,6 +231,7 @@ export const products = [
     tags: ['featured', 'best selling', 'top rated'],
     description: 'Cozy and warm woolen throw blanket handwoven by Afghan artisans.',
     image: 'https://i.pinimg.com/736x/aa/e9/1a/aae91a2922b2f97565485e831e45aaa5.jpg',
+    vairentImages
   },
   {
     id: '20',
@@ -218,6 +243,7 @@ export const products = [
     tags: ['featured', 'best selling', 'top rated'],
     description: 'Set of three hand-carved wooden spoons featuring Pashtun tribal designs.',
     image: 'https://i.pinimg.com/736x/84/29/c5/8429c5ca34ff5070471335407fdf42a0.jpg',
+    vairentImages
   },
   {
     id: '21',
@@ -229,6 +255,7 @@ export const products = [
     tags: ['featured', 'best selling', 'top rated'],
     description: 'Handmade leather wallet with traditional stitching from Peshawar.',
     image: 'https://i.pinimg.com/736x/f9/be/40/f9be40dd746a60d4786bc033b0c6b28a.jpg',
+    vairentImages
   },
   {
     id: '22',
@@ -240,6 +267,7 @@ export const products = [
     tags: ['featured', 'best selling', 'top rated'],
     description: 'Exquisite copper tray, hand-etched with Afghan designs, perfect for serving or display.',
     image: 'https://i.pinimg.com/736x/75/55/db/7555db9d11f2b141866f35625a661dca.jpg',
+    vairentImages
   },
   {
     id: '23',
@@ -251,6 +279,7 @@ export const products = [
     tags: ['featured', 'best selling', 'top rated'],
     description: 'Authentic leather bag with intricate Afghan embroidery, offering style and practicality.',
     image: 'https://i.pinimg.com/736x/16/1c/dd/161cdddb311fe380b434937ec25d7abd.jpg',
+    vairentImages
   },
   {
     id: '24',
@@ -262,6 +291,7 @@ export const products = [
     tags: ['featured', 'best selling', 'top rated'],
     description: 'Intricately carved wooden jewelry box with traditional Pashtun patterns.',
     image: 'https://i.pinimg.com/736x/09/0a/3c/090a3c13e0f2ebd532d7161369108fb2.jpg',
+    vairentImages
   },
   {
     id: '25',
@@ -273,6 +303,7 @@ export const products = [
     tags: ['featured', 'best selling', 'top rated'],
     description: 'Luxurious woolen shawl handcrafted in Khyber Pakhtunkhwa, featuring traditional Pashtun designs.',
     image: 'https://i.pinimg.com/736x/95/e2/55/95e255f3f2548b2073973abe87b265ea.jpg',
+    vairentImages
   },
   {
     id: '26',
@@ -284,6 +315,7 @@ export const products = [
     tags: ['featured', 'best selling', 'top rated'],
     description: 'Elegant copper tea set, handcrafted by Afghan artisans, perfect for traditional tea service.',
     image: 'https://i.pinimg.com/736x/dc/42/34/dc423417424b9efe785d214b38c8492e.jpg',
+    vairentImages
   },
   {
     id: '27',
@@ -295,6 +327,7 @@ export const products = [
     tags: ['featured', 'best selling', 'top rated'],
     description: 'Traditional wall clock handcrafted with Pashtun motifs, a functional piece of art.',
     image: 'https://i.pinimg.com/736x/3d/45/ec/3d45ec78d9accf38624ecfb6ea5907cf.jpg',
+    vairentImages
   },
   {
     id: '28',
@@ -306,6 +339,7 @@ export const products = [
     tags: ['featured', 'best selling', 'top rated'],
     description: 'Soft silk scarf with Afghan traditional designs, a luxurious accessory for any outfit.',
     image: 'https://i.pinimg.com/1200x/16/28/8e/16288ea30adce78957fb2699710cc5e0.jpg',
+    vairentImages
   },
   {
     id: '29',
@@ -317,6 +351,7 @@ export const products = [
     tags: ['featured', 'best selling', 'top rated'],
     description: 'Authentic handwoven wool rug featuring Pashtun tribal patterns, adding warmth and culture to your home.',
     image: 'https://i.pinimg.com/1200x/0f/e9/a7/0fe9a7d610c53c60237d8b828d3d1bbe.jpg',
+    vairentImages
   },
   {
     id: '30',
@@ -328,6 +363,7 @@ export const products = [
     tags: ['featured', 'best selling', 'top rated'],
     description: 'Hand-carved wooden chair with intricate Pashtun designs, providing comfort and elegance.',
     image: 'https://i.pinimg.com/736x/1e/cb/df/1ecbdfc505f756f8ae64137d1ee63fc8.jpg',
+    vairentImages
   },
   {
     id: '31',
@@ -339,6 +375,7 @@ export const products = [
     tags: ['featured', 'best selling', 'top rated'],
     description: 'Colorful and intricate embroidered bedspread showcasing Afghan artistry and culture.',
     image: 'https://i.pinimg.com/736x/3b/02/b1/3b02b16a96bc63673795c2141f77bb15.jpg',
+    vairentImages
   },
   {
     id: '32',
@@ -350,6 +387,7 @@ export const products = [
     tags: ['featured', 'best selling', 'top rated'],
     description: 'Hand-knitted woolen mittens to keep you warm during the cold Afghan winters.',
     image: 'https://i.pinimg.com/736x/8f/17/69/8f1769fab0cd577823ec166235ecfc70.jpg',
+    vairentImages
   },
   {
     id: '33',
@@ -361,6 +399,7 @@ export const products = [
     tags: ['featured', 'best selling', 'top rated'],
     description: 'Brass necklace with traditional Pashtun designs, handcrafted for an authentic cultural experience.',
     image: 'https://i.pinimg.com/736x/be/fb/12/befb12fa28ddd3c8fda5b63df8665d0a.jpg',
+    vairentImages
   },
   {
     id: '34',
@@ -372,6 +411,7 @@ export const products = [
     tags: ['featured', 'best selling', 'top rated'],
     description: 'Handcrafted leather journal with intricate Afghan designs, perfect for your writing needs.',
     image: 'https://i.pinimg.com/1200x/b6/14/87/b61487b33d6d1128deb38a4b5a64e48a.jpg',
+    vairentImages
   },
   {
     id: '35',
@@ -383,6 +423,7 @@ export const products = [
     tags: ['featured', 'best selling', 'top rated'],
     description: 'Luxurious pillowcase with traditional Pashtun embroidery, adding elegance to any room.',
     image: 'https://i.pinimg.com/1200x/4c/9b/4a/4c9b4a5a41f2d7f090ec278fe0dbae54.jpg',
+    vairentImages
   },
   {
     id: '36',
@@ -394,6 +435,7 @@ export const products = [
     tags: ['featured', 'best selling', 'top rated'],
     description: 'Beautiful handwoven wall tapestry inspired by Afghan tribal patterns and symbols.',
     image: 'https://i.pinimg.com/1200x/ae/5a/a5/ae5aa5a4ef0f447209512fc9a4c29770.jpg',
+    vairentImages
   },
   {
     id: '37',
@@ -405,6 +447,7 @@ export const products = [
     tags: ['featured', 'best selling', 'top rated'],
     description: 'Wooden spinning top, handcrafted in Pashtun style, ideal for collectors or children.',
     image: 'https://i.pinimg.com/1200x/93/b2/e9/93b2e9ddc68dcb7ae6c83be104c559a9.jpg',
+    vairentImages
   },
   {
     id: '38',
@@ -416,6 +459,7 @@ export const products = [
     tags: ['featured', 'best selling', 'top rated'],
     description: 'Handwoven Afghan carpet showcasing intricate patterns and vibrant colors.',
     image: 'https://i.pinimg.com/1200x/c6/c5/57/c6c5574e8386deb3f313a159318f649f.jpg',
+    vairentImages
   },
   {
     id: '39',
@@ -427,6 +471,7 @@ export const products = [
     tags: ['featured', 'best selling', 'top rated'],
     description: 'Handcrafted saddle bags made with traditional Afghan techniques, perfect for decor or use.',
     image: 'https://i.pinimg.com/1200x/18/8a/b4/188ab45ce54638da9aa414a1811c7aef.jpg',
+    vairentImages
   },
   {
     id: '40',
@@ -438,6 +483,7 @@ export const products = [
     tags: ['featured', 'best selling', 'top rated'],
     description: 'Soft and durable felt carpet crafted using traditional Afghan felting methods.',
     image: 'https://i.pinimg.com/1200x/57/a7/82/57a7820f53f717a5a1d89817eca38556.jpg',
+    vairentImages
   },
   {
     id: '41',
@@ -449,6 +495,7 @@ export const products = [
     tags: ['featured', 'best selling', 'top rated'],
     description: 'Intricate needlework crafted by Afghan artisans, ideal for wall decoration.',
     image: 'https://i.pinimg.com/1200x/5c/97/2a/5c972a27cc2f2073704daff6bfbc75ad.jpg',
+    vairentImages
   },
   {
     id: '42',
@@ -460,6 +507,7 @@ export const products = [
     tags: ['featured', 'best selling', 'top rated'],
     description: 'Delicate embroidery for garments or home textiles, showcasing Afghan cultural designs.',
     image: 'https://i.pinimg.com/1200x/b3/80/42/b38042412caa26e8099f8c9acfc4aa84.jpg',
+    vairentImages
   },
   {
     id: '43',
@@ -471,6 +519,7 @@ export const products = [
     tags: ['featured', 'best selling', 'top rated'],
     description: 'Traditional Afghan floor mat with beautiful designs, perfect for adding cultural charm.',
     image: 'https://i.pinimg.com/1200x/55/fa/dd/55faddc91ceecb5284561c749fd9d3db.jpg',
+    vairentImages
   },
   {
     id: '44',
@@ -482,6 +531,7 @@ export const products = [
     tags: ['featured', 'best selling', 'top rated'],
     description: 'Handcrafted pottery vase with traditional Afghan designs, perfect for home decor.',
     image: 'https://i.pinimg.com/1200x/18/8c/2f/188c2fa7b1baa940ae0930aede30ec09.jpg',
+    vairentImages
   },
   {
     id: '45',
@@ -493,6 +543,7 @@ export const products = [
     tags: ['featured', 'best selling', 'top rated'],
     description: 'Exquisite Herati glassware bowl featuring traditional Afghan craftsmanship.',
     image: 'https://i.pinimg.com/1200x/67/0f/9d/670f9ddc3308692f8fb6a64c5fc9b0bd.jpg',
+    vairentImages
   },
   {
     id: '46',
@@ -504,6 +555,7 @@ export const products = [
     tags: ['featured', 'best selling', 'top rated'],
     description: 'Beautifully carved wooden art piece crafted by Pashtun artisans.',
     image: 'https://i.pinimg.com/736x/16/fa/86/16fa86ef863a1ce51bde9c52099ef35d.jpg',
+    vairentImages
   },
   {
     id: '47',
@@ -515,6 +567,7 @@ export const products = [
     tags: ['featured', 'best selling', 'top rated'],
     description: 'Decorative calligraphy piece showcasing the elegance of Afghan artistry.',
     image: 'https://i.pinimg.com/1200x/1f/87/65/1f8765366099c5530a3e7b5ecd7e4a2b.jpg',
+    vairentImages
   },
   {
     id: '48',
@@ -526,6 +579,7 @@ export const products = [
     tags: ['featured', 'best selling', 'top rated'],
     description: 'Intricate silver jewelry set featuring traditional Afghan designs.',
     image: 'https://i.pinimg.com/1200x/c6/f9/1f/c6f91feaadc546f8f984f7f80b5b1cc3.jpg',
+    vairentImages
   },
   {
     id: '49',
@@ -537,6 +591,7 @@ export const products = [
     tags: ['featured', 'best selling', 'top rated'],
     description: 'High-quality handwoven textile made using traditional Afghan weaving techniques.',
     image: 'https://i.pinimg.com/1200x/10/0b/40/100b407f4934306c04da612f928ba03a.jpg',
+    vairentImages
   },
   {
     id: '50',
@@ -548,6 +603,7 @@ export const products = [
     tags: ['featured', 'best selling', 'top rated'],
     description: 'Handcrafted ceramic bowl inspired by Afghan tile-making traditions.',
     image: 'https://i.pinimg.com/1200x/ed/9c/c4/ed9cc42b83fff165f16d158e91a8ba1d.jpg',
+    vairentImages
   },
   {
     id: '51',
@@ -559,6 +615,7 @@ export const products = [
     tags: ['featured', 'best selling', 'top rated'],
     description: 'Beautiful Herati tile, a traditional Afghan craft, perfect for home decoration.',
     image: 'https://i.pinimg.com/1200x/d1/80/d4/d180d467420cd2f9f893315ad957d644.jpg',
+    vairentImages
   }
 ];
 
