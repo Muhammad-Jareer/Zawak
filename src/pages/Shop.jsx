@@ -7,7 +7,7 @@ import AddToCartWishlistPopup from "../components/AddToCartWishlistPopup";
 import Product from "../components/Product";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Filter from "../components/Filter";
-import { ShipWheel, SlidersHorizontal, X } from 'lucide-react';
+import { SlidersHorizontal, X } from 'lucide-react';
 import InfiniteLoader from "../components/InfiniteLoader";
 
 function Shop() {
@@ -26,7 +26,7 @@ function Shop() {
 
   const handleAddToCart = (product) => {
     if (product && product.price) {
-      dispatch({ type: "cart/addToCart", payload: product });
+      dispatch({ type: "cart/addToCart", payload: { ...product, quantity: 1 } });
       setPopup({ show: true, type: "cart", itemName: product.name });
     }
   };
