@@ -113,9 +113,9 @@ const categories = [
 
               {category.subCategories && (
                 <div
-                  className="absolute left-16 top-0 w-48 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none group-hover:pointer-events-auto"
+                  className="absolute right-0 top-0 w-36 lg:w-40 text-sm lg:text-base z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none group-hover:pointer-events-auto"
                 >
-                  <ul className="bg-accent-warm-beige shadow-xl border border-gray-300 px-4 py-2 mx-3 space-y-2 text-justify">
+                  <ul className="bg-accent-warm-beige shadow-xl border border-gray-300 px-2 py-2 mx-3 space-y-2 text-justify">
                     {category.subCategories.map((subCategory, idx) => (
                       <li
                         key={idx}

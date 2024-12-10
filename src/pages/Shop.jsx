@@ -7,8 +7,8 @@ import { products } from "../data/products";
 import ProductModal from "../components/ProductModal";
 import AddToCartWishlistPopup from "../components/AddToCartWishlistPopup";
 import Product from "../components/Product";
+import Filter from "../components/Filter";
 import { Loader } from "../components/Loader";
-import Filter from '../components/Filter'
 
 function Shop() {
   const dispatch = useDispatch();
@@ -17,6 +17,7 @@ function Shop() {
   const [visibleCount, setVisibleCount] = useState(8);
   const [productsState, setProductsState] = useState(products.slice(0, visibleCount));
   const [modalProduct, setModalProduct] = useState(null);
+  const [showFilter, setShowFilter] = useState(false);
   const [popup, setPopup] = useState({ show: false, type: "", itemName: "" });
 
   useEffect(() => {
@@ -58,13 +59,14 @@ function Shop() {
           Shop Our Collection
         </h1>
         <button
-          disabled
-          className="text-gray-600 cursor-not-allowed">
-          <SlidersHorizontal />
+          onClick={() => setShowFilter(!showFilter)}
+          className="text-gray-600 hover:text-primary-600 cursor-pointer">
+          {showFilter ? <X /> : <SlidersHorizontal />}
         </button>
       </div>
 
-      {/* Removed Filter component */}
+      {/* Render the Filter component */}
+      <Filter setShowFilter={setShowFilter} showFilter={showFilter} />
 
       <InfiniteScroll
         dataLength={productsState.length}
