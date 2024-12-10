@@ -56,16 +56,12 @@ function Shop() {
         <button 
           onClick={() => setShowFilter(!showFilter)}
           className="text-gray-600 hover:text-primary-600 cursor-pointer">
-          {showFilter ? <X /> : <SlidersHorizontal /> }
+           <SlidersHorizontal />
         </button>
       </div>
 
-      {/* Conditionally Render Filter Component  */}
-
-      {showFilter && (
-        <Filter />
-      )}
-      
+      <Filter showFilter={showFilter} setShowFilter={setShowFilter} />
+  
         <InfiniteScroll
           dataLength={dataSource.length}
           next={fetchMoreData}

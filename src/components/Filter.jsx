@@ -1,15 +1,14 @@
-import React from "react";
-import { ChevronRight } from 'lucide-react';
+import React, { useState } from "react";
+import { ChevronRight, X } from 'lucide-react';
 
-const Filter = () => {
-  const categories = [
-    {
-      name: "Home & Living",
-      subCategories: [
-        "Home Decor",
-        "Aromatherapy",
-        "Show Case"
-      ]
+const categories = [
+  {
+    name: "Home & Living",
+    subCategories: [
+      "Home Decor",
+      "Aromatherapy",
+      "Show Case"
+    ]
     },
     {
       name: "Fashion",
@@ -56,40 +55,28 @@ const Filter = () => {
     "$150 - $200+",
   ];
 
-  const sortBy = ["Price: Low to High", "Price: High to Low", "Sort by Name: Alphabetical (A-Z)", "Sort by Name: Alphabetical (Z-A)"]
+  const sortBy = ["Price: Low to High", "Price: High to Low", "Alphabetical (A-Z)", "Alphabetical (Z-A)"]
+
+  const Filter = ({showFilter, setShowFilter}) => {
 
   return (
-    <div className="p-6 flex justify-between bg-accent-warm-beige my-4">
-      {/* Sort By Section */}
-      <div className="mb-6">
-        <h3 className="text-lg font-semibold mb-2 text-primary-600">Sort By</h3>
-        <ul className="space-y-2">
-          <li className="text-gray-600 hover:text-primary-600 hover:underline cursor-pointer">Default</li>
-          {sortBy.map((sort) => (
-            <li 
-            key={sort}
-            className="text-gray-600 hover:text-primary-600 hover:underline cursor-pointer">{sort}</li>
-          ))}
-        </ul>
+  <>
+  {showFilter && (
+        <div aria-hidden className="fixed inset-0 bg-black bg-opacity-50 z-10" onClick={()=> setShowFilter(pre => !pre)} />
+      )}
+  
+  <section className={`fixed overflow-y-scroll no-scrollbar overflow-x-hidden z-20 inset-y-0 right-0 w-72 md:w-80 bg-white border-l border-indigo-100 transform transition-transform duration-300 ease-in-out px-4 bg-gradient-to-b from-accent-warm-beige to-white shadow-md bg-opacity-70 ${showFilter ? 'translate-x-0' : 'translate-x-full'}`}>
+      <div className="pt-24 flex">
+        <h2 className="font-semibold flex-1 font-serif text-2xl text-primary-600 ">Filters</h2>
+        <button onClick={() => setShowFilter(!showFilter)} className="text-gray-600 hover:text-primary-600 ">
+          <X />
+        </button>
       </div>
-
-      {/* Price Section */}
-      <div className="mb-6">
-        <h3 className="text-lg font-semibold mb-2 text-primary-600">Price</h3>
-        <ul className="space-y-2">
-          <li className="text-gray-600 hover:text-primary-600 hover:underline cursor-pointer">All</li>
-          {priceRanges.map((ranges) => (
-            <li
-            key={ranges}
-            className="text-gray-600 hover:text-primary-600 hover:underline cursor-pointer">{ranges}</li>
-          ))}
-        </ul>
-      </div>
-
-      {/* Categories Section */}
-      <div className="mb-6 flex flex-col">
+      
+      {/* Category Section */}
+      <div className="my-8 flex flex-col">
         <h3 className="text-lg font-semibold mb-2 text-primary-600">Categories</h3>
-        <ul className="grid grid-cols-1 gap-2">
+        <ul className="grid grid-cols-1 gap-2 pl-2">
           {categories.map((category) => (
             <li
               key={category.name}
@@ -102,7 +89,7 @@ const Filter = () => {
 
               {category.subCategories && (
                 <div
-                  className="absolute left-full top-0 w-48 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none group-hover:pointer-events-auto"
+                  className="absolute left-16 top-0 w-48 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none group-hover:pointer-events-auto"
                 >
                   <ul className="bg-accent-warm-beige shadow-xl border border-gray-300 px-4 py-2 mx-3 space-y-2 text-justify">
                     {category.subCategories.map((subCategory, idx) => (
@@ -121,13 +108,10 @@ const Filter = () => {
         </ul>
       </div>
 
-
-
-
       {/* Tags Section */}
-      <div>
+      <div className="my-8">
         <h3 className="text-lg font-semibold mb-2 text-primary-600">Tags</h3>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-3 pl-2">
           {tags.map((tag) => (
             <span
               key={tag}
@@ -138,7 +122,34 @@ const Filter = () => {
           ))}
         </div>
       </div>
-    </div>
+
+      {/* Sort By Section */}
+      <div className="my-8">
+        <h3 className="text-lg font-semibold mb-2 text-primary-600">Sort By</h3>
+        <ul className="space-y-2 pl-2">
+          <li className="text-gray-600 hover:text-primary-600 hover:underline cursor-pointer">Default</li>
+          {sortBy.map((sort) => (
+            <li 
+            key={sort}
+            className="text-gray-600 hover:text-primary-600 hover:underline cursor-pointer">{sort}</li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Price Section */}
+      <div className="mb-6">
+        <h3 className="text-lg font-semibold mb-2 text-primary-600">Price</h3>
+        <ul className="space-y-2 pl-2">
+          <li className="text-gray-600 hover:text-primary-600 hover:underline cursor-pointer">All</li>
+          {priceRanges.map((ranges) => (
+            <li
+            key={ranges}
+            className="text-gray-600 hover:text-primary-600 hover:underline cursor-pointer">{ranges}</li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  </>
   );
 };
 
