@@ -21,7 +21,7 @@ const ProductModal = ({ product, onClose }) => {
 
   const handleAddToCart = () => {
     if (product && product.price) {
-      dispatch({ type: "cart/addToCart", payload: { ...product, quantity: 1 }});
+      dispatch({ type: "cart/addToCart", payload: { ...product, quantity}});
       setPopupInfo({ show: true, type: "cart", itemName: product.name });
     }
   };
