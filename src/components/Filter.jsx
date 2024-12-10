@@ -57,7 +57,31 @@ const categories = [
 
   const sortBy = ["Price: Low to High", "Price: High to Low", "Alphabetical (A-Z)", "Alphabetical (Z-A)"]
 
-  const Filter = ({showFilter, setShowFilter}) => {
+  const Filter = ({showFilter, setShowFilter, setFilters}) => {
+
+    // Handle Category Change
+    const handleCategoryChange = (category, subCategory) => {
+      setFilters((prev) => ({ ...prev, category, subCategory}));
+      setShowFilter(false)
+    };
+
+    // Handle Tag Selection
+    const handleTagChange = (tag) => {
+      setFilters((prev) => ({ ...prev, tag }));
+      setShowFilter(false)
+    };
+
+    // Handle Price Range Selection
+    const handlePriceRangeChange = (range) => {
+      setFilters((prev) => ({ ...prev, priceRange: range }));
+      setShowFilter(false)
+    };
+
+    // Handle Sorting Selection
+    const handleSortChange = (sort) => {
+      setFilters((prev) => ({ ...prev, sortBy: sort }));
+      setShowFilter(false)
+    };
 
   return (
   <>
@@ -95,6 +119,7 @@ const categories = [
                     {category.subCategories.map((subCategory, idx) => (
                       <li
                         key={idx}
+                        onClick={() => handleCategoryChange(category.name, category.subCategories[idx])}
                         className="text-gray-600 hover:text-primary-600 px-2 rounded-lg"
                       >
                         {subCategory}
@@ -115,6 +140,7 @@ const categories = [
           {tags.map((tag) => (
             <span
               key={tag}
+              onClick={() => handleTagChange(tag)}
               className="px-3 py-1 text-sm text-center border-2 border-gray-600 text-gray-600 rounded-full cursor-pointer hover:border-primary-600 hover:text-primary-600"
             >
               {tag}
@@ -131,6 +157,7 @@ const categories = [
           {sortBy.map((sort) => (
             <li 
             key={sort}
+            onClick={() => handleSortChange(sort)}
             className="text-gray-600 hover:text-primary-600 hover:underline cursor-pointer">{sort}</li>
           ))}
         </ul>
@@ -141,13 +168,14 @@ const categories = [
         <h3 className="text-lg font-semibold mb-2 text-primary-600">Price</h3>
         <ul className="space-y-2 pl-2">
           <li className="text-gray-600 hover:text-primary-600 hover:underline cursor-pointer">All</li>
-          {priceRanges.map((ranges) => (
+          {priceRanges.map((range) => (
             <li
-            key={ranges}
-            className="text-gray-600 hover:text-primary-600 hover:underline cursor-pointer">{ranges}</li>
+            key={range}
+            onClick={() => handlePriceRangeChange(range)}
+            className="text-gray-600 hover:text-primary-600 hover:underline cursor-pointer">{range}</li>
           ))}
         </ul>
-      </div>
+      </div>  
     </section>
   </>
   );

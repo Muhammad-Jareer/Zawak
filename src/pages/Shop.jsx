@@ -15,14 +15,56 @@ function Shop() {
   const location = useLocation();
 
   const [visibleCount, setVisibleCount] = useState(8);
+  const [productsState, setProductsState] = useState(products.slice(0, visibleCount))
   const [modalProduct, setModalProduct] = useState(null);
   const [showFilter, setShowFilter] = useState(false)
   const [popup, setPopup] = useState({ show: false, type: "", itemName: "" });
-  const [dataSource, setDataSource] = useState(products.slice(0, visibleCount))
-
+  const [filters, setFilters] = useState({
+    category: "",
+    subCategory: "",
+    tag: "",
+    priceRange: "",
+    sortBy: "",
+  })
+  
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [location]);
+
+  useEffect(() => {
+    // Apply filtering logic based on the selected filters
+    let filtered = [...products];
+
+    // Category filter
+    if (filters.category && filters.subCategory) {
+      filtered = filtered.filter(product => (product.category === filters.category)&&(product.sub_category === filters.subCategory));
+    }
+
+    // Tag filter (example: featured, top-rated, etc.)
+    if (filters.tag) {
+      // Assuming tags in the product data
+      filtered = filtered.filter(product => product.tags && product.tags.includes(filters.tag));
+    }
+
+    // Price Range filter (e.g., "$0 - $50", "$50 - $100")
+    if (filters.priceRange) {
+      const [minPrice, maxPrice] = filters.priceRange.split(" - ").map(price => parseInt(price.replace('$', '').replace('+', '')));
+      filtered = filtered.filter(product => product.price >= minPrice && product.price <= maxPrice);
+    }
+
+    // Sort By
+    if (filters.sortBy === "Price: Low to High") {
+      filtered = filtered.sort((a, b) => a.price - b.price);
+    } else if (filters.sortBy === "Price: High to Low") {
+      filtered = filtered.sort((a, b) => b.price - a.price);
+    } else if (filters.sortBy === "Alphabetical (A-Z)") {
+      filtered = filtered.sort((a, b) => a.name.localeCompare(b.name));
+    } else if (filters.sortBy === "Alphabetical (Z-A)") {
+      filtered = filtered.sort((a, b) => b.name.localeCompare(a.name));
+    }
+
+    setProductsState(filtered);
+  }, [filters]);
 
   const handleAddToCart = (product) => {
     if (product && product.price) {
@@ -40,10 +82,22 @@ function Shop() {
 
   const fetchMoreData = () => {
     //MAKING THE API CALL HERE
+    const {category, subCategory, tag, priceRange, sortBy} = filters
+    if((category === "") && (subCategory === "") && (tag === "") && (priceRange === "") && (sortBy === "")){
+    }
     setTimeout(()=>{
-      setDataSource(dataSource.concat(products.slice(visibleCount, visibleCount + 8)))
+      setProductsState(productsState.concat(products.slice(visibleCount, visibleCount + 8)))
       setVisibleCount(pre => pre + 8)
     }, 2000);
+  }
+
+  const hasMore = () => {
+    const {category, subCategory, tag, priceRange, sortBy} = filters
+    if((category === "") && (subCategory === "") && (tag === "") && (priceRange === "") && (sortBy === "")){
+      console.log("everyting is null")
+      return visibleCount < products.length
+    }
+    return false
   }
 
   return (
@@ -60,16 +114,16 @@ function Shop() {
         </button>
       </div>
 
-      <Filter showFilter={showFilter} setShowFilter={setShowFilter} />
+      <Filter showFilter={showFilter} setShowFilter={setShowFilter} setFilters={setFilters} />
   
         <InfiniteScroll
-          dataLength={dataSource.length}
+          dataLength={productsState.length}
           next={fetchMoreData}
-          hasMore={(visibleCount < products.length)}
+          hasMore={hasMore()}
           loader={<InfiniteLoader />}
         >
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {dataSource.map((product) => (
+            {productsState.map((product) => (
               <Product
                 key={product.id}
                 product={product}
