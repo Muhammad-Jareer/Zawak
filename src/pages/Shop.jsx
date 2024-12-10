@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useLocation } from "react-router-dom";
+import { SlidersHorizontal, X } from "lucide-react";
+import InfiniteScroll from "react-infinite-scroll-component";
 import { products } from "../data/products";
 import ProductModal from "../components/ProductModal";
 import AddToCartWishlistPopup from "../components/AddToCartWishlistPopup";
 import Product from "../components/Product";
-import InfiniteScroll from "react-infinite-scroll-component";
 import Filter from "../components/Filter";
-import { SlidersHorizontal, X } from 'lucide-react';
-import InfiniteLoader from "../components/InfiniteLoader";
+import { Loader } from "../components/Loader";
 
 function Shop() {
   const dispatch = useDispatch();
@@ -16,13 +16,28 @@ function Shop() {
 
   const [visibleCount, setVisibleCount] = useState(8);
   const [modalProduct, setModalProduct] = useState(null);
-  const [showFilter, setShowFilter] = useState(false)
+  const [showFilter, setShowFilter] = useState(false);
   const [popup, setPopup] = useState({ show: false, type: "", itemName: "" });
-  const [dataSource, setDataSource] = useState(products.slice(0, visibleCount))
+  const [dataSource, setDataSource] = useState(products.slice(0, visibleCount));
+  const [isLoading, setIsLoading] = useState(false); // Track loading state
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [location]);
+
+  const fetchMoreData = () => {
+    if (visibleCount < products.length) {
+      setIsLoading(true); // Start loading
+      setTimeout(() => {
+        setDataSource((prevData) => [
+          ...prevData,
+          ...products.slice(visibleCount, visibleCount + 8),
+        ]);
+        setVisibleCount((prevCount) => prevCount + 8);
+        setIsLoading(false); // Stop loading
+      }, 1000);
+    }
+  };
 
   const handleAddToCart = (product) => {
     if (product && product.price) {
@@ -38,52 +53,42 @@ function Shop() {
     }
   };
 
-  const fetchMoreData = () => {
-    //MAKING THE API CALL HERE
-    setTimeout(()=>{
-      setDataSource(dataSource.concat(products.slice(visibleCount, visibleCount + 8)))
-      setVisibleCount(pre => pre + 8)
-    }, 2000);
-  }
-
   return (
     <div className="container mx-auto px-4 mt-16">
       <div className="flex justify-between">
         <h1 className="font-serif text-4xl text-primary-600 mb-6">
           Shop Our Collection
         </h1>
-
-        <button 
+        <button
           onClick={() => setShowFilter(!showFilter)}
-          className="text-gray-600 hover:text-primary-600 cursor-pointer">
-          {showFilter ? <X /> : <SlidersHorizontal /> }
+          className="text-gray-600 hover:text-primary-600 cursor-pointer"
+        >
+          {showFilter ? <X /> : <SlidersHorizontal />}
         </button>
       </div>
 
-      {/* Conditionally Render Filter Component  */}
+      {/* Conditionally Render Filter Component */}
+      {showFilter && <Filter />}
 
-      {showFilter && (
-        <Filter />
-      )}
-      
-        <InfiniteScroll
-          dataLength={dataSource.length}
-          next={fetchMoreData}
-          hasMore={(visibleCount < products.length)}
-          loader={<InfiniteLoader />}
-        >
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {dataSource.map((product) => (
-              <Product
-                key={product.id}
-                product={product}
-                handleAddToCart={handleAddToCart}
-                handleAddToWishlist={handleAddToWishlist}
-                setModalProduct={setModalProduct}
-              />
-            ))}
-          </div>
-        </InfiniteScroll>
+      {/* Infinite Scroll for Products */}
+      <InfiniteScroll
+        dataLength={dataSource.length}
+        next={fetchMoreData}
+        hasMore={visibleCount < products.length}
+        loader={<Loader loading={isLoading} />}
+      >
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          {dataSource.map((product) => (
+            <Product
+              key={product.id}
+              product={product}
+              handleAddToCart={handleAddToCart}
+              handleAddToWishlist={handleAddToWishlist}
+              setModalProduct={setModalProduct}
+            />
+          ))}
+        </div>
+      </InfiniteScroll>
 
       {popup.show && (
         <AddToCartWishlistPopup
@@ -104,4 +109,3 @@ function Shop() {
 }
 
 export default Shop;
-
