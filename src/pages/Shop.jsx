@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useLocation } from "react-router-dom";
+import { SlidersHorizontal, X } from "lucide-react";
+import InfiniteScroll from "react-infinite-scroll-component";
 import { products } from "../data/products";
 import ProductModal from "../components/ProductModal";
 import AddToCartWishlistPopup from "../components/AddToCartWishlistPopup";
 import Product from "../components/Product";
-import InfiniteScroll from "react-infinite-scroll-component";
 import Filter from "../components/Filter";
-import { SlidersHorizontal, X } from 'lucide-react';
-import InfiniteLoader from "../components/InfiniteLoader";
+import { Loader } from "../components/Loader";
 
 function Shop() {
   const dispatch = useDispatch();
@@ -17,7 +17,7 @@ function Shop() {
   const [visibleCount, setVisibleCount] = useState(8);
   const [productsState, setProductsState] = useState(products.slice(0, visibleCount))
   const [modalProduct, setModalProduct] = useState(null);
-  const [showFilter, setShowFilter] = useState(false)
+  const [showFilter, setShowFilter] = useState(false);
   const [popup, setPopup] = useState({ show: false, type: "", itemName: "" });
   const [filters, setFilters] = useState({
     category: "",
@@ -82,22 +82,10 @@ function Shop() {
 
   const fetchMoreData = () => {
     //MAKING THE API CALL HERE
-    const {category, subCategory, tag, priceRange, sortBy} = filters
-    if((category === "") && (subCategory === "") && (tag === "") && (priceRange === "") && (sortBy === "")){
-    }
     setTimeout(()=>{
-      setProductsState(productsState.concat(products.slice(visibleCount, visibleCount + 8)))
+      setDataSource(dataSource.concat(products.slice(visibleCount, visibleCount + 8)))
       setVisibleCount(pre => pre + 8)
     }, 2000);
-  }
-
-  const hasMore = () => {
-    const {category, subCategory, tag, priceRange, sortBy} = filters
-    if((category === "") && (subCategory === "") && (tag === "") && (priceRange === "") && (sortBy === "")){
-      console.log("everyting is null")
-      return visibleCount < products.length
-    }
-    return false
   }
 
   return (
@@ -106,24 +94,27 @@ function Shop() {
         <h1 className="font-serif text-4xl text-primary-600 mb-6">
           Shop Our Collection
         </h1>
-
-        <button 
+        <button
           onClick={() => setShowFilter(!showFilter)}
           className="text-gray-600 hover:text-primary-600 cursor-pointer">
-           <SlidersHorizontal />
+          {showFilter ? <X /> : <SlidersHorizontal /> }
         </button>
       </div>
 
-      <Filter showFilter={showFilter} setShowFilter={setShowFilter} setFilters={setFilters} />
-  
+      {/* Conditionally Render Filter Component  */}
+
+      {showFilter && (
+        <Filter />
+      )}
+      
         <InfiniteScroll
-          dataLength={productsState.length}
+          dataLength={dataSource.length}
           next={fetchMoreData}
-          hasMore={hasMore()}
-          loader={<InfiniteLoader />}
+          hasMore={(visibleCount < products.length)}
+          loader={<Loader />}
         >
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {productsState.map((product) => (
+            {dataSource.map((product) => (
               <Product
                 key={product.id}
                 product={product}
@@ -154,4 +145,3 @@ function Shop() {
 }
 
 export default Shop;
-
