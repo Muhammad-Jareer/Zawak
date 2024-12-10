@@ -83,9 +83,17 @@ function Shop() {
   const fetchMoreData = () => {
     //MAKING THE API CALL HERE
     setTimeout(()=>{
-      setDataSource(dataSource.concat(products.slice(visibleCount, visibleCount + 8)))
+      setProductsState(productsState.concat(products.slice(visibleCount, visibleCount + 8)))
       setVisibleCount(pre => pre + 8)
     }, 2000);
+  }
+
+  const hasMore = () => {
+    const {category, subCategory, tag, priceRange, sortBy} = filters
+    if((category === "") && (subCategory === "") && (tag === "") && (priceRange === "") && (sortBy === "")){
+      return visibleCount < products.length
+    }
+    return false
   }
 
   return (
@@ -101,20 +109,16 @@ function Shop() {
         </button>
       </div>
 
-      {/* Conditionally Render Filter Component  */}
-
-      {showFilter && (
-        <Filter />
-      )}
+        <Filter setFilters={setFilters} setShowFilter={setShowFilter} showFilter={showFilter} />
       
         <InfiniteScroll
-          dataLength={dataSource.length}
+          dataLength={productsState.length}
           next={fetchMoreData}
-          hasMore={(visibleCount < products.length)}
+          hasMore={hasMore()}
           loader={<Loader />}
         >
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {dataSource.map((product) => (
+            {productsState.map((product) => (
               <Product
                 key={product.id}
                 product={product}
