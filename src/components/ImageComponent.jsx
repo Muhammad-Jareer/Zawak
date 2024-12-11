@@ -1,6 +1,8 @@
 import clsx from 'clsx'
 import React, { useState, useEffect } from 'react'
-import { Blurhash } from 'react-blurhash'
+import { LazyLoadImage } from 'react-lazy-load-image-component'
+import 'react-lazy-load-image-component/src/effects/blur.css';
+import placeHolderImage from '../assets/blurhashof.jpg'
 
 function ImageComponent({src, alt}) {
     const [imageLoaded, setImageLoaded] = useState(false)
@@ -18,18 +20,15 @@ function ImageComponent({src, alt}) {
     
   return (
       <div className='h-64 w-full'>
-            <div className={clsx('h-64 w-full', imageLoaded && 'hidden')}>
-              <Blurhash 
-                  hash='LDOWHC?^DN-UF_$+rqocsER5NaRj'
-                  width='100%'
-                  height='16rem'
-                  resolutionX={32}
-                  resolutionY={32}
-                  punch={1}
-              />
-            </div>
-            <img src={src} alt={alt} className={clsx('w-full h-64 object-cover transition-opacity duration-500 ease-in-out opacity-0', imageLoaded && 'opacity-100')} style={{display: !imageLoaded? 'none' : 'inline'}}/> {/* style because clsx function was not working */}
-            
+            <LazyLoadImage
+                alt={alt}
+                height="16rem"
+                src={src}
+                width="100%"
+                placeholderSrc={placeHolderImage}
+                className={clsx('w-full h-64 object-cover transition-opacity duration-500 ease-in-out opacity-0', imageLoaded && 'opacity-100')}
+                effect='blur'
+                 />
       </div>
   )
 }
