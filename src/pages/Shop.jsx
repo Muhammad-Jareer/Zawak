@@ -47,7 +47,7 @@ function Shop() {
     setTimeout(() => {
       setProductsState(productsState.concat(products.slice(visibleCount, visibleCount + 8)));
       setVisibleCount((prev) => prev + 8);
-    }, 2000);
+    }, 1000);
   };
 
   const hasMore = () => visibleCount < products.length;
