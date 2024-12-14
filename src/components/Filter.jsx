@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { ChevronRight, X } from 'lucide-react';
+import { ChevronRight, X, ArrowDown } from 'lucide-react';
+import clsx from "clsx";
 
 const categories = [
   {
@@ -30,36 +31,64 @@ const priceRanges = ["$0 - $50", "$50 - $100", "$100 - $150", "$150 - $200+"];
 
 const sortBy = ["Price: Low to High", "Price: High to Low", "Alphabetical (A-Z)", "Alphabetical (Z-A)"];
 
-const Filter = ({ showFilter, setShowFilter, setFilters }) => {
+const Filter = ({ showFilter, setShowFilter, filters, setFilters }) => {
   const [expandedCategory, setExpandedCategory] = useState(null);
+  const [tempFilters, setTempFilters] = useState({
+    category: "",
+    subCategory: "",
+    tag: "",
+    priceRange: "",
+    sortBy: "",
+  })
 
-  // Handle Category Change
   const handleCategoryChange = (category, subCategory) => {
-    setFilters((prev) => ({ ...prev, category, subCategory }));
-    setShowFilter(false);
+    // if already selected then unselect
+    if(tempFilters.category === category && tempFilters.subCategory === subCategory){
+      setTempFilters((prev) => ({...prev, category: "", subCategory: ""}))
+      return
+    }
+
+    setTempFilters((prev) => ({ ...prev, category, subCategory }));
   };
 
-  // Handle Tag Selection
   const handleTagChange = (tag) => {
-    setFilters((prev) => ({ ...prev, tag }));
-    setShowFilter(false);
+    if(tempFilters.tag === tag){
+      setTempFilters((prev) => ({...prev, tag: ""}))
+      return
+    }
+
+    setTempFilters((prev) => ({ ...prev, tag }));
   };
 
-  // Handle Price Range Selection
   const handlePriceRangeChange = (range) => {
-    setFilters((prev) => ({ ...prev, priceRange: range }));
-    setShowFilter(false);
+    if(tempFilters.priceRange === range){
+      setTempFilters((prev) => ({...prev, priceRange : ""}))
+      return
+    }
+
+    setTempFilters((prev) => ({ ...prev, priceRange: range }));
   };
 
-  // Handle Sorting Selection
   const handleSortChange = (sort) => {
-    setFilters((prev) => ({ ...prev, sortBy: sort }));
-    setShowFilter(false);
+    if(tempFilters.sortBy === sort){
+      setTempFilters((prev) => ({...prev, sortBy : ""}))
+      return
+    }
+
+    setTempFilters((prev) => ({ ...prev, sortBy: sort }));
   };
 
   const handleToggleCategory = (categoryName) => {
     setExpandedCategory((prev) => (prev === categoryName ? null : categoryName));
   };
+
+  const resetFilters = () => setFilters({
+    category: "",
+    subCategory: "",
+    tag: "",
+    priceRange: "",
+    sortBy: "",
+  })
 
   return (
     <>
@@ -77,7 +106,10 @@ const Filter = ({ showFilter, setShowFilter, setFilters }) => {
         }`}
       >
         <div className="pt-24 flex">
-          <h2 className="font-semibold flex-1 font-serif text-2xl text-primary-600">Filters</h2>
+          <h2 className="font-semibold flex-1 font-serif text-2xl text-primary-600">
+            Filters
+            <p className="text-sm text-gray-600 font-sans font-normal flex items-center gap-1">select and click on apply btn <ArrowDown size={15}/></p>
+          </h2>
           <button
             onClick={() => setShowFilter(!showFilter)}
             className="text-gray-600 hover:text-primary-600"
@@ -88,7 +120,7 @@ const Filter = ({ showFilter, setShowFilter, setFilters }) => {
 
         {/* Category Section */}
         <div className="my-8 flex flex-col">
-          <h3 className="text-lg font-semibold mb-2 text-primary-600">Categories</h3>
+          <h3 className="text-lg font-semibold mb-2 text-primary-600">Categories <span className="text-gray-600 font-normal text-[12px] ml-2">{filters.category} - {filters.subCategory}</span></h3>
           <ul className="grid grid-cols-1 gap-2 pl-2">
             {categories.map((category) => (
               <li key={category.name} className="relative">
@@ -96,7 +128,7 @@ const Filter = ({ showFilter, setShowFilter, setFilters }) => {
                   onClick={() => handleToggleCategory(category.name)}
                   className="flex justify-between items-center cursor-pointer text-gray-600 hover:text-primary-600"
                 >
-                  <p className="hover:underline">{category.name}</p>
+                  <p className={clsx("hover:underline", tempFilters.category === category.name && "text-primary-600")}>{category.name}</p>
                   <ChevronRight
                     className={`transform transition-transform ${
                       expandedCategory === category.name ? "rotate-90" : ""
@@ -108,8 +140,8 @@ const Filter = ({ showFilter, setShowFilter, setFilters }) => {
                     {category.subCategories.map((subCategory, idx) => (
                       <li
                         key={idx}
-                        onClick={() => handleCategoryChange(category.name, subCategory)}
-                        className="text-gray-600 hover:text-primary-600 cursor-pointer"
+                        onClick={() => {handleCategoryChange(category.name, subCategory); setExpandedCategory(null)}}
+                        className={clsx("text-gray-600 hover:text-primary-600 cursor-pointer", tempFilters.subCategory === subCategory && tempFilters.category === category.name && "text-primary-600")}
                       >
                         {subCategory}
                       </li>
@@ -129,7 +161,7 @@ const Filter = ({ showFilter, setShowFilter, setFilters }) => {
               <span
                 key={tag}
                 onClick={() => handleTagChange(tag)}
-                className="px-3 py-1 text-sm text-center border-2 border-gray-600 text-gray-600 rounded-full cursor-pointer hover:border-primary-600 hover:text-primary-600"
+                className={clsx("px-3 py-1 text-sm text-center border-2 border-gray-600 text-gray-600 rounded-full cursor-pointer hover:border-primary-600 hover:text-primary-600", tempFilters.tag === tag && "text-primary-600 border-primary-600")}
               >
                 {tag}
               </span>
@@ -137,16 +169,31 @@ const Filter = ({ showFilter, setShowFilter, setFilters }) => {
           </div>
         </div>
 
+        {/* Price Section */}
+        <div className="mb-6">
+          <h3 className="text-lg font-semibold mb-2 text-primary-600">Price</h3>
+          <ul className="space-y-2 pl-2">
+            {priceRanges.map((range) => (
+              <li
+                key={range}
+                onClick={() => handlePriceRangeChange(range)}
+                className={clsx("text-gray-600 hover:text-primary-600 hover:underline cursor-pointer", tempFilters.priceRange === range && "text-primary-600")}
+              >
+                {range}
+              </li>
+            ))}
+          </ul>
+        </div>
+
         {/* Sort By Section */}
         <div className="my-8">
           <h3 className="text-lg font-semibold mb-2 text-primary-600">Sort By</h3>
           <ul className="space-y-2 pl-2">
-            <li className="text-gray-600 hover:text-primary-600 hover:underline cursor-pointer">Default</li>
             {sortBy.map((sort) => (
               <li
                 key={sort}
                 onClick={() => handleSortChange(sort)}
-                className="text-gray-600 hover:text-primary-600 hover:underline cursor-pointer"
+                className={clsx("text-gray-600 hover:text-primary-600 hover:underline cursor-pointer", tempFilters.sortBy === sort && "text-primary-600")}
               >
                 {sort}
               </li>
@@ -154,21 +201,10 @@ const Filter = ({ showFilter, setShowFilter, setFilters }) => {
           </ul>
         </div>
 
-        {/* Price Section */}
-        <div className="mb-6">
-          <h3 className="text-lg font-semibold mb-2 text-primary-600">Price</h3>
-          <ul className="space-y-2 pl-2">
-            <li className="text-gray-600 hover:text-primary-600 hover:underline cursor-pointer">All</li>
-            {priceRanges.map((range) => (
-              <li
-                key={range}
-                onClick={() => handlePriceRangeChange(range)}
-                className="text-gray-600 hover:text-primary-600 hover:underline cursor-pointer"
-              >
-                {range}
-              </li>
-            ))}
-          </ul>
+        {/* btns */}
+        <div className="mb-4 flex justify-end gap-4">
+          <button className="btn btn-outline" onClick={resetFilters}>Reset</button>
+          <button className="btn btn-primary" onClick={()=>{setFilters(tempFilters)}}>Apply</button>
         </div>
       </section>
     </>
