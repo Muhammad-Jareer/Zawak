@@ -8,6 +8,7 @@ import third_hero from '../assets/hero3.jpg';
 import fourth_hero from '../assets/hero4.jpg';
 import fifth_hero from '../assets/hero5.jpg';
 import sixth_hero from '../assets/hero6.jpg';
+import FeaturedProducts from '../components/FeaturedProducts';
 
 function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -86,28 +87,8 @@ function Home() {
       </section>
 
       {/* Featured Products */}
-      <section className="container mx-auto px-4">
-        <h2 className="text-3xl mb-8 text-primary-600">Featured Products</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {products.slice(0, 4).map((product) => (
-            <Link key={product.id} to={`/product/${product.id}`} className="group">
-              <div className="bg-white rounded-lg shadow-md overflow-hidden transition-transform group-hover:scale-105">
-                <img src={product.image} alt={product.name} className="w-full h-64 object-cover" />
-                <div className="p-4">
-                  <h3 className="font-medium text-lg mb-2">{product.name}</h3>
-                  <p className="text-primary-600 font-semibold">${product.price}</p>
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-        <div className="text-center mt-8">
-          <Link to="/shop" className="btn btn-outline inline-flex items-center">
-            View All Products
-            <ChevronRight className="ml-2 w-4 h-4 text-primary-600" />
-          </Link>
-        </div>
-      </section>
+      <FeaturedProducts />
+      
 
       {/* About Section */}
       <section className="bg-accent-warm-beige py-16">
