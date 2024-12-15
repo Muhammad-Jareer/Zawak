@@ -1,30 +1,32 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Search } from 'lucide-react';
 
-function SearchBar({ onSearch }) {
-  const [query, setQuery] = useState('');
+function SearchBar({ query, onChange, inputRef }) {
+    const handleSearch = (event) => {
+        if (event.key === 'Enter') {
+            onChange(event.target.value); // Handle search on enter
+        }
+    };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSearch(query);
-  };
-
-  return (
-    <form onSubmit={handleSubmit} className="relative w-full max-w-xl mx-auto mb-8">
-      <input
-        type="text"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        placeholder="Search for products..."
-        className="mt-1 block w-full px-4 py-2 pl-10 border rounded-md focus:outline-none focus:ring-transparent focus:border-primary-500"
-        required
-        aria-label="Search"
-      />
-      <button type="submit" className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary-600">
-        <Search className="w-5 h-5" />
-      </button>
-    </form>
-  );
+    return (
+        <div className="relative flex items-center max-w-xl my-4 w-full shadow-lg rounded-full overflow-hidden">
+            <input
+                type="text"
+                value={query} // Make sure query is linked to state in parent
+                onChange={onChange} // Use the onChange from parent to update state
+                onKeyDown={handleSearch}
+                ref={inputRef} // For focusing the input element
+                placeholder="Search for products..." // Add a placeholder or use prop
+                className="w-full py-2 pl-5 pr-12 text-gray-700 placeholder:text-sm sm:placeholder:text-base md:placeholder:text-lg focus:outline-none focus:ring-2 focus:ring-primary-600"
+            />
+            <button
+                onClick={() => onChange(query)} // On button click, use query value
+                className="absolute right-3 p-2 text-primary-600 hover:text-primary-700 focus:outline-none"
+            >
+                <Search className="w-6 h-6" />
+            </button>
+        </div>
+    );
 }
 
 export default SearchBar;
