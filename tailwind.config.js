@@ -26,7 +26,7 @@ export default {
         serif: ['Playfair Display', 'serif'],
       },
       animation: {
-        marquee: 'scroll 10s linear infinite',
+        marquee: 'scroll 20s linear infinite',
       },
       keyframes: {
         scroll: {
