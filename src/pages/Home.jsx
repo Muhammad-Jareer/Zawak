@@ -7,6 +7,7 @@ import SearchBar from '../components/SearchBar';
 import { first_hero, second_hero, third_hero, fourth_hero, fifth_hero, sixth_hero } from '../assets/index.js';
 import Product from '../components/Product.jsx';
 import { useDispatch } from 'react-redux';
+import Catelog from '../components/Catelog.jsx';
 
 function Home() {
     const [currentSlide, setCurrentSlide] = useState(0);
@@ -171,7 +172,7 @@ function Home() {
                         </div>
                         <h1 className="text-3xl md:text-4xl font-bold mt-8 mb-4">Welcome to Our Shop</h1>
                         <p className="text-xl mb-6">Discover exclusive collections and find your perfect product!</p>
-                        <Link to="/shop" className="btn btn-primary px-8 py-3 rounded-lg text-lg">
+                        <Link to="/shop" className="btn btn-primary md:text-md px-6 py-3 text-sm">
                             Shop Now
                         </Link>
                     </div>
@@ -193,8 +194,13 @@ function Home() {
                     <ChevronRight className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
                 </button>
             </section>
+
+            <section className="bg-accent-warm-beige py-16">
+                <Catelog />
+            </section>
             {/* <FeaturedProducts /> */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            <h1 className='text-xl md:text-3xl font-bold mt-8 text-primary-600'>Featured Products</h1>
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-5 gap-4 lg:gap-8">
                 {featuredProducts.slice(0, 5).map((product) => (
                     <Product
                     key={product.id}
@@ -205,7 +211,11 @@ function Home() {
                     />
                 ))}
             </div>
-            <section className="bg-accent-warm-beige py-16"></section>
+            <div className="text-center mt-12">
+                <Link to="/shop" className="btn btn-primary md:text-md px-6 py-3 text-sm">
+                View All Products
+                </Link>
+            </div>
         </div>
     );
 }

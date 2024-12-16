@@ -164,6 +164,7 @@ function Shop() {
               handleAddToCart={handleAddToCart}
               handleAddToWishlist={handleAddToWishlist}
               setModalProduct={setModalProduct}
+              enableQuickView={true}
             />
           ))}
         </div>
