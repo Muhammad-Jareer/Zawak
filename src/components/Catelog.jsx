@@ -13,7 +13,7 @@ function Catelog() {
                 {categoryNames.map((category, idx) => (
                     <div 
                         key={idx} 
-                        className='bg-white shadow-lg rounded-lg p-4 flex flex-col'
+                        className='bg-white shadow-lg p-4 flex flex-col'
                     >
                         {/* Category Title */}
                         <h2 className='text-lg font-bold mb-4 text-primary-600'>{category}</h2>
@@ -32,7 +32,7 @@ function Catelog() {
                                             <img 
                                                 src={product.image} 
                                                 alt={product.name} 
-                                                className='w-full h-24 object-cover rounded-md mb-2 hover:cursor-pointer'
+                                                className='w-full h-24 object-cover mb-2 hover:cursor-pointer'
                                             />
                                         </Link>
                                         {/* Sub-category Text */}

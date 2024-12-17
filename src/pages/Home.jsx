@@ -200,7 +200,7 @@ function Home() {
             {/* <FeaturedProducts /> */}
             <h1 className='text-xl md:text-3xl font-bold mt-8 text-primary-600'>Featured Products</h1>
             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-5 gap-4 lg:gap-8">
-                {featuredProducts.slice(0, 5).map((product) => (
+                {featuredProducts.slice(0, 10).map((product) => (
                     <Product
                     key={product.id}
                     product={product}
