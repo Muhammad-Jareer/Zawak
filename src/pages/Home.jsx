@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
 import { products } from '../data/products';
-// import FeaturedProducts from '../components/FeaturedProducts';
 import SearchBar from '../components/SearchBar';
 import { first_hero, second_hero, third_hero, fourth_hero, fifth_hero, sixth_hero } from '../assets/index.js';
 import Product from '../components/Product.jsx';

@@ -251,7 +251,7 @@ export const products = [
     name: 'Peshawar Hand-stitched Leather Wallet',
     price: 49.99,
     category: 'Accessories',
-    sub_category: 'Computer',
+    sub_category: 'Personal',
     featured: false,
     tags: ['featured', 'best selling', 'top rated'],
     description: 'Handmade leather wallet with traditional stitching from Peshawar.',
