@@ -1,16 +1,16 @@
 import React from 'react';
 import { Search } from 'lucide-react';
 
-function SearchBar({ query, onChange, inputRef }) {
+function SearchBar({ query, onChange, inputRef, className }) {
     return (
-        <div className="relative flex items-center max-w-xl my-4 w-full shadow-lg rounded-full overflow-hidden">
+        <div className={className}>
             <input
                 type="text"
                 value={query}
                 onChange={onChange}
                 ref={inputRef}
                 placeholder="Search for products..."
-                className="w-full py-2 pl-5 pr-12 text-gray-700 placeholder:text-sm sm:placeholder:text-base md:placeholder:text-lg focus:outline-none focus:ring-2 focus:ring-primary-600"
+                className="w-full py-2 pl-5 pr-12 text-gray-700 placeholder:text-xs sm:placeholder:text-base md:placeholder:text-md focus:outline-none focus:ring-2 focus:ring-primary-600"
             />
             <button
                 onClick={() => onChange(query)}
