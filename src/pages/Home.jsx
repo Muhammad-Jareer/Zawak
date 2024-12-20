@@ -201,8 +201,8 @@ function Home() {
             </section>
             {/* <FeaturedProducts /> */}
             <h1 className='text-xl md:text-3xl font-bold mt-8 text-primary-600'>Featured Products</h1>
-            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-5 gap-4 lg:gap-8">
-                {featuredProducts.slice(0, 10).map((product) => (
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-5 gap-4 lg:gap-4 px-16 relative">
+                {featuredProducts.slice(0, 5).map((product) => (
                     <Product
                     key={product.id}
                     product={product}
@@ -211,6 +211,23 @@ function Home() {
                     enableQuickView={false}
                     />
                 ))}
+                
+                <button
+                    type="button"
+                    aria-label="Previous Slide"
+                    className="hidden md:flex absolute top-[50%] left-10 z-30 items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-gray-100 hover:bg-white/50 rounded-full group focus:outline-none"
+                    onClick={prevSlide}
+                >
+                    <ChevronRight className="w-6 h-6 sm:w-8 sm:h-8 text-gray-900 rotate-180" />
+                </button>
+                <button
+                    type="button"
+                    aria-label="Next Slide"
+                    className="hidden md:flex absolute top-[50%] right-10 z-30 items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-gray-100 hover:bg-white/50 rounded-full group focus:outline-none"
+                    onClick={nextSlide}
+                >
+                    <ChevronRight className="w-6 h-6 sm:w-8 sm:h-8 text-gray-900" />
+                </button>
             </div>
             <div className="text-center mt-12">
                 <Link to="/shop" className="btn btn-primary md:text-md px-6 py-3 text-sm">
