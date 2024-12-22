@@ -20,27 +20,18 @@ const FeaturedProducts = ({}) => {
         return 2; // For screens up to 425px
       };
     
-      const [slidesPerView, setSlidesPerView] = useState(getSlidesPerView);
+    const [slidesPerView, setSlidesPerView] = useState(getSlidesPerView);
 
     useEffect(() => {
-        const handleResize = ({target}) => {
-        const { innerWidth } = target
-        if (innerWidth <= 1024) {
-            if (innerWidth <= 640) {
-                setSlidesPerView(3)
-            } else {
-                setSlidesPerView(4)
-            }
-        }else {
-            setSlidesPerView(5)
-        }
-        }
-    
-        window.addEventListener('resize', handleResize)
+        const handleResize = () => {
+            setSlidesPerView(getSlidesPerView());
+        };
+
+        window.addEventListener('resize', handleResize);
         return () => {
-        window.removeEventListener('resize', handleResize)
-        }
-    }, [])
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
         
 
     const handleAddToCart = (product) => {
