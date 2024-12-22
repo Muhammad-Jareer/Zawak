@@ -19,10 +19,10 @@ function ImageComponent({src, alt}) {
     }, [src])
     
   return (
-      <div className='h-32 lg:h-64 w-full'>
+      <div className=' lg:h-64 w-full'>
             <LazyLoadImage
                 alt={alt}
-                height="16rem"
+                // height="16rem"
                 src={src}
                 width="100%"
                 placeholderSrc={placeHolderImage}

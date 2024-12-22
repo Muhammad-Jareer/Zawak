@@ -226,7 +226,7 @@ function Shop() {
   }
 
   return (
-    <div className="container mx-auto px-4 mt-16 relative">
+    <div className="container mx-auto px-4 mt-16 relative font-serif">
       <div className="flex justify-between items-center py-2">
           <h1 className="font-serif text-2xl md:text-3xl lg:text-4xl text-primary-600 mb-6">
           Shop Our Collection
@@ -273,7 +273,6 @@ function Shop() {
                   )}
         </div>
     )}
-          {/* </div> */}
 
 
           <div className="flex justify-between items-start gap-2 md:gap-4 pb-4">
@@ -301,7 +300,7 @@ function Shop() {
         hasMore={hasMore()}
         loader={<Loader />}
       >
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8 my-12 lg:my-8">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-8 my-4 lg:my-6">
           {productsState.map((product) => (
             <Product
               key={product.id}
@@ -309,7 +308,7 @@ function Shop() {
               handleAddToCart={handleAddToCart}
               handleAddToWishlist={handleAddToWishlist}
               setModalProduct={setModalProduct}
-              enableQuickView={true}
+              enableButtons={true}
             />
           ))}
         </div>

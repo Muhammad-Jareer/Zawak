@@ -4,7 +4,7 @@ import { CheckCircle } from 'lucide-react';
 const AddToCartWishlistPopup = ({ type, itemName = 'Item', onClose }) => {
   // Automatically close the popup after 3 seconds
   useEffect(() => {
-    const timer = setTimeout(onClose, 3000);
+    const timer = setTimeout(onClose, 1500);
     return () => clearTimeout(timer); // Cleanup the timer on unmount
   }, [onClose]);
 
