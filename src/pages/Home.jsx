@@ -1,12 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, lazy } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
 import { products } from '../data/products';
 import SearchBar from '../components/SearchBar';
 import { first_hero, second_hero, third_hero, fourth_hero, fifth_hero, sixth_hero } from '../assets/index.js';
-import Product from '../components/Product.jsx';
-import { useDispatch } from 'react-redux';
 import Catelog from '../components/Catelog.jsx';
+const FeaturedProducts = lazy(()=> import('../components/FeaturedProducts.jsx'))
 
 function Home() {
     const [currentSlide, setCurrentSlide] = useState(0);
@@ -15,11 +14,9 @@ function Home() {
     const [activeIndex, setActiveIndex] = useState(null);
     const navigate = useNavigate();
     const searchInputRef = useRef(null);
-    const dispatch = useDispatch();
 
     const heroImages = [first_hero, second_hero, third_hero, fourth_hero, fifth_hero, sixth_hero];
     const totalSlides = heroImages.length;
-    const featuredProducts = products.filter((prod) => prod.featured);
 
     const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % totalSlides);
     const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + totalSlides) % totalSlides);
@@ -98,20 +95,6 @@ function Home() {
                 part
             )
         );
-    };
-
-    const handleAddToCart = (product) => {
-        if (product && product.price) {
-          dispatch({ type: "cart/addToCart", payload: { ...product, quantity: 1 } });
-          setPopup({ show: true, type: "cart", itemName: product.name });
-        }
-      };
-    
-    const handleAddToWishlist = (product) => {
-        if (product && product.name) {
-            dispatch({ type: "wishlist/addToWishlist", payload: product });
-            setPopup({ show: true, type: "wishlist", itemName: product.name });
-        }
     };
 
     return (
@@ -200,40 +183,7 @@ function Home() {
                 <Catelog />
             </section>
             {/* <FeaturedProducts /> */}
-            <h1 className='text-xl md:text-3xl font-bold mt-8 text-primary-600'>Featured Products</h1>
-            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-5 gap-4 lg:gap-4 px-16 relative">
-                {featuredProducts.slice(0, 5).map((product) => (
-                    <Product
-                    key={product.id}
-                    product={product}
-                    handleAddToCart={handleAddToCart}
-                    handleAddToWishlist={handleAddToWishlist}
-                    enableQuickView={false}
-                    />
-                ))}
-                
-                <button
-                    type="button"
-                    aria-label="Previous Slide"
-                    className="hidden md:flex absolute top-[50%] left-10 z-30 items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-gray-100 hover:bg-white/50 rounded-full group focus:outline-none"
-                    onClick={prevSlide}
-                >
-                    <ChevronRight className="w-6 h-6 sm:w-8 sm:h-8 text-gray-900 rotate-180" />
-                </button>
-                <button
-                    type="button"
-                    aria-label="Next Slide"
-                    className="hidden md:flex absolute top-[50%] right-10 z-30 items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-gray-100 hover:bg-white/50 rounded-full group focus:outline-none"
-                    onClick={nextSlide}
-                >
-                    <ChevronRight className="w-6 h-6 sm:w-8 sm:h-8 text-gray-900" />
-                </button>
-            </div>
-            <div className="text-center mt-12">
-                <Link to="/shop" className="btn btn-primary md:text-md px-6 py-3 text-sm">
-                View All Products
-                </Link>
-            </div>
+            <FeaturedProducts />
         </div>
     );
 }

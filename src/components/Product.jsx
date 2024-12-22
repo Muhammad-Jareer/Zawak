@@ -28,24 +28,24 @@ const Product = ({
           )}
         </div>
       </Link>
-      <div className="p-4">
+      <div className="p-2 sm:p-3 md:p-4">
         <Link to={`/product/${product.id}`}>
-          <h2 className="font-medium text-lg mb-2">{product.name}</h2>
+          <h2 className="font-medium text-[10px] sm:text-sm lg:text-lg mb-2">{product.name}</h2>
         </Link>
         <div className="flex justify-between items-center">
-          <p className="text-primary-600 font-semibold">${product.price}</p>
-          <div className="flex space-x-2">
+          <p className="text-primary-600 font-semibold text-[10px] lg:text-lg">${product.price}</p>
+          <div className="flex space-x-1 sm:space-x-2">
             <button
               onClick={() => handleAddToCart(product)}
               className="text-primary-600 hover:text-primary-700"
             >
-              <ShoppingBag size={24} />
+              <ShoppingBag size={12} />
             </button>
             <button
               onClick={() => handleAddToWishlist(product)}
               className="text-primary-600 hover:text-primary-700"
             >
-              <Heart size={24} />
+              <Heart size={12} />
             </button>
           </div>
         </div>
