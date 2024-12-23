@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { MapPin, Phone, Mail } from 'lucide-react';
 import va from '../assets/va.png';
+import ImageComponent from '../components/ImageComponent';
 
 function Contact() {
   const [formData, setFormData] = useState({
@@ -42,11 +43,7 @@ function Contact() {
         
         {/* Image Section */}
         <div className="w-full md:w-1/2 h-full">
-          <img 
-            src={va} 
-            alt="Contact Image" 
-            className="w-full h-full object-cover rounded-lg" 
-          />
+          <ImageComponent src={va} alt={"Contact image"} height={false} className={"h-full"} />
         </div>
 
         {/* Form Section */}

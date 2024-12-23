@@ -19,10 +19,6 @@ function Catelog() {
     const [modalProduct, setModalProduct] = useState(null);
     const [popup, setPopup] = useState({ show: false, type: "", itemName: "" });
 
-    useEffect(() => {
-        window.scrollTo(0, 0);
-    }, [category]);
-    
     const handleAddToCart = (product) => {
         if (product && product.price) {
         dispatch({ type: "cart/addToCart", payload: { ...product, quantity: 1 } });
@@ -36,6 +32,10 @@ function Catelog() {
         setPopup({ show: true, type: "wishlist", itemName: product.name });
         }
     };
+
+    useEffect(() => {
+              window.scrollTo(0, 0);
+      }, [category]);
 
 
     if (category) {
@@ -108,12 +108,7 @@ function Catelog() {
                                 .map((product) => (
                                     <div key={product.id} className="text-center">
                                         <Link to={`/product/${product.id}`}>
-                                            {/* <img
-                                                src={product.image}
-                                                alt={product.name}
-                                                className="w-full h-24 object-cover mb-2"
-                                            /> */}
-                                            <ImageComponent src={product.image} alt={product.alt} height={false} />
+                                            <ImageComponent src={product.image} alt={product.alt} height={false} className={"h-32"} />
                                         </Link>
                                         <p className="text-xs text-gray-600">{product.sub_category || 'N/A'}</p>
                                     </div>

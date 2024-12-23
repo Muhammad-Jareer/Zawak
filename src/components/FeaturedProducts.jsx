@@ -53,7 +53,7 @@ const FeaturedProducts = ({}) => {
   return (
     <div className="relative">
     <h1 className='text-xl md:text-3xl font-bold mt-8 text-primary-600'>Featured Products</h1>
-        <section className="px-6 lg:px-16">
+        <section className="px-3 lg:px-4">
         <Swiper
         spaceBetween={10}
         slidesPerView={slidesPerView}
@@ -64,11 +64,11 @@ const FeaturedProducts = ({}) => {
             {featuredProducts.map((product) => (
                 <SwiperSlide key={product.id} className="my-3">
                     <Product
-                    key={product.id}
-                    product={product}
-                    handleAddToCart={handleAddToCart}
-                    handleAddToWishlist={handleAddToWishlist}
-                    enableButtons={false}
+                        key={product.id}
+                        product={product}
+                        handleAddToCart={handleAddToCart}
+                        handleAddToWishlist={handleAddToWishlist}
+                        enableButtons={false}
                     />
                 </SwiperSlide>
             ))}
@@ -76,7 +76,7 @@ const FeaturedProducts = ({}) => {
             <button
                 type="button"
                 aria-label="Previous Slide"
-                className="flex absolute top-[35%] -left-0 lg:left-10 z-30 items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-gray-100 hover:bg-white/50 rounded-full group focus:outline-none"
+                className="flex absolute top-[35%] -left-3 lg:-left-2 z-30 items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-gray-100 hover:bg-white/50 rounded-full group focus:outline-none"
                 onClick={()=> swiper.slidePrev()}
             >
                 <ChevronRight className="w-6 h-6 sm:w-8 sm:h-8 text-gray-900 rotate-180" />
@@ -84,7 +84,7 @@ const FeaturedProducts = ({}) => {
             <button
                 type="button"
                 aria-label="Next Slide"
-                className="flex absolute top-[35%] -right-0 lg:right-10 z-30 items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-gray-100 hover:bg-white/50 rounded-full group focus:outline-none"
+                className="flex absolute top-[35%] -right-3 lg:-right-2 z-30 items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-gray-100 hover:bg-white/50 rounded-full group focus:outline-none"
                 onClick={()=> swiper.slideNext()}
             >
                 <ChevronRight className="w-6 h-6 sm:w-8 sm:h-8 text-gray-900" />

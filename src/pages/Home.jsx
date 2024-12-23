@@ -110,7 +110,7 @@ function Home() {
                                 currentSlide === index ? 'opacity-100' : 'opacity-0'
                             }`}
                         >
-                            <ImageComponent src={image} alt={`Hero ${index + 1}`} height={true} />
+                            <ImageComponent src={image} alt={`Hero ${index + 1}`} height={true} className={""} />
                             <div className="absolute inset-0 bg-black bg-opacity-50"></div>
                         </div>
                     ))}
