@@ -52,7 +52,7 @@ function Catelog() {
         return (
             <div className="my-16 font-serif">
                 <button
-                    onClick={() => navigate('/categories')}
+                    onClick={() => navigate(-1)}
                     className="text-gray-600 hover:text-primary-600 inline-flex items-center"
                 >
                     <ArrowLeft className="w-4 h-4 mr-2" />
