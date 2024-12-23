@@ -22,13 +22,12 @@ function ImageComponent({src, alt}) {
       <div className=' lg:h-64 w-full'>
             <LazyLoadImage
                 alt={alt}
-                // height="16rem"
                 src={src}
                 width="100%"
                 placeholderSrc={placeHolderImage}
                 className={clsx('w-full h-32 lg:h-64 object-cover transition-opacity duration-500 ease-in-out opacity-0', imageLoaded && 'opacity-100')}
                 effect='blur'
-                 />
+                />
       </div>
   )
 }

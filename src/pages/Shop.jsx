@@ -8,11 +8,10 @@ import ProductModal from "../components/ProductModal";
 import AddToCartWishlistPopup from "../components/AddToCartWishlistPopup";
 import Product from "../components/Product";
 import Filter from "../components/Filter";
-import SearchBar from '../components/SearchBar'
-import { useNavigate } from 'react-router-dom';
+import SearchBar from "../components/SearchBar";
+import { useNavigate } from "react-router-dom";
 import { Loader } from "../components/Loader";
-import '../index.css';
-
+import "../index.css";
 
 function Shop() {
   const dispatch = useDispatch();
@@ -30,11 +29,10 @@ function Shop() {
     tag: "",
     priceRange: "",
     sortBy: "",
-  })
+  });
 
-  // For search funtionality 
   const [searchResults, setSearchResults] = useState([]);
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
   const [activeIndex, setActiveIndex] = useState(null);
   const searchInputRef = useRef(null);
   const navigate = useNavigate();
@@ -44,92 +42,83 @@ function Shop() {
   }, [location]);
 
   useEffect(() => {
-    const {category, tag, priceRange, sortBy, subCategory} = filters
-    if (!category && !tag && !priceRange && !sortBy) return
-    const filteredProducts = filterProducts()
+    const { category, tag, priceRange, sortBy } = filters;
+    if (!category && !tag && !priceRange && !sortBy) return;
+    const filteredProducts = filterProducts();
     setProductsState(filteredProducts.slice(0, visibleCount));
-    setShowFilter(false)
-  }, [filters])
+    setShowFilter(false);
+  }, [filters]);
 
-
-  // Effect for Filtering Products
   useEffect(() => {
-    if (query.trim() === '') {
-        setSearchResults([]);
+    if (query.trim() === "") {
+      setSearchResults([]);
     } else {
-        const filteredProducts = products.filter(
-            (product) =>
-                product.name.toLowerCase().includes(query.toLowerCase()) ||
-                product.category.toLowerCase().includes(query.toLowerCase())
-        );
-        setSearchResults(filteredProducts);
+      const filteredProducts = products.filter(
+        (product) =>
+          product.name.toLowerCase().includes(query.toLowerCase()) ||
+          product.category.toLowerCase().includes(query.toLowerCase())
+      );
+      setSearchResults(filteredProducts);
     }
   }, [query]);
 
-
-  // Effect for keyboard navigation 
   useEffect(() => {
     const handleKeyDown = (e) => {
-        if (e.key === 'ArrowDown') {
-            setActiveIndex((prev) => {
-                const newIndex = prev === null || prev === searchResults.length - 1 ? 0 : prev + 1;
-                scrollToActiveItem(newIndex);
-                return newIndex;
-            });
-        } else if (e.key === 'ArrowUp') {
-            setActiveIndex((prev) => {
-                const newIndex = prev === null || prev === 0 ? null : prev - 1;
-                if (newIndex !== null) scrollToActiveItem(newIndex);
-                return newIndex;
-            });
-        } else if (e.key === 'Enter' && activeIndex !== null) {
-            const selectedProduct = searchResults[activeIndex];
-            if (selectedProduct) handleProductClick(selectedProduct.id);
-        }
+      if (e.key === "ArrowDown") {
+        setActiveIndex((prev) => {
+          const newIndex = prev === null || prev === searchResults.length - 1 ? 0 : prev + 1;
+          scrollToActiveItem(newIndex);
+          return newIndex;
+        });
+      } else if (e.key === "ArrowUp") {
+        setActiveIndex((prev) => {
+          const newIndex = prev === null || prev === 0 ? null : prev - 1;
+          if (newIndex !== null) scrollToActiveItem(newIndex);
+          return newIndex;
+        });
+      } else if (e.key === "Enter" && activeIndex !== null) {
+        const selectedProduct = searchResults[activeIndex];
+        if (selectedProduct) handleProductClick(selectedProduct.id);
+      }
     };
 
     const scrollToActiveItem = (index) => {
-        const activeItem = document.querySelector(`[data-index="${index}"]`);
-        if (activeItem) {
-            activeItem.scrollIntoView({
-                behavior: 'smooth',
-                block: 'nearest',
-            });
-        }
+      const activeItem = document.querySelector(`[data-index="${index}"]`);
+      if (activeItem) {
+        activeItem.scrollIntoView({
+          behavior: "smooth",
+          block: "nearest",
+        });
+      }
     };
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, [searchResults, activeIndex]);
 
-  // Handlers for search 
   const handleProductClick = (productId) => {
-      navigate(`/product/${productId}`);
-      setQuery('');
-      setActiveIndex(null);
+    navigate(`/product/${productId}`);
+    setQuery("");
+    setActiveIndex(null);
   };
 
   const handleInputChange = (e) => {
-      setQuery(e.target.value);
+    setQuery(e.target.value);
   };
 
   const highlightText = (text) => {
-      if (!query) return text;
-      const regex = new RegExp(`(${query})`, 'gi');
-      return text.split(regex).map((part, index) =>
-          part.toLowerCase() === query.toLowerCase() ? (
-              <span key={index} className="text-primary-600">
-                  {part}
-              </span>
-          ) : (
-              part
-          )
-      );
+    if (!query) return text;
+    const regex = new RegExp(`(${query})`, "gi");
+    return text.split(regex).map((part, index) =>
+      part.toLowerCase() === query.toLowerCase() ? (
+        <span key={index} className="text-primary-600">
+          {part}
+        </span>
+      ) : (
+        part
+      )
+    );
   };
-
-
-
-  
 
   const handleAddToCart = (product) => {
     if (product && product.price) {
@@ -146,35 +135,34 @@ function Shop() {
   };
 
   const fetchMoreData = () => {
-    const {category, tag, priceRange, sortBy} = filters
-    if(!category && !tag && !priceRange && !sortBy){
+    const { category, tag, priceRange, sortBy } = filters;
+    if (!category && !tag && !priceRange && !sortBy) {
       setTimeout(() => {
         setProductsState(productsState.concat(products.slice(visibleCount, visibleCount + 10)));
         setVisibleCount((prev) => prev + 10);
       }, 1000);
-      return
-   }
+      return;
+    }
 
-   setTimeout(() => {
-     const filteredProducts = filterProducts()
-     setProductsState(pre => pre.concat(filteredProducts.slice(visibleCount, visibleCount + 10)));
-     setVisibleCount((prev) => prev + 10);
-   }, 1000);
-   return
+    setTimeout(() => {
+      const filteredProducts = filterProducts();
+      setProductsState((pre) => pre.concat(filteredProducts.slice(visibleCount, visibleCount + 10)));
+      setVisibleCount((prev) => prev + 10);
+    }, 1000);
+    return;
   };
 
   const hasMore = () => {
-    const {category, tag, priceRange, sortBy, subCategory} = filters
-    if(!category && !tag && !priceRange && !sortBy) return visibleCount < products.length
+    const { category, tag, priceRange, sortBy } = filters;
+    if (!category && !tag && !priceRange && !sortBy) return visibleCount < products.length;
 
-    const filteredProducts = filterProducts()
-    return visibleCount < filteredProducts.length
-  }
+    const filteredProducts = filterProducts();
+    return visibleCount < filteredProducts.length;
+  };
 
   const filterProducts = () => {
     let filteredProducts = [...products];
 
-    // Filter by Category and Subcategory
     if (filters.category) {
       filteredProducts = filteredProducts.filter(
         (product) => product.category === filters.category
@@ -185,15 +173,11 @@ function Shop() {
         (product) => product.sub_category === filters.subCategory
       );
     }
-
-    // Filter by Tag
     if (filters.tag) {
       filteredProducts = filteredProducts.filter((product) =>
         product.tags.includes(filters.tag)
       );
     }
-
-    // Filter by Price Range
     if (filters.priceRange) {
       const priceRanges = {
         "$0 - $50": [0, 50],
@@ -207,7 +191,6 @@ function Shop() {
       );
     }
 
-    // Sort Products
     if (filters.sortBy === "Price: Low to High") {
       filteredProducts = filteredProducts.sort((a, b) => a.price - b.price);
     } else if (filters.sortBy === "Price: High to Low") {
@@ -222,8 +205,8 @@ function Shop() {
       );
     }
 
-    return filteredProducts
-  }
+    return filteredProducts;
+  };
 
   return (
     <div className="container mx-auto px-4 mt-16 relative font-serif">
@@ -300,7 +283,7 @@ function Shop() {
         hasMore={hasMore()}
         loader={<Loader />}
       >
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-8 my-4 lg:my-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-8 my-4 lg:my-6 font-sans">
           {productsState.map((product) => (
             <Product
               key={product.id}
@@ -333,3 +316,46 @@ function Shop() {
 }
 
 export default Shop;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

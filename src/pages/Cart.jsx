@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Minus, Plus, Trash2 } from 'lucide-react';
@@ -9,6 +9,10 @@ function Cart() {
   const cartItems = useSelector((state) => state.cart.items);
 
   const total = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+  useEffect(() => {
+          window.scrollTo(0, 0);
+  }, [cartItems]);
 
   const handleUpdateQuantity = (id, quantity) => {
     if (quantity < 1) return;
