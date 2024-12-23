@@ -59,7 +59,7 @@ function Catelog() {
                     Back
                 </button>
                 <h1 className="text-xl md:text-3xl font-bold mt-4 text-primary-600">{category}</h1>
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-8 my-4 lg:my-6  font-sans">
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-8 my-4 lg:my-6 font-sans">
                     {filteredProducts.map((product) => (
                         <div key={product.id}>
                             <Product

@@ -24,7 +24,7 @@ const Product = ({
   return (
     <div className="bg-white shadow-md overflow-hidden">
       <Link to={`/product/${product.id}`} className="relative">
-        <ImageComponent src={product.image} alt={product.name} />
+        <ImageComponent src={product.image} alt={product.name} height={false} />
       </Link>
       <div className="p-2 sm:p-3 md:p-4">
         <Link to={`/product/${product.id}`}>
@@ -33,7 +33,7 @@ const Product = ({
           </h2>
         </Link>
         <div className="flex justify-between items-center">
-          <p className="text-primary-600 font-semibold text-[12px] sm:text-base lg:text-lg">
+          <p className="text-primary-600 font-medium text-[10px] sm:text-base lg:text-lg">
             ${product.price}
           </p>
           {enableButtons && (
@@ -42,13 +42,13 @@ const Product = ({
                 onClick={() => handleAddToCart(product)}
                 className="text-primary-600 hover:text-primary-700"
               >
-                {isSmallDevice ? <ShoppingBag size={16} /> : <ShoppingBag size={20} />}
+                {isSmallDevice ? <ShoppingBag size={12} /> : <ShoppingBag size={20} />}
               </button>
               <button
                 onClick={() => handleAddToWishlist(product)}
                 className="text-primary-600 hover:text-primary-700"
               >
-                {isSmallDevice ? <Heart size={16} /> : <Heart size={20} />}
+                {isSmallDevice ? <Heart size={12} /> : <Heart size={20} />}
               </button>
               <button
                 onClick={(e) => {
@@ -57,7 +57,7 @@ const Product = ({
                 }}
                 className="text-primary-600 hover:text-primary-700"
               >
-                {isSmallDevice ? <Eye size={16} /> : <Eye size={20} />}
+                {isSmallDevice ? <Eye size={12} /> : <Eye size={20} />}
               </button>
             </div>
           )}
