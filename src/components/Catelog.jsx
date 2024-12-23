@@ -23,9 +23,9 @@ function Catelog() {
                             {products
                                 .filter(prod => prod.category === category)
                                 .slice(0, 6) // Limit to 6 products
-                                .map((product, prodIdx) => (
+                                .map((product) => (
                                     <div 
-                                        key={prodIdx} 
+                                        key={product.id} 
                                         className='hover:scale-105 transition-transform duration-300 text-center'
                                     >
                                         <Link to={`/product/${product.id}`}>

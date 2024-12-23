@@ -22,7 +22,7 @@ const Product = ({
   }, []);
 
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden">
+    <div className="bg-white shadow-md overflow-hidden">
       <Link to={`/product/${product.id}`} className="relative">
         <ImageComponent src={product.image} alt={product.name} />
       </Link>
