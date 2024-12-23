@@ -11,7 +11,7 @@ function About() {useEffect(() => {
         <img
           src="https://i.pinimg.com/1200x/43/fa/bf/43fabf15fb8bb7294307bf43b5c20454.jpg"
           alt="Empowered Women Artisans"
-          className="w-full h-[450px] object-cover rounded-lg"
+          className="w-full h-fit lg:h-[450px] object-center object-fill rounded-lg"
         />
         <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
           <h1 className="text-white font-serif text-4xl md:text-5xl font-bold text-center">
