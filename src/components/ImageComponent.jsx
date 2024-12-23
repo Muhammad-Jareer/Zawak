@@ -28,7 +28,7 @@ function ImageComponent({ src, alt, height }) {
                 className={clsx(
                     'w-full object-cover transition-opacity duration-500 ease-in-out opacity-0',
                     imageLoaded && 'opacity-100',
-                    height ? 'h-full' : 'h-32 lg:h-64'
+                    height ? 'h-full' : 'h-32 lg:h-48 w-full'
                 )}
                 effect="blur"
             />
