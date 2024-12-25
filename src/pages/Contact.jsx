@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { MapPin, Phone, Mail } from 'lucide-react';
 import va from '../assets/va.png';
 import ImageComponent from '../components/ImageComponent';
 
@@ -17,7 +16,6 @@ function Contact() {
     e.preventDefault();
     setLoading(true);
     setTimeout(() => {
-      console.log('Form submitted:', formData);
       setLoading(false);
     }, 2000);
   };
@@ -43,7 +41,7 @@ function Contact() {
         
         {/* Image Section */}
         <div className="w-full md:w-1/2 h-full">
-          <ImageComponent src={va} alt={"Contact image"} height={false} className={"h-full"} />
+          <ImageComponent src={va} alt={"Contact image"} className={"h-full"} />
         </div>
 
         {/* Form Section */}

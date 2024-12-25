@@ -6,6 +6,7 @@ import SearchBar from '../components/SearchBar';
 import { first_hero, second_hero, third_hero, fourth_hero, fifth_hero, sixth_hero } from '../assets/index.js';
 import Catelog from '../components/Catelog.jsx';
 import ImageComponent from '../components/ImageComponent.jsx';
+import { Suspense } from 'react';
 const FeaturedProducts = lazy(()=> import('../components/FeaturedProducts.jsx'))
 
 function Home() {
@@ -110,7 +111,7 @@ function Home() {
                                 currentSlide === index ? 'opacity-100' : 'opacity-0'
                             }`}
                         >
-                            <ImageComponent src={image} alt={`Hero ${index + 1}`} height={true} className={""} />
+                            <ImageComponent src={image} alt={`Hero ${index + 1}`} className={"h-screen w-full object-cover"} />
                             <div className="absolute inset-0 bg-black bg-opacity-50"></div>
                         </div>
                     ))}
@@ -180,11 +181,13 @@ function Home() {
                 </button>
             </section>
 
-            <section className="bg-accent-warm-beige py-16">
+            <section className="bg-accent-warm-beige">
                 <Catelog />
             </section>
             {/* <FeaturedProducts /> */}
-            <FeaturedProducts />
+            <Suspense fallback={<div>Loading Featured Products...</div>}>
+                <FeaturedProducts />
+            </Suspense>
         </div>
     );
 }

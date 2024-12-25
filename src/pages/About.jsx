@@ -1,5 +1,6 @@
 import React, {useEffect} from 'react';
 import { Link } from 'react-router-dom';
+import ImageComponent from '../components/ImageComponent';
 
 function About() {useEffect(() => {
   window.scrollTo(0, 0);
@@ -8,20 +9,16 @@ function About() {useEffect(() => {
     <div className="container mx-auto px-4 mt-16">
       {/* Hero Section */}
       <div className="relative mb-12">
-        <img
-          src="https://i.pinimg.com/1200x/43/fa/bf/43fabf15fb8bb7294307bf43b5c20454.jpg"
-          alt="Empowered Women Artisans"
-          className="w-full h-fit lg:h-[450px] object-center object-fill rounded-lg"
-        />
-        <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <h1 className="text-white font-serif text-4xl md:text-5xl font-bold text-center">
+        <ImageComponent src="https://i.pinimg.com/1200x/43/fa/bf/43fabf15fb8bb7294307bf43b5c20454.jpg" alt="Empowered Women Artisans" className="h-96 border-b-2 border-primary-600 lg:h-[600px]" />
+        <div className="absolute mb-2 inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <h1 className="text-white font-serif text-4xl md:text-5xl font-bold lg:leading-relaxed text-center mx-0 lg:mx-80">
             Empowering Pashtun Women through Craftsmanship
           </h1>
         </div>
       </div>
 
       {/* Story Section */}
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-5xl mx-auto">
         <h2 className="font-serif text-3xl text-center mb-8 text-primary-600">Our Story</h2>
         <p className="text-gray-700 text-lg leading-relaxed mb-8">
           In the heart of the Pashtun regions of Pakistan and Afghanistan, where tradition
@@ -39,7 +36,7 @@ function About() {useEffect(() => {
         {/* Mission Section */}
         <div className="py-12">
           <h2 className="font-serif text-3xl text-center mb-8 text-primary-600">Our Mission</h2>
-          <div className="text-gray-700 text-lg leading-relaxed mb-8 mx-auto max-w-2xl text-center">
+          <div className="text-gray-700 text-lg leading-relaxed mb-8 mx-auto max-w-2xl text-left">
             <p className="mb-4">
               We are dedicated to empowering Pashtun women by preserving their rich traditions
               and connecting their handmade crafts with global audiences.

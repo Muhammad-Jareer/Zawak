@@ -13,7 +13,7 @@ import Contact from './pages/Contact';
 import NotFound from './pages/NotFound';
 import Login from './pages/Auth/Login';
 import Signup from './pages/Auth/Signup';
-import Catelog from './components/Catelog';  // Assuming this is the correct component for categories
+import Catelog from './components/Catelog';
 
 function App() {
   return (

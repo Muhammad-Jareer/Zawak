@@ -24,7 +24,7 @@ const Product = ({
   return (
     <div className="bg-white shadow-md overflow-hidden">
       <Link to={`/product/${product.id}`} className="relative">
-        <ImageComponent src={product.image} alt={product.name} height={false} className={'h-36'} />
+        <ImageComponent src={product.image} alt={product.name} className={'h-36 lg:h-48'} />
       </Link>
       <div className="p-2 sm:p-3 md:p-4">
         <Link to={`/product/${product.id}`}>
