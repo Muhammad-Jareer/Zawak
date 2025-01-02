@@ -1,91 +1,135 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../store/slices/authSlice';
-import { Search } from 'lucide-react';
-import { Navigate } from 'react-router-dom'
+import { Navigate } from 'react-router-dom';
+import UserDetails from '../components/UserDetails';
+import Cart from './Cart';
+import Wishlist from './Wishlist';
+import AccountDetails from '../components/AccountDetails';
+import AccountSettings from '../components/AccountSettings';
 
 function Profile() {
   const dispatch = useDispatch();
-  const { user, isAuthenticated } = useSelector((state) => state.auth);
+  const { user, isAuthenticated, loading, error } = useSelector((state) => state.auth);
   const [searchTerm, setSearchTerm] = useState('');
+  const [activeTab, setActiveTab] = useState('profile');
+  const [editMode, setEditMode] = useState(false);
+  const [formData, setFormData] = useState({
+    name: user?.name || '',
+    email: user?.email || '',
+    phone: user?.phone || '',
+  });
+
+  useEffect(() => {
+    if (user) {
+      setFormData({
+        name: user.name,
+        email: user.email,
+        phone: user.phone || '',
+      });
+    }
+  }, [user]);
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
   };
 
-  if(!isAuthenticated){
-    return <Navigate to="/login" />
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleSaveProfile = () => {
+    console.log('Profile saved:', formData);
+    setEditMode(false);
+  };
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" />;
   }
 
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center">
+        <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent border-solid rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return <div className="text-red-600">{error}</div>;
+  }
 
   return (
     <div className="container mx-auto px-4 mt-16">
-      <div className="max-w-2xl mx-auto">
-        <h1 className="font-serif text-3xl mb-8">My Profile</h1>
-
-        {/* Search Bar */}
-        <div className="mb-8">
-          <label htmlFor="search" className="block text-sm font-medium text-gray-800">
-            Search Profile
-          </label>
-          <div className="relative mt-2">
-            <input
-              type="text"
-              id="search"
-              name="search"
-              value={searchTerm}
-              onChange={handleSearchChange}
-              placeholder="Type to search..."
-              className="block w-full px-4 py-2 rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 placeholder-gray-400 transition-all duration-300 ease-in-out"
-            />
-            <Search className="absolute right-3 top-3 text-gray-500" />
+      <div className="max-w-4xl mx-auto">
+        {/* Profile Header */}
+        <div className="flex flex-col sm:flex-row items-center mb-8">
+          <img
+            src={user.profilePicture || 'default-avatar.png'}
+            alt="Profile"
+            className="w-24 h-24 sm:w-20 sm:h-20 rounded-full border border-gray-300"
+          />
+          <div className="mt-4 sm:mt-0 sm:ml-4 text-center sm:text-left">
+            <h1 className="font-serif text-2xl sm:text-3xl">{user.name}</h1>
+            <p className="text-gray-600">{user.email}</p>
           </div>
-        </div>
-
-        {/* Profile Information */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <form className="space-y-6 max-w-lg mx-auto">
-            <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-800">
-                Name
-              </label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                value={user.name}
-                readOnly
-                className="mt-1 block w-full px-4 py-2 rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 placeholder-gray-400 transition duration-300 ease-in-out"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-800">
-                Email
-              </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={user.email}
-                readOnly
-                className="mt-1 block w-full px-4 py-2 rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 placeholder-gray-400 transition duration-300 ease-in-out"
-              />
-            </div>
-          </form>
-        </div>
-
-        {/* Profile Actions */}
-        <div className="space-y-4">
-          <button className="w-full py-2 px-4 rounded-md bg-primary-600 text-white font-semibold hover:bg-primary-700 transition duration-200">
-            Edit Profile
-          </button>
           <button
             onClick={() => dispatch(logout())}
-            className="w-full py-2 px-4 rounded-md bg-red-600 text-white font-semibold hover:bg-red-700 transition duration-200"
+            className="mt-4 sm:mt-0 sm:ml-auto px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition duration-200"
           >
             Sign Out
           </button>
+        </div>
+
+        {/* Tab Navigation */}
+        <div className="flex justify-between sm:justify-start sm:gap-4 border-b mb-8">
+          {['profile', 'orders', 'wishlist', 'cart', 'settings'].map((tab) => (
+            <button
+              key={tab}
+              onClick={() => handleTabChange(tab)}
+              className={`py-2 font-medium ${
+                activeTab === tab
+                  ? 'border-b-2 border-primary-600 text-primary-600'
+                  : 'text-gray-600 hover:text-primary-600'
+              }`}
+            >
+              {tab.charAt(0).toUpperCase() + tab.slice(1)}
+            </button>
+          ))}
+        </div>
+
+        {/* Tab Content */}
+        <div className="space-y-8">
+        {activeTab === 'profile' && (
+          <UserDetails
+            formData={formData}
+            handleInputChange={handleInputChange}
+            editMode={editMode}
+            handleSaveProfile={handleSaveProfile}
+            setEditMode={setEditMode}
+          />
+        )}
+
+          {activeTab === 'cart' && (
+            <Cart />
+          )}
+
+          {activeTab === 'wishlist' && (
+            <Wishlist />
+          )}
+
+          {activeTab === 'settings' && (
+            <AccountSettings user={user} />
+          )}
+
         </div>
       </div>
     </div>

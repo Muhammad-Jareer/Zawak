@@ -32,7 +32,7 @@ function Contact() {
       <h1 className="font-serif text-3xl md:text-4xl mb-8 text-center text-primary-600">
         Contact
       </h1>
-      <p className="text-center text-gray-600 mb-12">
+      <p className="text-center text-gray-600 mb-0">
         Feel free to contact us, as we respond to queries swiftly...
       </p>
 

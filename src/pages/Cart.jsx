@@ -36,7 +36,7 @@ function Cart() {
   }
 
   return (
-    <div className="container mx-auto px-4 mt-16">
+    <div className="container mx-auto px-0 md:px-4 mt-16">
       <h1 className="font-serif text-3xl mb-8 text-primary-600">Shopping Cart</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -46,10 +46,10 @@ function Cart() {
               <img
                 src={item.image}
                 alt={item.name}
-                className="w-24 h-24 object-cover rounded-md"
+                className="w-16 sm:w-24 h-16 sm:h-24 object-cover rounded-md"
               />
               <div className="ml-4 flex-1">
-                <h3 className="font-medium">{item.name}</h3>
+                <h3 className="font-medium text-sm sm:text-base">{item.name}</h3>
                 <p className="text-primary-600">${item.price}</p>
               </div>
               <div className="flex items-center space-x-2">

@@ -14,7 +14,8 @@ function Wishlist() {
   };
 
   const handleMoveToCart = (item) => {
-    dispatch(addToCart(item));
+    const itemToAdd = { ...item, price: Number(item.price) };  // Ensure price is a number
+    dispatch(addToCart(itemToAdd));
     dispatch(removeFromWishlist(item.id));
   };
 

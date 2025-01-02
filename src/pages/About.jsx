@@ -19,7 +19,7 @@ function About() {
         </section>
 
         {/* Our Mission Section */}
-        <section className="py-16 bg-gradient-to-b bg-accent-warm-beige white">
+        <section className="py-">
           <h2 className="text-3xl font-semibold text-primary-600 text-center mb-8">Our Mission</h2>
           <p className="text-lg text-gray-700 text-center mx-auto leading-relaxed  max-w-3xl">
             Our mission is to create an exceptional shopping experience while empowering our customers through products that bring value, style, and functionality. We are committed to continuous innovation, high standards, and building long-term relationships with our community.
