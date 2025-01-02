@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import va from '../assets/va.png';
 import ImageComponent from '../components/ImageComponent';
 
 function Contact() {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location]);
   const [formData, setFormData] = useState({
     name: '',
     email: '',

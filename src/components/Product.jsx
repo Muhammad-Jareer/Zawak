@@ -1,4 +1,4 @@
-import { Heart, ShoppingBag, Eye, Smartphone } from "lucide-react"; // Adding a different icon for mobile devices
+import { Heart, ShoppingBag, Eye } from "lucide-react"; 
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import ImageComponent from "./ImageComponent";
