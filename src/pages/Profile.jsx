@@ -5,8 +5,8 @@ import { Navigate } from 'react-router-dom';
 import UserDetails from '../components/UserDetails';
 import Cart from './Cart';
 import Wishlist from './Wishlist';
-import AccountDetails from '../components/AccountDetails';
 import AccountSettings from '../components/AccountSettings';
+import Orders from '../components/Orders';
 
 function Profile() {
   const dispatch = useDispatch();
@@ -90,7 +90,7 @@ function Profile() {
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex justify-between sm:justify-start sm:gap-4 border-b mb-8">
+        <div className="flex justify-between text-sm sm:text-base sm:justify-start sm:gap-4 border-b mb-8">
           {['profile', 'orders', 'wishlist', 'cart', 'settings'].map((tab) => (
             <button
               key={tab}
@@ -108,28 +108,25 @@ function Profile() {
 
         {/* Tab Content */}
         <div className="space-y-8">
-        {activeTab === 'profile' && (
-          <UserDetails
-            formData={formData}
-            handleInputChange={handleInputChange}
-            editMode={editMode}
-            handleSaveProfile={handleSaveProfile}
-            setEditMode={setEditMode}
-          />
-        )}
-
-          {activeTab === 'cart' && (
-            <Cart />
+          {activeTab === 'profile' && (
+            <UserDetails
+              formData={formData}
+              handleInputChange={handleInputChange}
+              editMode={editMode}
+              handleSaveProfile={handleSaveProfile}
+              setEditMode={setEditMode}
+            />
           )}
 
-          {activeTab === 'wishlist' && (
-            <Wishlist />
+          {activeTab === 'orders' && (
+            <Orders orders={user.orders} />
           )}
 
-          {activeTab === 'settings' && (
-            <AccountSettings user={user} />
-          )}
+          {activeTab === 'cart' && <Cart />}
 
+          {activeTab === 'wishlist' && <Wishlist />}
+
+          {activeTab === 'settings' && <AccountSettings user={user} />}
         </div>
       </div>
     </div>
