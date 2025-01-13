@@ -14,6 +14,7 @@ import NotFound from './pages/NotFound';
 import Login from './pages/Auth/Login';
 import Signup from './pages/Auth/Signup';
 import Catelog from './components/Catelog';
+import PlaceOrder from './pages/PlaceOrder';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
           <Route path="/shop/category/:category" element={<Catelog />} /> {/* This route should show products for a specific category */}
           <Route path="/product/:id" element={<ProductDetails />} />
           <Route path="/cart" element={<Cart />} />
+          <Route path="/place-order/:id" element={<PlaceOrder />} />
           <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/about" element={<About />} />

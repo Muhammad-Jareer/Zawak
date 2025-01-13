@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, redirect, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { Heart, Minus, Plus, ShoppingBag, ArrowLeft } from 'lucide-react';
+import { Heart, Minus, Plus, ShoppingBag, ArrowLeft, ShoppingCart } from 'lucide-react';
 import AddToCartWishlistPopup from "../components/AddToCartWishlistPopup";
 import { addToCart } from '../store/slices/cartSlice';
 import { addToWishlist } from '../store/slices/wishlistSlice';
@@ -130,6 +130,10 @@ function ProductDetails() {
                   <ShoppingBag className="w-4 h-4 mr-2" />
                   Add to Cart
                 </button>
+                <Link className="flex-1 btn btn-primary" to={`/place-order/${product.id}`}>
+                  <ShoppingCart className="w-4 h-4 mr-2" />
+                  Buy Now
+                </Link>
                 <button onClick={handleAddToWishlist} className="btn btn-outline p-2">
                   <Heart className="w-4 h-4" />
                 </button>
