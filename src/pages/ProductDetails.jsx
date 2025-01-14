@@ -7,6 +7,7 @@ import { addToCart } from '../store/slices/cartSlice';
 import { addToWishlist } from '../store/slices/wishlistSlice';
 import { addToRecentlyViewed } from '../store/slices/productSlice';
 import { products } from '../data/products';
+import ImageComponent from '../components/ImageComponent'
 
 function ProductDetails() {
   const { id } = useParams();
@@ -71,7 +72,7 @@ function ProductDetails() {
 
       <div className="lg:flex flex-col lg:flex-row gap-6">
         {/* Variant Images */}
-        <div className="flex gap-2 lg:gap-4 lg:flex-col py-6 lg:py-0">
+        <div className="flex gap-2 lg:gap-4 lg:flex-col py-6 lg:py-0 lg:min-w-24">
           {variantImages.map((image, index) => (
             <img
               key={index}
@@ -96,11 +97,12 @@ function ProductDetails() {
         <div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
             <div>
-              <img
+              <ImageComponent alt={product.name} src={mainImage || product.image} className="w-full h-[500px] object-cover rounded-lg"/>
+              {/* <img
                 src={mainImage || product.image}
                 alt={product.name}
                 className="w-full h-[500px] object-cover rounded-lg"
-              />
+              /> */}
             </div>
             <div className="space-y-6">
               <h1 className="font-serif text-3xl">{product.name}</h1>

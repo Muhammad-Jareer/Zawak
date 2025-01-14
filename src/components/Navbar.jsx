@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { ShoppingBag, Heart, User, Menu, X } from 'lucide-react';
 import Logo from '../assets/logo.png';
@@ -51,18 +51,42 @@ const Navbar = () => {
 
           {/* Desktop Navigation Links */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link to="/shop" className="text-gray-600 hover:text-primary-600 transition-colors">
+            <NavLink to="/shop" 
+             className={({ isActive }) =>
+              isActive
+                ? "text-primary-700 transition-colors"
+                : "text-gray-600 hover:text-primary-600 transition-colors"
+            }
+            >
               Shop
-            </Link>
-            <Link to="/categories" className="text-gray-600 hover:text-primary-600 transition-colors">
+            </NavLink >
+            <NavLink  to="/categories" 
+             className={({ isActive }) =>
+              isActive
+                ? "text-primary-700 transition-colors"
+                : "text-gray-600 hover:text-primary-600 transition-colors"
+            }
+            >
               Categories
-            </Link>
-            <Link to="/about" className="text-gray-600 hover:text-primary-600 transition-colors">
+            </NavLink >
+            <NavLink  to="/about" 
+             className={({ isActive }) =>
+              isActive
+                ? "text-primary-700 transition-colors"
+                : "text-gray-600 hover:text-primary-600 transition-colors"
+            }
+            >
               About
-            </Link>
-            <Link to="/contact" className="text-gray-600 hover:text-primary-600 transition-colors">
+            </NavLink >
+            <NavLink  to="/contact" 
+             className={({ isActive }) =>
+              isActive
+                ? "text-primary-700 transition-colors"
+                : "text-gray-600 hover:text-primary-600 transition-colors"
+            }
+            >
               Contact
-            </Link>
+            </NavLink >
           </div>
 
           {/* Mobile Menu Button */}

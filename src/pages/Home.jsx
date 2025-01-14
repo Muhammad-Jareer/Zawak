@@ -6,6 +6,7 @@ import SearchBar from '../components/SearchBar';
 import { first_hero, second_hero, third_hero, fourth_hero, fifth_hero, sixth_hero } from '../assets/index.js';
 import Catelog from '../components/Catelog.jsx';
 import ImageComponent from '../components/ImageComponent.jsx';
+import Shop from '../pages/Shop.jsx'
 import { Suspense } from 'react';
 const FeaturedProducts = lazy(()=> import('../components/FeaturedProducts.jsx'))
 
@@ -187,6 +188,11 @@ function Home() {
             {/* <FeaturedProducts /> */}
             <Suspense fallback={<div>Loading Featured Products...</div>}>
                 <FeaturedProducts />
+            </Suspense>
+
+            {/* <Shop /> */}
+            <Suspense fallback={<div>Loading Featured Products...</div>}>
+                <Shop />
             </Suspense>
         </div>
     );
