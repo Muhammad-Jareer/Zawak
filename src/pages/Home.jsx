@@ -189,11 +189,6 @@ function Home() {
             <Suspense fallback={<div>Loading Featured Products...</div>}>
                 <FeaturedProducts />
             </Suspense>
-
-            {/* <Shop /> */}
-            <Suspense fallback={<div>Loading Featured Products...</div>}>
-                <Shop />
-            </Suspense>
         </div>
     );
 }
