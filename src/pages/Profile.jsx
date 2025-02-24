@@ -1,34 +1,57 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../store/slices/authSlice';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import UserDetails from '../components/UserDetails';
 import Cart from './Cart';
 import Wishlist from './Wishlist';
 import AccountSettings from '../components/AccountSettings';
 import Orders from '../components/Orders';
+import { get_user } from '../api/auth';
 
 function Profile() {
   const dispatch = useDispatch();
-  const { user, isAuthenticated, loading, error } = useSelector((state) => state.auth);
+  // const { user, isAuthenticated, loading, error } = useSelector((state) => state.auth);
+  const [user, setUser] = useState(null)
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTab, setActiveTab] = useState('profile');
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({
-    name: user?.name || '',
+    firstName: user?.firstName || '',
+    lastName: user?.lastName || '',
     email: user?.email || '',
     phone: user?.phone || '',
   });
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if (user) {
+    if(user) return
+    const getUser = async () => {
+      const user = await get_user();
+      if(!user.status){
+        console.log('ererojeifjal')
+      }
+      setUser(user.user)
       setFormData({
-        name: user.name,
-        email: user.email,
-        phone: user.phone || '',
-      });
+        firstName: user.user.firstName || '',
+        lastName: user.user.lastName || '',
+        email: user.user.email,
+        phone: user.user.phone
+      })
     }
-  }, [user]);
+    getUser()
+  }, [user])
+  
+
+  // useEffect(() => {
+  //   if (user) {
+  //     setFormData({
+  //       name: user.name,
+  //       email: user.email,
+  //       phone: user.phone || '',
+  //     });
+  //   }
+  // }, [user]);
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
@@ -51,20 +74,25 @@ function Profile() {
     setEditMode(false);
   };
 
-  if (!isAuthenticated) {
-    return <Navigate to="/login" />;
-  }
+  // if (!isAuthenticated) {
+  //   return <Navigate to="/login" />;
+  // }
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center">
-        <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent border-solid rounded-full animate-spin"></div>
-      </div>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <div className="flex justify-center items-center">
+  //       <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent border-solid rounded-full animate-spin"></div>
+  //     </div>
+  //   );
+  // }
 
-  if (error) {
-    return <div className="text-red-600">{error}</div>;
+  // if (error) {
+  //   return <div className="text-red-600">{error}</div>;
+  // }
+
+  const logout = () => {
+    localStorage.removeItem('accessToken')
+    navigate('/login')
   }
 
   return (
@@ -73,16 +101,16 @@ function Profile() {
         {/* Profile Header */}
         <div className="flex flex-col sm:flex-row items-center mb-8">
           <img
-            src={user.profilePicture || 'default-avatar.png'}
+            src={user?.profilePicture || '/favicon.png'}
             alt="Profile"
             className="w-24 h-24 sm:w-20 sm:h-20 rounded-full border border-gray-300"
           />
           <div className="mt-4 sm:mt-0 sm:ml-4 text-center sm:text-left">
-            <h1 className="font-serif text-2xl sm:text-3xl">{user.name}</h1>
-            <p className="text-gray-600">{user.email}</p>
+            <h1 className="font-serif text-2xl sm:text-3xl">{user?.name}</h1>
+            <p className="text-gray-600">{user?.email}</p>
           </div>
           <button
-            onClick={() => dispatch(logout())}
+            onClick={logout}
             className="mt-4 sm:mt-0 sm:ml-auto px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition duration-200"
           >
             Sign Out

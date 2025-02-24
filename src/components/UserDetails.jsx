@@ -7,14 +7,29 @@ const UserDetails = ({ formData, handleInputChange, editMode, handleSaveProfile,
       <h2 className="text-lg font-medium text-gray-800 mb-4">Profile Information</h2>
       <form className="space-y-6">
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-800">
-            Full Name
+          <label htmlFor="firstName" className="block text-sm font-medium text-gray-800">
+            First Name
           </label>
           <input
             type="text"
-            id="name"
-            name="name"
-            value={formData.name}
+            id="firstName"
+            name="firstName"
+            value={formData.firstName}
+            onChange={handleInputChange}
+            disabled={!editMode}
+            className="mt-1 block w-full px-4 py-2 rounded-md border border-gray-300 shadow-sm focus:ring-2 focus:ring-primary-500"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="lastName" className="block text-sm font-medium text-gray-800">
+            Last Name
+          </label>
+          <input
+            type="text"
+            id="lastName"
+            name="lastName"
+            value={formData.lastName}
             onChange={handleInputChange}
             disabled={!editMode}
             className="mt-1 block w-full px-4 py-2 rounded-md border border-gray-300 shadow-sm focus:ring-2 focus:ring-primary-500"

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { login } from '../../store/slices/authSlice';
+import { api_login } from '../../api/auth';
 
 function Login() {
   const dispatch = useDispatch();
@@ -10,16 +11,22 @@ function Login() {
     email: '',
     password: '',
   });
+  const [submitting, setSubmitting] = useState(false)
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Simulate login - in a real app, this would make an API call
-    dispatch(login({
-      id: '1',
-      email: formData.email,
-      name: 'John Doe',
-    }));
-    navigate('/profile');
+    setSubmitting(true)
+    const res = await api_login(formData)
+    setSubmitting(false)
+    if(res.status && res.access_token){
+      localStorage.setItem('accessToken', res.access_token)
+      navigate('/profile');
+    }
+    // dispatch(login({
+    //   id: '1',
+    //   email: formData.email,
+    //   name: 'John Doe',
+    // }));
   };
 
   const handleChange = (e) => {
@@ -83,7 +90,7 @@ function Login() {
           </div>
           
           <button type="submit" className="w-full btn btn-primary">
-            Sign In
+            {submitting? 'Submitting ...' : 'Sign In'}
           </button>
         </form>
         

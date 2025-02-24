@@ -15,6 +15,7 @@ import Login from './pages/Auth/Login';
 import Signup from './pages/Auth/Signup';
 import Catelog from './components/Catelog';
 import PlaceOrder from './pages/PlaceOrder';
+import { ToastContainer } from 'react-toastify';
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
         </Routes>
       </main>
       <Footer />
+      <ToastContainer />
     </div>
   );
 }

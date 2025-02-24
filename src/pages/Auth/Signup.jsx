@@ -2,26 +2,34 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { login } from '../../store/slices/authSlice';
+import { api_signup } from '../../api/auth';
+import { toast } from 'react-toastify';
 
 function Signup() {
+  const [submitting, setSubmitting] = useState(false)
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    name: '',
+    firstName: '',
+    lastName: '',
     email: '',
+    phone: '',
     password: '',
     confirmPassword: '',
   });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Simulate signup - in a real app, this would make an API call
-    dispatch(login({
-      id: '1',
-      email: formData.email,
-      name: formData.name,
-    }));
-    navigate('/profile');
+    setSubmitting(true)
+    const res = await api_signup(formData);
+    toast("wow so easy", {
+      theme: 'light'
+    })
+    setSubmitting(false)
+    if(res.status && res.user){
+      localStorage.setItem('accessToken', res.user.token)
+      navigate('/profile');
+    }
   };
 
   const handleChange = (e) => {
@@ -38,14 +46,29 @@ function Signup() {
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-              Full Name
+            <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">
+              First Name
             </label>
             <input
               type="text"
-              id="name"
-              name="name"
-              value={formData.name}
+              id="firstName"
+              name="firstName"
+              value={formData.firstName}
+              onChange={handleChange}
+              className="mt-1 block w-full px-4 py-2 rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 placeholder-gray-400 transition duration-300 ease-in-out"
+              required
+            />
+          </div>
+
+          <div>
+            <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">
+              Last Name
+            </label>
+            <input
+              type="text"
+              id="lastName"
+              name="lastName"
+              value={formData.lastName}
               onChange={handleChange}
               className="mt-1 block w-full px-4 py-2 rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 placeholder-gray-400 transition duration-300 ease-in-out"
               required
@@ -61,6 +84,21 @@ function Signup() {
               id="email"
               name="email"
               value={formData.email}
+              onChange={handleChange}
+              className="mt-1 block w-full px-4 py-2 rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 placeholder-gray-400 transition duration-300 ease-in-out"
+              required
+            />
+          </div>
+          
+          <div>
+            <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
+              Phone Number
+            </label>
+            <input
+              type="phone"
+              id="phone"
+              name="phone"
+              value={formData.phone}
               onChange={handleChange}
               className="mt-1 block w-full px-4 py-2 rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 placeholder-gray-400 transition duration-300 ease-in-out"
               required
@@ -98,7 +136,7 @@ function Signup() {
           </div>
           
           <button type="submit" className="w-full btn btn-primary">
-            Create Account
+            {submitting ? 'Submitting ....' : 'Create Account' }
           </button>
         </form>
         
