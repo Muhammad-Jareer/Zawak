@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate, redirect, Link } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Heart, Minus, Plus, ShoppingBag, ArrowLeft, ShoppingCart } from 'lucide-react';
 import AddToCartWishlistPopup from "../components/AddToCartWishlistPopup";
@@ -7,7 +7,9 @@ import { addToCart } from '../store/slices/cartSlice';
 import { addToWishlist } from '../store/slices/wishlistSlice';
 import { addToRecentlyViewed } from '../store/slices/productSlice';
 import { products } from '../data/products';
-import ImageComponent from '../components/ImageComponent'
+import ImageComponent from '../components/ImageComponent';
+import RecentlyViewed from '../components/RecentlyViewed';
+import SimilarProducts from '../components/SimilarProducts';
 
 function ProductDetails() {
   const { id } = useParams();
@@ -15,21 +17,19 @@ function ProductDetails() {
   const dispatch = useDispatch();
   const [quantity, setQuantity] = useState(1);
   const [mainImage, setMainImage] = useState(null);
+  const [product, setProduct] = useState(null);
   const recentlyViewed = useSelector((state) => state.product.recentlyViewed);
   const [popup, setPopup] = useState({ show: false, type: "", itemName: "" });
 
-  const product = products.find((p) => p.id === id);
-  const variantImages = product
-    ? [product.image, ...(product.vairentImages || [])].slice(0, 4)
-    : [];
-
   useEffect(() => {
     window.scrollTo(0, 0);
-    if (product) {
-      setMainImage(product.image);
-      dispatch(addToRecentlyViewed(product));
+    const foundProduct = products.find((p) => p.id === id);
+    if (foundProduct) {
+      setProduct(foundProduct);
+      setMainImage(foundProduct.image);
+      dispatch(addToRecentlyViewed(foundProduct));
     }
-  }, [id, product, dispatch]);
+  }, [id, dispatch]);
 
   if (!product) {
     return (
@@ -46,19 +46,32 @@ function ProductDetails() {
     );
   }
 
-  const similarProducts = products
-    .filter((p) => p.category === product.category && p.id !== product.id)
-    .slice(0, 4);
+  // Get variant images (including the main image and variant images)
+  const variantImages = product
+    ? [product.image, ...(product.variantImages || [])].slice(0, 4)
+    : [];
 
+  // Handle clicking on a variant image
+  const handleVariantClick = (image) => {
+    setMainImage(image);
+  };
+
+  // Handle adding the product to the cart
   const handleAddToCart = () => {
     dispatch(addToCart({ ...product, quantity }));
     setPopup({ show: true, type: "cart", itemName: product.name });
   };
 
+  // Handle adding the product to the wishlist
   const handleAddToWishlist = () => {
     dispatch(addToWishlist(product));
     setPopup({ show: true, type: "wishlist", itemName: product.name });
   };
+
+  // Get similar products
+  const similarProducts = products
+    .filter((p) => p.category === product.category && p.id !== product.id)
+    .slice(0, 4);
 
   return (
     <div className="container mx-auto px-4 mt-16">
@@ -72,14 +85,14 @@ function ProductDetails() {
 
       <div className="lg:flex flex-col lg:flex-row gap-6">
         {/* Variant Images */}
-        <div className="flex gap-2 lg:gap-4 lg:flex-col py-6 lg:py-0 lg:min-w-24">
+        <div className="flex flex-row lg:flex-col gap-2 lg:gap-4 py-6 lg:py-0 lg:min-w-24 overflow-x-auto">
           {variantImages.map((image, index) => (
             <img
               key={index}
               src={image}
               alt={`Variant ${index + 1}`}
-              onClick={() => setMainImage(image)}
-              className="w-20 h-20 object-center object-cover rounded-md border border-gray-300 hover:cursor-pointer"
+              onClick={() => handleVariantClick(image)}
+              className="w-16 h-16 lg:w-20 lg:h-20 object-center object-cover rounded-md border border-gray-300 hover:cursor-pointer"
             />
           ))}
         </div>
@@ -94,15 +107,14 @@ function ProductDetails() {
         )}
 
         {/* Product Details */}
-        <div>
+        <div className="flex-1">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
             <div>
-              <ImageComponent alt={product.name} src={mainImage || product.image} className="w-full h-[500px] object-cover rounded-lg"/>
-              {/* <img
-                src={mainImage || product.image}
+              <ImageComponent
                 alt={product.name}
-                className="w-full h-[500px] object-cover rounded-lg"
-              /> */}
+                src={mainImage || product.image}
+                className="w-full h-[300px] md:h-[500px] object-cover rounded-lg"
+              />
             </div>
             <div className="space-y-6">
               <h1 className="font-serif text-3xl">{product.name}</h1>
@@ -127,7 +139,7 @@ function ProductDetails() {
               </div>
 
               {/* Action Buttons */}
-              <div className="flex space-x-4">
+              <div className="flex flex-col md:flex-row gap-4">
                 <button onClick={handleAddToCart} className="flex-1 btn btn-primary">
                   <ShoppingBag className="w-4 h-4 mr-2" />
                   Add to Cart
@@ -155,56 +167,10 @@ function ProductDetails() {
       </div>
 
       {/* Similar Products */}
-      {similarProducts.length > 0 && (
-        <div className="mb-16">
-          <h2 className="font-serif text-2xl mb-8">Similar Products</h2>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            {similarProducts.map((item) => (
-              <div
-                key={item.id}
-                onClick={() => navigate(`/product/${item.id}`)}
-                className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer"
-              >
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  className="w-full h-48 object-cover hover:scale-105 transition-transform"
-                />
-                <div className="p-4">
-                  <h3 className="font-medium">{item.name}</h3>
-                  <p className="text-primary-600 font-semibold">${item.price}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      <SimilarProducts similarProducts={similarProducts} navigate={navigate} />
 
       {/* Recently Viewed */}
-      {recentlyViewed.length > 0 && (
-        <div>
-          <h2 className="font-serif text-2xl mb-8">Recently Viewed</h2>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            {recentlyViewed.map((item) => (
-              <div
-                key={item.id}
-                onClick={() => navigate(`/product/${item.id}`)}
-                className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer"
-              >
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  className="w-full h-48 object-cover hover:scale-105 transition-transform"
-                />
-                <div className="p-4">
-                  <h3 className="font-medium">{item.name}</h3>
-                  <p className="text-primary-600 font-semibold">${item.price}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      <RecentlyViewed recentlyViewed={recentlyViewed} navigate={navigate} />
     </div>
   );
 }
