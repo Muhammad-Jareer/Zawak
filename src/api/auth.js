@@ -4,9 +4,12 @@ import api from '../lib/api';
 export const api_signup = async (userData) => {
     try {
         const response = await api.post('/auth/signup', userData);
-        return response.data;
+        if(response.status === 200){
+            toast.success("Account created successfully")
+            return response.data;
+        }
     } catch (error) {
-        toast(error.response.data)
+        toast.error(error.response.data.message)
     }
 };
 
@@ -22,8 +25,11 @@ export const get_user = async () => {
 export const api_login = async (credentials) => {
     try {
         const response = await api.post('/auth/login', credentials);
-        return response.data;
+        if(response.status === 200){
+            toast.success("You LoggedIn As ")
+            return response.data;
+        }
     } catch (error) {
-        throw error.response.data;
+        toast.error(error.response.data.message)
     }
 };

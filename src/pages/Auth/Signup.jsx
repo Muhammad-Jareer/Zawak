@@ -20,13 +20,16 @@ function Signup() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if(formData.confirmPassword !== formData.password){
+      toast.error("Confirm the password plz", {
+        theme: 'dark'
+      })
+      return;
+    }
     setSubmitting(true)
     const res = await api_signup(formData);
-    toast("wow so easy", {
-      theme: 'light'
-    })
     setSubmitting(false)
-    if(res.status && res.user){
+    if(res && res?.status && res?.user){
       localStorage.setItem('accessToken', res.user.token)
       navigate('/profile');
     }

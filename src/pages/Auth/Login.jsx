@@ -18,7 +18,8 @@ function Login() {
     setSubmitting(true)
     const res = await api_login(formData)
     setSubmitting(false)
-    if(res.status && res.access_token){
+    if(res && res?.status && res?.access_token){
+      console.log(res)
       localStorage.setItem('accessToken', res.access_token)
       navigate('/profile');
     }
