@@ -12,6 +12,7 @@ import SearchBar from "../components/SearchBar";
 import { useNavigate } from "react-router-dom";
 import { Loader } from "../components/Loader";
 import "../index.css";
+import { queryProducts } from "../api/product";
 
 function Shop() {
   const dispatch = useDispatch();
@@ -50,16 +51,16 @@ function Shop() {
   }, [filters]);
 
   useEffect(() => {
-    if (query.trim() === "") {
-      setSearchResults([]);
-    } else {
-      const filteredProducts = products.filter(
-        (product) =>
-          product.name.toLowerCase().includes(query.toLowerCase()) ||
-          product.category.toLowerCase().includes(query.toLowerCase())
-      );
-      setSearchResults(filteredProducts);
+    const asyncfunc = async () => {
+        if (query.trim() === '') {
+            setSearchResults([]);
+        } else {
+            const filteredProducts = await queryProducts(query);
+            console.log("filtered products are : ", filteredProducts)
+            setSearchResults(filteredProducts);
+        }
     }
+    asyncfunc();
   }, [query]);
 
   useEffect(() => {
@@ -232,12 +233,12 @@ function Shop() {
                   {searchResults.length > 0 ? (
                       searchResults.map((product, index) => (
                           <div
-                              key={product.id}
+                              key={product._id}
                               data-index={index}
                               className={`px-4 py-2 cursor-pointer flex items-center ${
                                   activeIndex === index ? 'bg-gray-300' : 'hover:bg-gray-100'
                               }`}
-                              onClick={() => handleProductClick(product.id)}
+                              onClick={() => handleProductClick(product._id)}
                               onMouseEnter={() => setActiveIndex(index)}
                           >
                               <img
@@ -247,7 +248,7 @@ function Shop() {
                               />
                               <div className="flex flex-col items-start">
                                   <span>{highlightText(product.name)}</span>
-                                  <span className="text-xs">Categories: {highlightText(product.category)}</span>
+                                  <span className="text-xs">Categories: {highlightText(product.category || "")}</span>
                               </div>
                           </div>
                       ))

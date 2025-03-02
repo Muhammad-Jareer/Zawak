@@ -9,27 +9,31 @@ export const getAllProducts = async () => {
             return response.data;
         }
     } catch (error) {
-        toast.error(error.response.data.message)
+        console.log(error)
     }
 };
 
-export const get_user = async () => {
+export const queryProducts = async (query) => {
     try {
-        const res = await api.get('/auth/user')
-        return res.data
-    } catch (error) {
-        toast(error.response.data)
-    }
-}
-
-export const api_login = async (credentials) => {
-    try {
-        const response = await api.post('/auth/login', credentials);
+        const response = await api.get(`/product/qp?q=${query}`);
         if(response.status === 200){
-            toast.success("You LoggedIn As ")
+            console.log(response.data);
             return response.data;
         }
     } catch (error) {
-        toast.error(error.response.data.message)
+        console.log(error)
     }
 };
+
+export const getFeaturedProducts = async () => {
+    try {
+        const response = await api.get('/product/gfp');
+        if(response.status === 200){
+            console.log(response.data);
+            return response.data;
+        }
+    } catch (error) {
+        console.log(error)
+        return 'ERROR'
+    }
+}

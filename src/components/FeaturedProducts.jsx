@@ -8,11 +8,13 @@ import { Link } from 'react-router-dom';
 import 'swiper/css'
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
+import { getFeaturedProducts } from "../api/product.js";
 
 const FeaturedProducts = ({}) => {
     const dispatch = useDispatch();
     const [swiper, setSwiper] = useState()
-    const [featuredProducts, setFeaturedProducts] = useState(products.filter((prod) => prod.featured))
+    const [featuredProducts, setFeaturedProducts] = useState([]);
+    const [errorOccured, setErrorOccured] = useState(false)
     const getSlidesPerView = () => {
         if (window.innerWidth >= 1024) return 5;
         if (window.innerWidth >= 768) return 4;
@@ -31,6 +33,21 @@ const FeaturedProducts = ({}) => {
         return () => {
             window.removeEventListener('resize', handleResize);
         };
+    }, []);
+
+    useEffect(() => {
+        // fetch the products
+        const asyncfunc = async () => {
+            const featuredProducts = await getFeaturedProducts();
+            console.log("featured products are : ", featuredProducts)
+            if(featuredProducts === 'ERROR'){
+                setErrorOccured(true)
+                return
+            }
+            if(featuredProducts)
+                setFeaturedProducts(featuredProducts);
+        };
+        asyncfunc();
     }, []);
         
 
@@ -55,16 +72,16 @@ const FeaturedProducts = ({}) => {
     <h1 className='text-xl md:text-3xl font-bold mt-8 text-primary-600'>Featured Products</h1>
         <section className="px-3 lg:px-4">
         <Swiper
-        spaceBetween={10}
-        slidesPerView={slidesPerView}
-        slidesPerGroup={2}
-        onSwiper={(swiper) => setSwiper(swiper)}
-        className="my-8"
+            spaceBetween={10}
+            slidesPerView={slidesPerView}
+            slidesPerGroup={2}
+            onSwiper={(swiper) => setSwiper(swiper)}
+            className="my-8"
         >
-            {featuredProducts.map((product) => (
-                <SwiperSlide key={product.id} className="my-3">
+            {featuredProducts && featuredProducts.map((product) => (
+                <SwiperSlide key={product._id} className="my-3">
                     <Product
-                        key={product.id}
+                        key={product._id}
                         product={product}
                         handleAddToCart={handleAddToCart}
                         handleAddToWishlist={handleAddToWishlist}
@@ -72,6 +89,7 @@ const FeaturedProducts = ({}) => {
                     />
                 </SwiperSlide>
             ))}
+            {errorOccured && <div className="text-center text-red-500 h-36 lg:h-48">Error occured while fetching products</div>}
         </Swiper>
             <button
                 type="button"

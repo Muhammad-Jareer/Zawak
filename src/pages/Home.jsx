@@ -8,6 +8,7 @@ import Catelog from '../components/Catelog.jsx';
 import ImageComponent from '../components/ImageComponent.jsx';
 import Shop from '../pages/Shop.jsx'
 import { Suspense } from 'react';
+import { queryProducts } from '../api/product.js';
 const FeaturedProducts = lazy(()=> import('../components/FeaturedProducts.jsx'))
 
 function Home() {
@@ -30,16 +31,16 @@ function Home() {
     }, []);
 
     useEffect(() => {
-        if (query.trim() === '') {
-            setSearchResults([]);
-        } else {
-            const filteredProducts = products.filter(
-                (product) =>
-                    product.name.toLowerCase().includes(query.toLowerCase()) ||
-                    product.category.toLowerCase().includes(query.toLowerCase())
-            );
-            setSearchResults(filteredProducts);
+        const asyncfunc = async () => {
+            if (query.trim() === '') {
+                setSearchResults([]);
+            } else {
+                const filteredProducts = await queryProducts(query);
+                console.log("filtered products are : ", filteredProducts)
+                setSearchResults(filteredProducts);
+            }
         }
+        asyncfunc();
     }, [query]);
 
     useEffect(() => {
@@ -132,12 +133,12 @@ function Home() {
                                     {searchResults.length > 0 ? (
                                         searchResults.map((product, index) => (
                                             <div
-                                                key={product.id}
+                                                key={product._id}
                                                 data-index={index} // Added for scroll targeting
                                                 className={`px-4 py-2 cursor-pointer flex items-center ${
                                                     activeIndex === index ? 'bg-gray-300' : 'hover:bg-gray-100'
                                                 }`}
-                                                onClick={() => handleProductClick(product.id)}
+                                                onClick={() => handleProductClick(product._id)}
                                                 onMouseEnter={() => setActiveIndex(index)}
                                             >
                                                 <img
@@ -147,7 +148,7 @@ function Home() {
                                                 />
                                                 <div className="flex flex-col items-start">
                                                     <span>{highlightText(product.name)}</span>
-                                                    <span className="text-xs">Categories: {highlightText(product.category)}</span>
+                                                    <span className="text-xs">Categories: {highlightText(product.category || "")}</span>
                                                 </div>
                                             </div>
                                         ))
