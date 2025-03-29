@@ -18,6 +18,7 @@ import PlaceOrder from './pages/PlaceOrder';
 import { ToastContainer } from 'react-toastify';
 import AuthGuard from './guards/AuthGuard';
 import PlaceOrderCart from './pages/PlaceOrderCart';
+import ThankYou from './components/ThankYou';
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
           <Route path="/cart" element={<AuthGuard><Cart /></AuthGuard>} />
           <Route path="/place-order/:id" element={<PlaceOrder />} />
           <Route path="/place-order-cart" element={<PlaceOrderCart />} />
+          <Route path="/order-done" element={<ThankYou />} />
           <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/profile" element={<AuthGuard><Profile /></AuthGuard>} />
           <Route path="/about" element={<About />} />

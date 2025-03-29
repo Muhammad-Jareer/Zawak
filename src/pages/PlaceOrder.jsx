@@ -47,7 +47,7 @@ function PlaceOrder() {
     if (!userState) {
       user = await get_user();
       if (!user) {
-        console.log("ererojeifjal");
+        toast.error("please login!")
         dispatch(logout());
         return;
       }
@@ -85,7 +85,10 @@ function PlaceOrder() {
       navigate("/login");
       return;
     }
-    if (makeOrder) toast("ordered placed!. You will soon receive a phone call");
+    if (makeOrder) {
+      navigate("/order-done");
+      return;
+    };
   };
 
   return (

@@ -50,7 +50,7 @@ function PlaceOrderCart() {
     if (!userState) {
       user = await get_user();
       if (!user) {
-        console.log("ererojeifjal");
+        toast.error("please login!");
         dispatch(logout());
         return;
       }
@@ -98,8 +98,7 @@ function PlaceOrderCart() {
     }
     if (makeOrder) {
         dispatch(clearCart())
-        navigate("/shop")
-        toast("ordered placed!. You will soon receive a phone call")
+        navigate("/order-done");
     };
   };
 
