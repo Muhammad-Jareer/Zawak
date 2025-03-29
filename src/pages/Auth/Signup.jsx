@@ -31,6 +31,10 @@ function Signup() {
     setSubmitting(false)
     if(res && res?.status && res?.user){
       localStorage.setItem('accessToken', res.user.token)
+      dispatch(login({
+        email: formData.email,
+        name: 'John Doe',
+      }));
       navigate('/profile');
     }
   };

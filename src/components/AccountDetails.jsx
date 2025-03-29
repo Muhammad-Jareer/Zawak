@@ -5,19 +5,6 @@ const AccountDetails = ({ user }) => {
   return (
     <div className="space-y-6">
       <div>
-        <label htmlFor="username" className="block text-sm font-medium text-gray-800">
-          Username
-        </label>
-        <input
-          type="text"
-          id="username"
-          value={user?.username || ''}
-          disabled
-          className="mt-1 block w-full px-4 py-2 rounded-md border border-gray-300 shadow-sm focus:ring-2 focus:ring-primary-500"
-        />
-      </div>
-
-      <div>
         <label htmlFor="email" className="block text-sm font-medium text-gray-800">
           Email Address
         </label>

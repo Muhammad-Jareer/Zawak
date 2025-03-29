@@ -8,10 +8,12 @@ import { placeOrder } from "../api/order";
 import { toast } from "react-toastify";
 import { get_user } from "../api/auth";
 import { logout } from "../store/slices/authSlice";
+import { getCart } from "../api/cart";
+import { clearCart } from "../store/slices/cartSlice";
 
-function PlaceOrder() {
+function PlaceOrderCart() {
   const { id } = useParams();
-  const [product, setProduct] = useState(null);
+  const [cart, setCart] = useState(null);
   const userState = useSelector((state) => state.auth.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -26,13 +28,14 @@ function PlaceOrder() {
 
   useEffect(() => {
     async function f() {
-      const product = await getProductDetails(id);
-      if (product) setProduct(product);
+      const cart = await getCart();
+      if (cart) setCart(cart);
+      console.log(cart)
     }
     f();
   }, []);
 
-  if (!product) return <div>Not Found</div>;
+  if (!cart) return <div>Not Found</div>;
   const handleChange = (e) => {
     const { name, value } = e.target;
     setShippingAddress((prevState) => ({
@@ -65,18 +68,26 @@ function PlaceOrder() {
       return;
     const formData = {
       user: userState._id || user._id,
-      items: [
-        {
-          product: product._id,
-          quantity: 1,
-          price: product.price,
-        },
-      ],
-      totalAmount: product.price,
-      shippingAddress,
-      paymentMethod,
-      price: product.price,
+        items: [
+        //   {
+        //     product: product._id,
+        //     quantity: 1,
+        //     price: product.price,
+        //   },
+        ],
+        totalAmount: cart.total,
+        shippingAddress,
+        paymentMethod,
+        price: cart.total,
     };
+
+    cart.items.forEach(item => {
+        formData.items.push({
+            product: item.productId._id,
+            quantity: item.quantity,
+            price: item.total
+        })
+    });
 
     console.log("formdata is: ", formData);
 
@@ -85,7 +96,11 @@ function PlaceOrder() {
       navigate("/login");
       return;
     }
-    if (makeOrder) toast("ordered placed!. You will soon receive a phone call");
+    if (makeOrder) {
+        dispatch(clearCart())
+        navigate("/shop")
+        toast("ordered placed!. You will soon receive a phone call")
+    };
   };
 
   return (
@@ -96,27 +111,31 @@ function PlaceOrder() {
       </h2>
 
       {/* <!-- Cart Summary --> */}
-      <div className="border-t-2 border-primary-100 pt-4">
-        <h3 className="text-xl font-medium text-gray-700">Order Summary</h3>
-        <div className="space-y-4 mt-4">
-          {/* <!-- Product List --> */}
-          <div className="flex justify-between text-gray-600">
-            <span>Product Name</span>
-            <span>Price</span>
-          </div>
-          {/* <!-- Example of a product entry --> */}
-          <div className="flex justify-between py-2">
-            <span>{product.name}</span>
-            <span>${product.price}</span>
-          </div>
+      {cart && (
+        <div className="border-t-2 border-primary-100 pt-4">
+          <h3 className="text-xl font-medium text-gray-700">Order Summary</h3>
+          <div className="space-y-4 mt-4">
+            {/* <!-- Product List --> */}
+            <div className="flex justify-between text-gray-600">
+              <span>Product Name</span>
+              <span>Price</span>
+            </div>
+            {/* <!-- Example of a product entry --> */}
+            {cart.items.map((item, idx) => (
+              <div key={idx} className="flex justify-between py-2">
+                <span>{item.productId.name}</span>
+                <span>${item.price}</span>
+              </div>
+            ))}
 
-          {/* <!-- Total --> */}
-          <div className="flex justify-between mt-4 font-semibold text-lg text-gray-800">
-            <span>Total</span>
-            <span>${product.price}</span>
+            {/* <!-- Total --> */}
+            <div className="flex justify-between mt-4 font-semibold text-lg text-gray-800">
+              <span>Total</span>
+              <span>${Number(cart.total).toFixed(2)}</span>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* <!-- Shipping Information --> */}
       <div className="border-t-2 border-primary-100 pt-6">
@@ -257,4 +276,4 @@ function PlaceOrder() {
   );
 }
 
-export default PlaceOrder;
+export default PlaceOrderCart;

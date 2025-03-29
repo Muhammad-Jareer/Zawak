@@ -1,28 +1,35 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { getUserOrders } from '../api/order';
+import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const Orders = () => {
   // Sample orders data
-  const [orders] = useState([
-    {
-      id: 'ORD12345',
-      date: '2025-01-01',
-      status: 'Delivered',
-      total: '$150.00',
-      items: [
-        { name: 'Handmade Scarf', price: '$50.00', quantity: 1 },
-        { name: 'Woolen Sweater', price: '$100.00', quantity: 1 },
-      ],
-    },
-    {
-      id: 'ORD67890',
-      date: '2025-01-05',
-      status: 'Shipped',
-      total: '$75.00',
-      items: [
-        { name: 'Eco-friendly Bag', price: '$25.00', quantity: 3 },
-      ],
-    },
-  ]);
+  const [orders, setOrders] = useState([]);
+  const navigate = useNavigate();
+  const userState = useSelector(state => state.auth.user)
+
+  useEffect(() => {
+    async function f() {
+      let user;
+      if (!userState) {
+            user = await get_user();
+            if (!user) {
+              console.log("ererojeifjal");
+              dispatch(logout());
+              return;
+            }
+            dispatch(login(user.user));
+      }
+      console.log("user state in orders is: ", userState)
+      const userOrders = await getUserOrders(userState._id);
+      if(userOrders === 'NOT_AUTHENTICATED') return navigate("/login")
+      if(userOrders) setOrders(userOrders)
+      console.log(userOrders)
+    }
+    f();
+  }, [])
+  
 
   return (
     <div className="bg-gray-50 min-h-screen py-12 px-4">
@@ -37,7 +44,7 @@ const Orders = () => {
             <div className="flex justify-between items-center mb-4">
               <div>
                 <h2 className="text-xl font-semibold">Order ID: {order.id}</h2>
-                <p className="text-gray-600">Date: {order.date}</p>
+                <p className="text-gray-600">Date: {order.createdAt.split("T")[0]}</p>
               </div>
               <div className="text-right">
                 <p
@@ -63,7 +70,7 @@ const Orders = () => {
                     key={index}
                     className="flex justify-between text-gray-700"
                   >
-                    <span>{item.name} (x{item.quantity})</span>
+                    <span>{item.product.name} (x{item.quantity})</span>
                     <span>{item.price}</span>
                   </li>
                 ))}

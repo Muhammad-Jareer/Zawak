@@ -29,9 +29,11 @@ export const isAuthenticated = async () => {
 export const get_user = async () => {
     try {
         const res = await api.get('/auth/user')
-        return res.data
+        if(res.status === 200)
+            return res.data
+        return null
     } catch (error) {
-        toast(error.response.data)
+        console.log("error white getting user: ", error)
     }
 }
 

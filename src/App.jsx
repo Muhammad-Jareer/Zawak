@@ -17,6 +17,7 @@ import Catelog from './components/Catelog';
 import PlaceOrder from './pages/PlaceOrder';
 import { ToastContainer } from 'react-toastify';
 import AuthGuard from './guards/AuthGuard';
+import PlaceOrderCart from './pages/PlaceOrderCart';
 
 function App() {
   return (
@@ -29,8 +30,9 @@ function App() {
           <Route path="/categories" element={<Catelog />} /> {/* This route should show all categories */}
           <Route path="/shop/category/:category" element={<Catelog />} /> {/* This route should show products for a specific category */}
           <Route path="/product/:id" element={<ProductDetails />} />
-          <Route path="/cart" element={<Cart />} />
+          <Route path="/cart" element={<AuthGuard><Cart /></AuthGuard>} />
           <Route path="/place-order/:id" element={<PlaceOrder />} />
+          <Route path="/place-order-cart" element={<PlaceOrderCart />} />
           <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/profile" element={<AuthGuard><Profile /></AuthGuard>} />
           <Route path="/about" element={<About />} />

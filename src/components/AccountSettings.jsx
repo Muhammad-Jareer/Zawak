@@ -10,9 +10,9 @@ const AccountSettings = ({ user }) => {
       <h2 className="text-lg font-medium text-gray-800 mb-4">Account Settings</h2>
 
       <AccountDetails user={user} />
-      <PaymentSettings />
+      {/* <PaymentSettings />
       <ShippingSettings />
-      <StoreSettings />
+      <StoreSettings /> */}
     </div>
   );
 };

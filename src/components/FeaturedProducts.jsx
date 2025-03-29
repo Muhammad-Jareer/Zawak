@@ -39,7 +39,6 @@ const FeaturedProducts = ({}) => {
         // fetch the products
         const asyncfunc = async () => {
             const featuredProducts = await getFeaturedProducts();
-            console.log("featured products are : ", featuredProducts)
             if(featuredProducts === 'ERROR'){
                 setErrorOccured(true)
                 return

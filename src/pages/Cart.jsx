@@ -2,28 +2,42 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Minus, Plus, Trash2 } from 'lucide-react';
-import { removeFromCart, updateQuantity } from '../store/slices/cartSlice';
+import { removeFromCart, updateQuantity, initialize } from '../store/slices/cartSlice';
+import { getCart, removeItemFromCart } from '../api/cart';
 
 function Cart() {
   const dispatch = useDispatch();
-  const cartItems = useSelector((state) => state.cart.items);
-
-  const total = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  // const cartItems = useSelector((state) => state.cart.items);
+  const cartState = useSelector((state) => state.cart)
 
   useEffect(() => {
           window.scrollTo(0, 0);
-  }, [cartItems]);
+  }, [cartState]);
+
+    async function f() {
+      if(!cartState){
+        const cart = await getCart();
+        if(!cart) return;
+        dispatch(initialize({
+          ...cart
+        }))
+      }     
+    }
+    f();    
 
   const handleUpdateQuantity = (id, quantity) => {
     if (quantity < 1) return;
     dispatch(updateQuantity({ id, quantity }));
   };
 
-  const handleRemoveItem = (id) => {
-    dispatch(removeFromCart(id));
+  const handleRemoveItem = async (id) => {
+    console.log("item to del is: ", id)
+    const res = await removeItemFromCart(id)
+    if(res)
+     dispatch(removeFromCart(id));
   };
 
-  if (cartItems.length === 0) {
+  if (!cartState || cartState.items.length === 0) {
     return (
       <div className="container mx-auto px-4 text-center py-16 mt-16">
         <h1 className="font-serif text-3xl mb-4">Your Cart is Empty</h1>
@@ -41,33 +55,33 @@ function Cart() {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div className="md:col-span-2 space-y-4">
-          {cartItems.map((item) => (
-            <div key={item.id} className="bg-white rounded-lg shadow-md p-4 flex items-center">
+          {cartState && cartState.items && cartState?.items.map((item, idx) => (
+            <div key={idx} className="bg-white rounded-lg shadow-md p-4 flex items-center">
               <img
-                src={item.image}
-                alt={item.name}
+                src={item?.productId?.image}
+                alt={item?.productId?.name}
                 className="w-16 sm:w-24 h-16 sm:h-24 object-cover rounded-md"
               />
               <div className="ml-4 flex-1">
-                <h3 className="font-medium text-sm sm:text-base">{item.name}</h3>
-                <p className="text-primary-600">${item.price}</p>
+                <h3 className="font-medium text-sm sm:text-base">{item?.productId.name}</h3>
+                <p className="text-primary-600">${item?.price}</p>
               </div>
               <div className="flex items-center space-x-2">
                 <button
-                  onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}
+                  onClick={() => handleUpdateQuantity(item?.productId._id, item.quantity - 1)}
                   className="p-1 rounded-md border"
                 >
                   <Minus className="w-4 h-4" />
                 </button>
-                <span className="w-8 text-center">{item.quantity}</span>
+                <span className="w-8 text-center">{item?.quantity}</span>
                 <button
-                  onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
+                  onClick={() => handleUpdateQuantity(item.productId._id, item.quantity + 1)}
                   className="p-1 rounded-md border"
                 >
                   <Plus className="w-4 h-4" />
                 </button>
                 <button
-                  onClick={() => handleRemoveItem(item.id)}
+                  onClick={() => handleRemoveItem(item.productId._id)}
                   className="p-1 rounded-md text-red-500 hover:bg-red-50"
                 >
                   <Trash2 className="w-4 h-4" />
@@ -82,7 +96,7 @@ function Cart() {
           <div className="space-y-2 mb-4">
             <div className="flex justify-between">
               <span>Subtotal</span>
-              <span>${total.toFixed(2)}</span>
+              <span>${(cartState.items.reduce((sum, item) => sum + item.price, 0)).toFixed(2)}</span>
             </div>
             <div className="flex justify-between">
               <span>Shipping</span>
@@ -92,12 +106,12 @@ function Cart() {
           <div className="border-t pt-4 mb-6">
             <div className="flex justify-between font-semibold">
               <span>Total</span>
-              <span>${total.toFixed(2)}</span>
+              <span>${(cartState.items.reduce((sum, item) => sum + item.price, 0)).toFixed(2)}</span>
             </div>
           </div>
-          <button className="w-full btn btn-primary">
+          <Link to="/place-order-cart" className="w-full btn btn-primary">
             Proceed to Checkout
-          </button>
+          </Link>
         </div>
       </div>
     </div>

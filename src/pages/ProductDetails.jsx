@@ -3,16 +3,19 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Heart, Minus, Plus, ShoppingBag, ArrowLeft, ShoppingCart } from 'lucide-react';
 import AddToCartWishlistPopup from "../components/AddToCartWishlistPopup";
-import { addToCart } from '../store/slices/cartSlice';
+import { addToCart, initialize } from '../store/slices/cartSlice';
 import { addToWishlist } from '../store/slices/wishlistSlice';
 import { addToRecentlyViewed } from '../store/slices/productSlice';
 import { products } from '../data/products';
 import ImageComponent from '../components/ImageComponent';
 import RecentlyViewed from '../components/RecentlyViewed';
 import SimilarProducts from '../components/SimilarProducts';
+import { getProductDetails } from '../api/product';
+import { addItemToCart, getCart } from '../api/cart';
 
 function ProductDetails() {
   const { id } = useParams();
+  console.log("id is: ", id)
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [quantity, setQuantity] = useState(1);
@@ -20,15 +23,19 @@ function ProductDetails() {
   const [product, setProduct] = useState(null);
   const recentlyViewed = useSelector((state) => state.product.recentlyViewed);
   const [popup, setPopup] = useState({ show: false, type: "", itemName: "" });
+  const cartState = useSelector(state => state.cart)
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    const foundProduct = products.find((p) => p.id === id);
-    if (foundProduct) {
-      setProduct(foundProduct);
-      setMainImage(foundProduct.image);
-      dispatch(addToRecentlyViewed(foundProduct));
+    async function f() {
+      const foundProduct = await getProductDetails(id);
+      if (foundProduct) {
+        setProduct(foundProduct);
+        setMainImage(foundProduct.image);
+        dispatch(addToRecentlyViewed(foundProduct));
+      }
     }
+    f();    
   }, [id, dispatch]);
 
   if (!product) {
@@ -48,7 +55,7 @@ function ProductDetails() {
 
   // Get variant images (including the main image and variant images)
   const variantImages = product
-    ? [product.image, ...(product.variantImages || [])].slice(0, 4)
+    ? [product.image, ...(product.variant_images || [])].slice(0, 4)
     : [];
 
   // Handle clicking on a variant image
@@ -57,9 +64,28 @@ function ProductDetails() {
   };
 
   // Handle adding the product to the cart
-  const handleAddToCart = () => {
-    dispatch(addToCart({ ...product, quantity }));
-    setPopup({ show: true, type: "cart", itemName: product.name });
+  const handleAddToCart = async () => {
+    if (!cartState) {
+      const cart = await getCart();
+      if (!cart) return;
+      dispatch(
+        initialize({
+          ...cart,
+        })
+      );
+    }
+    if (product && product.price) {
+      const res = await addItemToCart(product);
+      console.log("res is: ", res);
+      if (res === 401) return navigate("/login");
+      if (res) {
+        dispatch({
+          type: "cart/addToCart",
+          payload: { ...product, quantity: 1 },
+        });
+        setPopup({ show: true, type: "cart", itemName: product.name });
+      }
+    }
   };
 
   // Handle adding the product to the wishlist
@@ -144,7 +170,7 @@ function ProductDetails() {
                   <ShoppingBag className="w-4 h-4 mr-2" />
                   Add to Cart
                 </button>
-                <Link className="flex-1 btn btn-primary" to={`/place-order/${product.id}`}>
+                <Link className="flex-1 btn btn-primary" to={`/place-order/${product._id}`}>
                   <ShoppingCart className="w-4 h-4 mr-2" />
                   Buy Now
                 </Link>

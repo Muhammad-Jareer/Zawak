@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { SlidersHorizontal, Search } from "lucide-react";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -12,14 +12,23 @@ import SearchBar from "../components/SearchBar";
 import { useNavigate } from "react-router-dom";
 import { Loader } from "../components/Loader";
 import "../index.css";
-import { queryProducts } from "../api/product";
+import {
+  getAllProducts,
+  getFilteredProducts,
+  queryProducts,
+} from "../api/product";
+import { addItemToCart, getCart } from "../api/cart";
+import { toast } from "react-toastify";
+import { initialize } from "../store/slices/cartSlice";
 
 function Shop() {
   const dispatch = useDispatch();
   const location = useLocation();
+  const cartState = useSelector((state) => state.cart);
 
   const [visibleCount, setVisibleCount] = useState(10);
-  const [productsState, setProductsState] = useState(products.slice(0, visibleCount));
+  const [totalCount, setTotalCount] = useState(0)
+  const [productsState, setProductsState] = useState([]);
   const [modalProduct, setModalProduct] = useState(null);
   const [showFilter, setShowFilter] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
@@ -43,23 +52,29 @@ function Shop() {
   }, [location]);
 
   useEffect(() => {
-    const { category, tag, priceRange, sortBy } = filters;
-    if (!category && !tag && !priceRange && !sortBy) return;
-    const filteredProducts = filterProducts();
-    setProductsState(filteredProducts.slice(0, visibleCount));
-    setShowFilter(false);
+    async function f() {
+      const { category, tag, priceRange, sortBy } = filters;
+      if (!category && !tag && !priceRange && !sortBy) return;
+
+      console.log("visible count is: ", visibleCount)
+      const {products, totalCount} = await filterProducts(0, visibleCount);
+      setProductsState(products);
+      setTotalCount(totalCount)
+      setShowFilter(false);
+    }
+    f();
   }, [filters]);
 
   useEffect(() => {
     const asyncfunc = async () => {
-        if (query.trim() === '') {
-            setSearchResults([]);
-        } else {
-            const filteredProducts = await queryProducts(query);
-            console.log("filtered products are : ", filteredProducts)
-            setSearchResults(filteredProducts);
-        }
-    }
+      if (query.trim() === "") {
+        setSearchResults([]);
+      } else {
+        const filteredProducts = await queryProducts(query);
+        console.log("filtered products are : ", filteredProducts);
+        setSearchResults(filteredProducts);
+      }
+    };
     asyncfunc();
   }, [query]);
 
@@ -67,7 +82,8 @@ function Shop() {
     const handleKeyDown = (e) => {
       if (e.key === "ArrowDown") {
         setActiveIndex((prev) => {
-          const newIndex = prev === null || prev === searchResults.length - 1 ? 0 : prev + 1;
+          const newIndex =
+            prev === null || prev === searchResults.length - 1 ? 0 : prev + 1;
           scrollToActiveItem(newIndex);
           return newIndex;
         });
@@ -121,10 +137,27 @@ function Shop() {
     );
   };
 
-  const handleAddToCart = (product) => {
+  const handleAddToCart = async (product) => {
+    if (!cartState) {
+      const cart = await getCart();
+      if (!cart) return;
+      dispatch(
+        initialize({
+          ...cart,
+        })
+      );
+    }
     if (product && product.price) {
-      dispatch({ type: "cart/addToCart", payload: { ...product, quantity: 1 } });
-      setPopup({ show: true, type: "cart", itemName: product.name });
+      const res = await addItemToCart(product);
+      console.log("res is: ", res);
+      if (res === 401) return navigate("/login");
+      if (res) {
+        dispatch({
+          type: "cart/addToCart",
+          payload: { ...product, quantity: 1 },
+        });
+        setPopup({ show: true, type: "cart", itemName: product.name });
+      }
     }
   };
 
@@ -135,159 +168,143 @@ function Shop() {
     }
   };
 
-  const fetchMoreData = () => {
+  const fetchMoreData = async () => {
     const { category, tag, priceRange, sortBy } = filters;
     if (!category && !tag && !priceRange && !sortBy) {
-      setTimeout(() => {
-        setProductsState(productsState.concat(products.slice(visibleCount, visibleCount + 10)));
-        setVisibleCount((prev) => prev + 10);
-      }, 1000);
+      const {products} = await getAllProducts(visibleCount, 10);
+      setProductsState((pre) => pre.concat(products));
+      setVisibleCount((prev) => prev + 10);
       return;
     }
-
-    setTimeout(() => {
-      const filteredProducts = filterProducts();
-      setProductsState((pre) => pre.concat(filteredProducts.slice(visibleCount, visibleCount + 10)));
-      setVisibleCount((prev) => prev + 10);
-    }, 1000);
+    
+    const {products: filteredProducts, totalCount} = await filterProducts(visibleCount, 10);
+    setProductsState((pre) =>
+      pre.concat(filteredProducts)
+    );
+    setVisibleCount((prev) => prev + 10);
     return;
   };
 
-  const hasMore = () => {
+  // INITIAL FETCH
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const {products, totalCount} = await getAllProducts(0, visibleCount);
+      setProductsState((pre) => pre.concat(products));
+      setTotalCount(totalCount)
+    };
+
+    fetchProducts();
+  }, []);
+
+  const filterProducts = async (skip, limit = 10) => {
     const { category, tag, priceRange, sortBy } = filters;
-    if (!category && !tag && !priceRange && !sortBy) return visibleCount < products.length;
+    const pRange = priceRange.split("-")
 
-    const filteredProducts = filterProducts();
-    return visibleCount < filteredProducts.length;
-  };
+    const {products, totalCount} = await getFilteredProducts(
+      category,
+      tag,
+      pRange[0] || '',
+      pRange[1] || '',
+      sortBy,
+      skip,
+      limit
+    );
 
-  const filterProducts = () => {
-    let filteredProducts = [...products];
-
-    if (filters.category) {
-      filteredProducts = filteredProducts.filter(
-        (product) => product.category === filters.category
-      );
-    }
-    if (filters.subCategory) {
-      filteredProducts = filteredProducts.filter(
-        (product) => product.sub_category === filters.subCategory
-      );
-    }
-    if (filters.tag) {
-      filteredProducts = filteredProducts.filter((product) =>
-        product.tags.includes(filters.tag)
-      );
-    }
-    if (filters.priceRange) {
-      const priceRanges = {
-        "$0 - $50": [0, 50],
-        "$50 - $100": [50, 100],
-        "$100 - $150": [100, 150],
-        "$150 - $200+": [150, Infinity],
-      };
-      const [minPrice, maxPrice] = priceRanges[filters.priceRange];
-      filteredProducts = filteredProducts.filter(
-        (product) => product.price >= minPrice && product.price <= maxPrice
-      );
-    }
-
-    if (filters.sortBy === "Price: Low to High") {
-      filteredProducts = filteredProducts.sort((a, b) => a.price - b.price);
-    } else if (filters.sortBy === "Price: High to Low") {
-      filteredProducts = filteredProducts.sort((a, b) => b.price - a.price);
-    } else if (filters.sortBy === "Alphabetical (A-Z)") {
-      filteredProducts = filteredProducts.sort((a, b) =>
-        a.name.localeCompare(b.name)
-      );
-    } else if (filters.sortBy === "Alphabetical (Z-A)") {
-      filteredProducts = filteredProducts.sort((a, b) =>
-        b.name.localeCompare(a.name)
-      );
-    }
-
-    return filteredProducts;
+    return {products, totalCount};
   };
 
   return (
     <div className="container mx-auto px-4 mt-16 relative font-serif">
       <div className="flex justify-between items-center py-2">
-          <h1 className="font-serif text-2xl md:text-3xl lg:text-4xl text-primary-600 mb-6">
+        <h1 className="font-serif text-2xl md:text-3xl lg:text-4xl text-primary-600 mb-6">
           Shop Our Collection
-          </h1>
-          {/* <div className="relative border border-red-400"> */}
+        </h1>
+        {/* <div className="relative border border-red-400"> */}
         {showSearch && (
           <div
             className="fixed inset-0 bg-black bg-opacity-50 z-10"
-            onClick={() => {setShowSearch(false); setQuery('')}}
+            onClick={() => {
+              setShowSearch(false);
+              setQuery("");
+            }}
           />
         )}
-          {showSearch && (<SearchBar
-              query={query}
-              onChange={handleInputChange}
-              inputRef={searchInputRef}
-              className="flex items-center w-[50vw] my-4 shadow-2xl rounded-full overflow-hidden absolute top-10 left-[50%] -translate-x-[50%] z-20 min-w-[300px]"
-          />)}
-          {query && (
-              <div className="absolute top-24 left-[50%] -translate-x-[50%] w-[50vw] mt-1 bg-white text-gray-700 shadow-lg rounded-xl overflow-auto no-scrollbar z-50 max-h-96 min-w-[300px]">
-                  {searchResults.length > 0 ? (
-                      searchResults.map((product, index) => (
-                          <div
-                              key={product._id}
-                              data-index={index}
-                              className={`px-4 py-2 cursor-pointer flex items-center ${
-                                  activeIndex === index ? 'bg-gray-300' : 'hover:bg-gray-100'
-                              }`}
-                              onClick={() => handleProductClick(product._id)}
-                              onMouseEnter={() => setActiveIndex(index)}
-                          >
-                              <img
-                                  src={product.image}
-                                  alt={product.name}
-                                  className="w-10 h-10 object-cover rounded mr-4"
-                              />
-                              <div className="flex flex-col items-start">
-                                  <span>{highlightText(product.name)}</span>
-                                  <span className="text-xs">Categories: {highlightText(product.category || "")}</span>
-                              </div>
-                          </div>
-                      ))
-                  ) : (
-                      <p className="px-4 py-2 text-gray-500">No products found</p>
-                  )}
-        </div>
-    )}
-
-
-          <div className="flex justify-between items-start gap-2 md:gap-4 pb-4">
-            <button
-              onClick={() => setShowSearch(!showSearch)}
-              className="flex items-center gap-2 rounded-xl md:rounded-md text-primary-600 hover:text-primary-600 cursor-pointer border border-primary-300 px-2 md:px-4 py-2 md:py-1"
-            >
-              <Search className="w-4 h-4"/> <span className="hidden md:block">Search</span>
-            </button>
-            <button
-              onClick={() => setShowFilter(!showFilter)}
-              className="flex items-center gap-2 rounded-xl md:rounded-md text-primary-600 hover:text-primary-600 cursor-pointer border border-primary-300 px-2 md:px-4 py-2 md:py-1"
-            >
-              <SlidersHorizontal className="text-primary-600 w-4 h-4" /><span className="hidden md:block">Filter</span>
-            </button>
+        {showSearch && (
+          <SearchBar
+            query={query}
+            onChange={handleInputChange}
+            inputRef={searchInputRef}
+            className="flex items-center w-[50vw] my-4 shadow-2xl rounded-full overflow-hidden absolute top-10 left-[50%] -translate-x-[50%] z-20 min-w-[300px]"
+          />
+        )}
+        {query && (
+          <div className="absolute top-24 left-[50%] -translate-x-[50%] w-[50vw] mt-1 bg-white text-gray-700 shadow-lg rounded-xl overflow-auto no-scrollbar z-50 max-h-96 min-w-[300px]">
+            {searchResults.length > 0 ? (
+              searchResults.map((product, index) => (
+                <div
+                  key={product._id}
+                  data-index={index}
+                  className={`px-4 py-2 cursor-pointer flex items-center ${
+                    activeIndex === index ? "bg-gray-300" : "hover:bg-gray-100"
+                  }`}
+                  onClick={() => handleProductClick(product._id)}
+                  onMouseEnter={() => setActiveIndex(index)}
+                >
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    className="w-10 h-10 object-cover rounded mr-4"
+                  />
+                  <div className="flex flex-col items-start">
+                    <span>{highlightText(product.name)}</span>
+                    <span className="text-xs">
+                      Categories: {highlightText(product.category || "")}
+                    </span>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p className="px-4 py-2 text-gray-500">No products found</p>
+            )}
           </div>
+        )}
+
+        <div className="flex justify-between items-start gap-2 md:gap-4 pb-4">
+          <button
+            onClick={() => setShowSearch(!showSearch)}
+            className="flex items-center gap-2 rounded-xl md:rounded-md text-primary-600 hover:text-primary-600 cursor-pointer border border-primary-300 px-2 md:px-4 py-2 md:py-1"
+          >
+            <Search className="w-4 h-4" />{" "}
+            <span className="hidden md:block">Search</span>
+          </button>
+          <button
+            onClick={() => setShowFilter(!showFilter)}
+            className="flex items-center gap-2 rounded-xl md:rounded-md text-primary-600 hover:text-primary-600 cursor-pointer border border-primary-300 px-2 md:px-4 py-2 md:py-1"
+          >
+            <SlidersHorizontal className="text-primary-600 w-4 h-4" />
+            <span className="hidden md:block">Filter</span>
+          </button>
+        </div>
       </div>
 
       {/* Render the Filter component */}
-      <Filter setShowFilter={setShowFilter} showFilter={showFilter} filters={filters} setFilters={setFilters} />
+      <Filter
+        setShowFilter={setShowFilter}
+        showFilter={showFilter}
+        filters={filters}
+        setFilters={setFilters}
+      />
 
       <InfiniteScroll
         dataLength={productsState.length}
         next={fetchMoreData}
-        hasMore={hasMore()}
+        hasMore={productsState.length < totalCount} 
         loader={<Loader />}
       >
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-8 my-4 lg:my-6 font-sans">
-          {productsState.map((product) => (
+          {productsState.map((product, idx) => (
             <Product
-              key={product.id}
+              key={idx}
               product={product}
               handleAddToCart={handleAddToCart}
               handleAddToWishlist={handleAddToWishlist}
@@ -317,46 +334,3 @@ function Shop() {
 }
 
 export default Shop;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

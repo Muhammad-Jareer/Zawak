@@ -90,8 +90,9 @@ function Profile() {
   //   return <div className="text-red-600">{error}</div>;
   // }
 
-  const logout = () => {
+  const handleLogout = () => {
     localStorage.removeItem('accessToken')
+    dispatch(logout());
     navigate('/login')
   }
 
@@ -110,7 +111,7 @@ function Profile() {
             <p className="text-gray-600">{user?.email}</p>
           </div>
           <button
-            onClick={logout}
+            onClick={handleLogout}
             className="mt-4 sm:mt-0 sm:ml-auto px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition duration-200"
           >
             Sign Out

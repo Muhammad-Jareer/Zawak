@@ -23,11 +23,11 @@ const Product = ({
 
   return (
     <div className="bg-white shadow-md overflow-hidden">
-      <Link to={`/product/${product.id}`} className="relative">
+      <Link to={`/product/${product._id}`} className="relative">
         <ImageComponent src={product.image} alt={product.name} className={'h-36 lg:h-48'} />
       </Link>
       <div className="p-2 sm:p-3 md:p-4">
-        <Link to={`/product/${product.id}`}>
+        <Link to={`/product/${product._id}`}>
           <h2 className="font-medium text-[10px] sm:text-sm lg:text-base mb-2 truncate">
             {product.name}
           </h2>

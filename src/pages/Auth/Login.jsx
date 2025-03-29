@@ -21,13 +21,11 @@ function Login() {
     if(res && res?.status && res?.access_token){
       console.log(res)
       localStorage.setItem('accessToken', res.access_token)
+      dispatch(login({
+        ...res?.user,
+      }));
       navigate('/profile');
     }
-    // dispatch(login({
-    //   id: '1',
-    //   email: formData.email,
-    //   name: 'John Doe',
-    // }));
   };
 
   const handleChange = (e) => {

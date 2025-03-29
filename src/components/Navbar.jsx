@@ -1,17 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { ShoppingBag, Heart, User, Menu, X } from 'lucide-react';
 import Logo from '../assets/logo.png';
+import { get_user } from '../api/auth';
+import { login, logout } from '../store/slices/authSlice';
 
 const Navbar = () => {
-  const cartItems = useSelector((state) => state.cart.items);
+  const cart = useSelector((state) => state.cart);
   const wishlistItems = useSelector((state) => state.wishlist.items);
+
+  const dispatch = useDispatch();
 
   // State to toggle mobile menu visibility
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true); // Track visibility of navbar
   const [lastScrollY, setLastScrollY] = useState(0); // Track last scroll position
+  const user = useSelector(state => state.auth.user)
+
+   useEffect(() => {
+      console.log("user in header is: ", user)
+      if(user) return
+      const getUser = async () => {
+        const user = await get_user();
+        if(!user){
+          console.log('ererojeifjal')
+          dispatch(logout())
+          return;
+        }
+        dispatch(login(user.user))
+      }
+      getUser()
+    }, [user])
 
   // Handle scroll events
   const handleScroll = () => {
@@ -101,7 +121,7 @@ const Navbar = () => {
 
           {/* Desktop Icons (Hidden on small devices) */}
           <div className="hidden md:flex items-center space-x-4">
-            <Link to="/wishlist" className="p-2 hover:text-primary-600 transition-colors relative">
+            {user ? (<><Link to="/wishlist" className="p-2 hover:text-primary-600 transition-colors relative">
               <Heart size={20} />
               {wishlistItems.length > 0 && (
                 <span className="absolute -top-1 -right-1 bg-primary-600 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
@@ -111,15 +131,18 @@ const Navbar = () => {
             </Link>
             <Link to="/cart" className="p-2 hover:text-primary-600 transition-colors relative">
               <ShoppingBag size={20} />
-              {cartItems.length > 0 && (
+              {cart && cart.items.length > 0 && (
                 <span className="absolute -top-1 -right-1 bg-primary-600 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
-                  {cartItems.length}
+                  {cart.items.length}
                 </span>
               )}
             </Link>
             <Link to="/profile" className="p-2 hover:text-primary-600 transition-colors">
               <User size={20} />
-            </Link>
+            </Link></>) : 
+            (
+              <Link to="/login" className='text-gray-600 hover:text-primary-600 transition-colors border border-primary-600 px-3 py-1 rounded-full'>Login</Link>
+            )}
           </div>
         </div>
 
@@ -141,7 +164,7 @@ const Navbar = () => {
           </Link>
 
           {/* Mobile Links Without Icons (Only Names) */}
-          <Link to="/wishlist" className="text-gray-600 hover:text-primary-600 transition-colors" onClick={closeMobileMenu}>
+          {user ? (<><Link to="/wishlist" className="text-gray-600 hover:text-primary-600 transition-colors" onClick={closeMobileMenu}>
             Wishlist
             {wishlistItems.length > 0 && (
               <span className="ml-2 text-xs bg-primary-600 text-white rounded-full px-2">
@@ -151,15 +174,19 @@ const Navbar = () => {
           </Link>
           <Link to="/cart" className="text-gray-600 hover:text-primary-600 transition-colors" onClick={closeMobileMenu}>
             Cart
-            {cartItems.length > 0 && (
+            {cart && cart.items.length > 0 && (
               <span className="ml-2 text-xs bg-primary-600 text-white rounded-full px-2">
-                {cartItems.length}
+                {cart.items.length}
               </span>
             )}
           </Link>
           <Link to="/profile" className="text-gray-600 hover:text-primary-600 transition-colors" onClick={closeMobileMenu}>
             Profile
-          </Link>
+          </Link> </>) : 
+            (
+              <Link to="/login" className='text-gray-600 hover:text-primary-600 transition-colors border border-primary-600 px-3 py-1 rounded-full'>Login</Link>
+            )
+          }
         </div>
       </div>
     </nav>

@@ -27,9 +27,10 @@ const categories = [
 
 const tags = ["featured", "best selling", "top rated"];
 
-const priceRanges = ["$0 - $50", "$50 - $100", "$100 - $150", "$150 - $200+"];
+const priceRanges = ["0 - 50", "50 - 100", "100 - 150", "150 - 200+"];
 
 const sortBy = ["Price: Low to High", "Price: High to Low", "Alphabetical (A-Z)", "Alphabetical (Z-A)"];
+const sortKeywords = ['price_asc', "price_desc", "name_asc", "name_desc"]
 
 const Filter = ({ showFilter, setShowFilter, filters, setFilters }) => {
   const [expandedCategory, setExpandedCategory] = useState(null);
@@ -192,7 +193,13 @@ const Filter = ({ showFilter, setShowFilter, filters, setFilters }) => {
             {sortBy.map((sort) => (
               <li
                 key={sort}
-                onClick={() => handleSortChange(sort)}
+                onClick={() => {
+                  const idx = sortBy.indexOf(sort)
+                  console.log("idx is: ", idx)
+                  const keyword = sortKeywords[idx]
+                  handleSortChange(keyword)
+                }
+                }
                 className={clsx("text-gray-600 hover:text-primary-600 hover:underline cursor-pointer", tempFilters.sortBy === sort && "text-primary-600")}
               >
                 {sort}
