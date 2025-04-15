@@ -26,9 +26,10 @@ export const getProductDetails = async (id) => {
     }
 };
 
-export const getFilteredProducts = async (category, tag, minPrice, maxPrice, sortBy,skip, limit) => {
+export const getFilteredProducts = async (category, subCategory, tag, minPrice, maxPrice, sortBy,skip, limit) => {
     try {
-        const response = await api.get(`/product/fp?category=${category}&tag=${tag}&minPrice=${minPrice}&maxPrice=${maxPrice}&sortBy=${sortBy}&skip=${skip}&limit=${limit}`);
+        const response = await api.get(`/product/fp?category=${category}&subCategory=${subCategory}&tag=${tag}&minPrice=${minPrice}&maxPrice=${maxPrice}&sortBy=${sortBy}&skip=${skip}&limit=${limit}`);
+        console.log("response is: ", response)
         if(response.status === 200){
             console.log(response.data)
             return response.data;

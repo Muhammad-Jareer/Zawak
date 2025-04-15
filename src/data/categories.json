@@ -1,0 +1,46 @@
+[{
+  "_id": "67e7c7956af2eb9dca7e4950",
+  "name": "Fashion",
+  "description": "a basic category.",
+  "sub_categories": [
+    "Clothes",
+    "Decoration",
+    "Jewelry"
+  ]
+},
+{
+  "_id": "67e7c7de6af2eb9dca7e4951",
+  "name": "Home & Living",
+  "description": "a basic category.",
+  "sub_categories": [
+    "Home Decor",
+    "Show Case"
+  ]
+},
+{
+  "_id": "67e7c7e96af2eb9dca7e4952",
+  "name": "Culture",
+  "description": "a basic category.",
+  "sub_categories": [
+    "Beautiful",
+    "Home Use"
+  ]
+},
+{
+  "_id": "67e7c7f86af2eb9dca7e4953",
+  "name": "Textile",
+  "description": "a basic category.",
+  "sub_categories": [
+    "For Home",
+    "Amazing"
+  ]
+},
+{
+  "_id": "67e7c8386af2eb9dca7e4954",
+  "name": "Accessories",
+  "description": "a basic category.",
+  "sub_categories": [
+    "Decoration",
+    "Personal"
+  ]
+}]

@@ -197,11 +197,12 @@ function Shop() {
   }, []);
 
   const filterProducts = async (skip, limit = 10) => {
-    const { category, tag, priceRange, sortBy } = filters;
+    const { category, subCategory, tag, priceRange, sortBy } = filters;
     const pRange = priceRange.split("-")
 
     const {products, totalCount} = await getFilteredProducts(
       category,
+      subCategory,
       tag,
       pRange[0] || '',
       pRange[1] || '',
