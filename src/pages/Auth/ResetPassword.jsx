@@ -3,8 +3,11 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { api_reset_password } from '../../api/auth'; 
 
 function ResetPassword() {
-  const { token } = useParams();
+  const { resetToken } = useParams();
   const navigate = useNavigate();
+
+  console.log("reset token is verified" ,resetToken);
+  
 
   const [formData, setFormData] = useState({
     password: '',
