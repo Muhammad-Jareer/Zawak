@@ -19,6 +19,8 @@ import { ToastContainer } from 'react-toastify';
 import AuthGuard from './guards/AuthGuard';
 import PlaceOrderCart from './pages/PlaceOrderCart';
 import ThankYou from './components/ThankYou';
+import ForgotPassword from './pages/Auth/ForgotPassword';
+import ResetPassword from './pages/Auth/ResetPassword';
 
 function App() {
   return (
@@ -41,6 +43,8 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
