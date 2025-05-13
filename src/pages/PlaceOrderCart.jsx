@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { products } from "../data/products";
-import { CreditCard, Hand, HandCoins } from "lucide-react";
+import { CreditCard, Hand, HandCoins, Loader, Save } from "lucide-react";
 import { getProductDetails } from "../api/product";
 import { useDispatch, useSelector } from "react-redux";
 import { placeOrder } from "../api/order";
@@ -10,6 +10,7 @@ import { get_user } from "../api/auth";
 import { logout } from "../store/slices/authSlice";
 import { getCart } from "../api/cart";
 import { clearCart } from "../store/slices/cartSlice";
+import { api_saveAddress } from "../api/user";
 
 function PlaceOrderCart() {
   const { id } = useParams();
@@ -17,6 +18,7 @@ function PlaceOrderCart() {
   const userState = useSelector((state) => state.auth.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [savingAddress, setSavingAddress] = useState(false)
   const [shippingAddress, setShippingAddress] = useState({
     street: "",
     city: "",
@@ -30,9 +32,18 @@ function PlaceOrderCart() {
     async function f() {
       const cart = await getCart();
       if (cart) setCart(cart);
-      console.log(cart)
     }
     f();
+    
+    if(userState.address){
+      setShippingAddress({
+        street: userState.address.street,
+        city: userState.address.city,
+        knownPlace: userState.address.knownPlace,
+        postalCode: userState.address.postalCode,
+        country: shippingAddress.country,
+      });
+    }
   }, []);
 
   if (!cart) return <div>Not Found</div>;
@@ -101,6 +112,22 @@ function PlaceOrderCart() {
         navigate("/order-done");
     };
   };
+  
+  const saveAddress = async () => {
+    if (
+      shippingAddress.city === "" ||
+      shippingAddress.country === "" ||
+      shippingAddress.knownPlace === "" ||
+      shippingAddress.postalCode === "" ||
+      shippingAddress.street === ""
+    ) {
+      toast.error("Please fill all fields!");
+      return;
+    }
+    setSavingAddress(true);
+    await api_saveAddress(shippingAddress); 
+    setSavingAddress(false);
+  }
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg space-y-6 mt-16 px-10">
@@ -235,6 +262,10 @@ function PlaceOrderCart() {
             />
           </div>
         </form>
+        <button onClick={saveAddress} className="flex-1 btn btn-primary mt-4">
+              {savingAddress ? <Loader className="w-4 h-4 mr-2"/> : <Save className="w-4 h-4 mr-2" /> } 
+              {savingAddress ? "Saving..." : "Save"}
+        </button>
       </div>
 
       {/* <!-- Payment Information --> */}

@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Minus, Plus, Trash2 } from 'lucide-react';
 import { removeFromCart, updateQuantity, initialize } from '../store/slices/cartSlice';
-import { getCart, removeItemFromCart } from '../api/cart';
+import { api_updateQuantity, getCart, removeItemFromCart } from '../api/cart';
 
 function Cart() {
   const dispatch = useDispatch();
@@ -25,8 +25,9 @@ function Cart() {
     }
     f();    
 
-  const handleUpdateQuantity = (id, quantity) => {
-    if (quantity < 1) return;
+  const handleUpdateQuantity = (id, operation, quantity) => {
+    const res = api_updateQuantity(id, operation)
+    if(res)
     dispatch(updateQuantity({ id, quantity }));
   };
 
@@ -68,20 +69,20 @@ function Cart() {
               </div>
               <div className="flex items-center space-x-2">
                 <button
-                  onClick={() => handleUpdateQuantity(item?.productId._id, item.quantity - 1)}
+                  onClick={() => handleUpdateQuantity(item?.productId._id, 'decrement', item?.quantity - 1)}
                   className="p-1 rounded-md border"
                 >
                   <Minus className="w-4 h-4" />
                 </button>
                 <span className="w-8 text-center">{item?.quantity}</span>
                 <button
-                  onClick={() => handleUpdateQuantity(item.productId._id, item.quantity + 1)}
+                  onClick={() => handleUpdateQuantity(item?.productId._id, 'increment', item?.quantity + 1)}
                   className="p-1 rounded-md border"
                 >
                   <Plus className="w-4 h-4" />
                 </button>
                 <button
-                  onClick={() => handleRemoveItem(item.productId._id)}
+                  onClick={() => handleRemoveItem(item?.productId._id)}
                   className="p-1 rounded-md text-red-500 hover:bg-red-50"
                 >
                   <Trash2 className="w-4 h-4" />

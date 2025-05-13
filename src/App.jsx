@@ -21,6 +21,7 @@ import PlaceOrderCart from './pages/PlaceOrderCart';
 import ThankYou from './components/ThankYou';
 import ForgotPassword from './pages/Auth/ForgotPassword';
 import ResetPassword from './pages/Auth/ResetPassword';
+import PayOnlineMain from './pages/PayOnlineMain';
 
 function App() {
   return (
@@ -44,7 +45,8 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/reset-password/:resetToken" element={<ResetPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
+          <Route path="/payonline-easyjazz" element={<PayOnlineMain />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>

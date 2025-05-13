@@ -3,10 +3,8 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { api_reset_password } from '../../api/auth'; 
 
 function ResetPassword() {
-  const { resetToken } = useParams();
+  const { token } = useParams();
   const navigate = useNavigate();
-
-  console.log("reset token is verified" ,resetToken);
   
 
   const [formData, setFormData] = useState({
@@ -31,7 +29,7 @@ function ResetPassword() {
 
     setSubmitting(true);
     try {
-      const res = await api_reset_password({ token, password: formData.password });
+      const res = await api_reset_password( token, formData.password );
       if (res) {
         setMessage('Password changed successfully.');
         navigate('/login')

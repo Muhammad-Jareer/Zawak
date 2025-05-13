@@ -52,7 +52,7 @@ export const api_login = async (credentials) => {
 
 export const forget_password = async (email) => {
     try {
-        const response = await api.post('/auth/forgot-password', password);
+        const response = await api.post('/auth/forgot-password', email);
         if(response.status === 200) {
             toast.success("Please! Check your email")
             return true
@@ -63,9 +63,10 @@ export const forget_password = async (email) => {
     }
 }
 
-export const api_reset_password = async (password) => {
+export const api_reset_password = async (token, pass) => {
+    console.log(token, pass)
     try {
-        const response = await api.post('/auth/reset-password', password);
+        const response = await api.post('/auth/reset-password', { token, pass });
         if(response.status === 200) {
             toast.success("You have successfully reset the password")
             return true

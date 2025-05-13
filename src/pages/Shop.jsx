@@ -240,7 +240,7 @@ function Shop() {
         )}
         {query && (
           <div className="absolute top-24 left-[50%] -translate-x-[50%] w-[50vw] mt-1 bg-white text-gray-700 shadow-lg rounded-xl overflow-auto no-scrollbar z-50 max-h-96 min-w-[300px]">
-            {searchResults.length > 0 ? (
+            {(searchResults && searchResults.length > 0) ? (
               searchResults.map((product, index) => (
                 <div
                   key={product._id}
