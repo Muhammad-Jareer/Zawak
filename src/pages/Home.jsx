@@ -130,7 +130,7 @@ function Home() {
                             />
                             {query && (
                                 <div className="absolute top-full w-full mt-1 bg-white text-gray-700 shadow-lg no-scrollbar rounded-xl overflow-auto z-50 h-64">
-                                    {searchResults.length > 0 ? (
+                                    {searchResults && searchResults.length > 0 ? (
                                         searchResults.map((product, index) => (
                                             <div
                                                 key={product._id}
