@@ -9,11 +9,12 @@ import { toast } from "react-toastify";
 import { get_user } from "../api/auth";
 import { logout } from "../store/slices/authSlice";
 import { api_saveAddress } from "../api/user";
+import { useAuth } from "../hooks/useAuth";
 
 function PlaceOrder() {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
-  const userState = useSelector((state) => state.auth.user);
+  const [user, isAuthenticated] = useAuth("placeorder");
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [savingAddress, setSavingAddress] = useState(false)
@@ -33,12 +34,12 @@ function PlaceOrder() {
     }
     f();
     
-    if(userState.address){
+    if(user){
       setShippingAddress({
-        street: userState.address.street,
-        city: userState.address.city,
-        knownPlace: userState.address.knownPlace,
-        postalCode: userState.address.postalCode,
+        street: user.address.street,
+        city: user.address.city,
+        knownPlace: user.address.knownPlace,
+        postalCode: user.address.postalCode,
         country: shippingAddress.country,
       });
     }
@@ -55,19 +56,12 @@ function PlaceOrder() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    let user;
-    if (!userState) {
-      user = await get_user();
-      if (!user) {
-        toast.error("please login!")
-        dispatch(logout());
-        return;
-      }
-      dispatch(login(user.user));
+    if (!user) {
+      return
     }
     const { city, country, knownPlace, postalCode, street } = shippingAddress;
     if (
-      !userState ||
+      !user ||
       city === "" ||
       country === "" ||
       knownPlace === "" ||
@@ -76,7 +70,7 @@ function PlaceOrder() {
     )
       return;
     const formData = {
-      user: userState._id || user._id,
+      user: user._id,
       items: [
         {
           product: product._id,
