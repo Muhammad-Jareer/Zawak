@@ -1,58 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, Link } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { ShoppingBag, Heart, User, Menu, X } from 'lucide-react';
 import Logo from '../assets/logo.png';
-import { get_user } from '../api/auth';
-import { login, logout } from '../store/slices/authSlice';
+import { useAuth } from '../hooks/useAuth';
 
 const Navbar = () => {
   const cart = useSelector((state) => state.cart);
   const wishlistItems = useSelector((state) => state.wishlist.items);
-
-  const dispatch = useDispatch();
+  const [user, isAuthenticated, loading] = useAuth("nav");
 
   // State to toggle mobile menu visibility
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true); // Track visibility of navbar
   const [lastScrollY, setLastScrollY] = useState(0); // Track last scroll position
-  const user = useSelector(state => state.auth.user)
-
-   useEffect(() => {
-      console.log("user in header is: ", user)
-      if(user) return
-      const getUser = async () => {
-        const user = await get_user();
-        if(!user){
-          console.log('ererojeifjal')
-          dispatch(logout())
-          return;
-        }
-        dispatch(login(user.user))
-      }
-      getUser()
-    }, [user])
 
   // Handle scroll events
   const handleScroll = () => {
     if (window.scrollY > lastScrollY) {
-      // User is scrolling down, hide navbar
       setIsVisible(false);
     } else {
-      // User is scrolling up, show navbar
       setIsVisible(true);
     }
-    setLastScrollY(window.scrollY); // Update scroll position
+    setLastScrollY(window.scrollY); 
   };
 
   useEffect(() => {
     window.addEventListener('scroll', handleScroll); // Add scroll event listener
     return () => {
-      window.removeEventListener('scroll', handleScroll); // Clean up event listener on unmount
+      window.removeEventListener('scroll', handleScroll); 
     };
-  }, [lastScrollY]); // Re-run when the scroll position changes
+  }, [lastScrollY]); 
 
-  // Function to close the mobile menu when a link is clicked
   const closeMobileMenu = () => setIsMobileMenuOpen(false);
 
   return (
@@ -121,7 +100,8 @@ const Navbar = () => {
 
           {/* Desktop Icons (Hidden on small devices) */}
           <div className="hidden md:flex items-center space-x-4">
-            {user ? (<><Link to="/wishlist" className="p-2 hover:text-primary-600 transition-colors relative">
+          {loading && <img src='/circleLoader.gif' alt='Loading...' className='w-10 h-10' />}
+            {(!loading && isAuthenticated) && (<><Link to="/wishlist" className="p-2 hover:text-primary-600 transition-colors relative">
               <Heart size={20} />
               {wishlistItems.length > 0 && (
                 <span className="absolute -top-1 -right-1 bg-primary-600 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
@@ -139,10 +119,9 @@ const Navbar = () => {
             </Link>
             <Link to="/profile" className="p-2 hover:text-primary-600 transition-colors">
               <User size={20} />
-            </Link></>) : 
-            (
-              <Link to="/login" className='text-gray-600 hover:text-primary-600 transition-colors border border-primary-600 px-3 py-1 rounded-full'>Login</Link>
-            )}
+            </Link></>)
+          }
+          {(!loading && !isAuthenticated) && <Link to="/login" className='text-gray-600 hover:text-primary-600 transition-colors border border-primary-600 px-3 py-1 rounded-full'>Login</Link>}
           </div>
         </div>
 
@@ -164,7 +143,8 @@ const Navbar = () => {
           </Link>
 
           {/* Mobile Links Without Icons (Only Names) */}
-          {user ? (<><Link to="/wishlist" className="text-gray-600 hover:text-primary-600 transition-colors" onClick={closeMobileMenu}>
+          {loading && <img src='/circleLoader.gif' alt='Loading...' className='w-10 h-10' />}
+          {(!loading && isAuthenticated) && (<><Link to="/wishlist" className="text-gray-600 hover:text-primary-600 transition-colors" onClick={closeMobileMenu}>
             Wishlist
             {wishlistItems.length > 0 && (
               <span className="ml-2 text-xs bg-primary-600 text-white rounded-full px-2">
@@ -182,11 +162,11 @@ const Navbar = () => {
           </Link>
           <Link to="/profile" className="text-gray-600 hover:text-primary-600 transition-colors" onClick={closeMobileMenu}>
             Profile
-          </Link> </>) : 
-            (
-              <Link to="/login" className='text-gray-600 hover:text-primary-600 transition-colors border border-primary-600 px-3 py-1 rounded-full'>Login</Link>
-            )
-          }
+          </Link> </>)
+            }
+            
+             {!loading && !isAuthenticated && <Link to="/login" className='text-gray-600 hover:text-primary-600 transition-colors border border-primary-600 px-3 py-1 rounded-full'>Login</Link>}
+            
         </div>
       </div>
     </nav>

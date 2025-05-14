@@ -33,7 +33,7 @@ export const get_user = async () => {
             return response.data
         return null
     } catch (error) {
-        console.log("error white getting user: ", error)
+        // console.log("error while getting user ", error)
     }
 }
 

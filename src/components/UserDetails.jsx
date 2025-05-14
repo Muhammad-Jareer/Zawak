@@ -1,6 +1,3 @@
-// src/components/UserDetails.jsx
-import React from 'react';
-
 const UserDetails = ({ formData, handleInputChange, editMode, handleSaveProfile, setEditMode }) => {
   return (
     <div className="bg-white rounded-lg shadow-md p-6 min-h-[400px] overflow-y-auto">

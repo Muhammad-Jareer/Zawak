@@ -24,7 +24,7 @@ function Login() {
       dispatch(login({
         ...res?.user,
       }));
-      navigate('/profile');
+      navigate('/shop');
     }
   };
 

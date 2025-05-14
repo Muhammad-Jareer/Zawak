@@ -27,3 +27,6 @@ function AuthGuard({ children }) {
 }
 
 export default AuthGuard;
+
+
+// I think new auth check from db is more ok then useAuth

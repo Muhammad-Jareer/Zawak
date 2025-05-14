@@ -2,30 +2,21 @@ import React, { useEffect, useState } from 'react';
 import { getUserOrders } from '../api/order';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { useAuth } from '../hooks/useAuth';
 
 const Orders = () => {
   // Sample orders data
   const [orders, setOrders] = useState([]);
   const navigate = useNavigate();
-  const userState = useSelector(state => state.auth.user)
+  const [user] = useAuth()
+
 
   useEffect(() => {
     async function f() {
-      let user;
-      if (!userState) {
-            user = await get_user();
-            if (!user) {
-              console.log("ererojeifjal");
-              dispatch(logout());
-              return;
-            }
-            dispatch(login(user.user));
-      }
-      console.log("user state in orders is: ", userState)
-      const userOrders = await getUserOrders(userState._id);
+      const userOrders = await getUserOrders(user._id);
       if(userOrders === 'NOT_AUTHENTICATED') return navigate("/login")
       if(userOrders) setOrders(userOrders)
-      console.log(userOrders)
+      console.log(" user orders are: ", userOrders)
     }
     f();
   }, [])
