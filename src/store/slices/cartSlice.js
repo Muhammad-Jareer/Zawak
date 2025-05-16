@@ -29,10 +29,15 @@ export const cartSlice = createSlice({
     },
     removeFromCart: (state, action) => {
       console.log("remove payload is: ", action.payload)
-      state.items = state.items.filter(item => {console.log("item is: ", item); if(item.id !== action.payload) return item});
+      state.items = state.items.filter(item => {console.log("item is: ", item); if(item.productId._id !== action.payload) return item});
     },
     updateQuantity: (state, action) => {
-      const item = state.items.find(item => item.id === action.payload.id);
+      if(action.payload.quantity < 1) 
+        return;
+      
+      console.log("update payload is: ", action.payload)
+      const item = state.items.find(item => {console.log("item is: ", item); if(item.productId._id === action.payload.id)return item });
+      console.log("item is: ", item)
       if (item) {
         item.quantity = action.payload.quantity;
       }

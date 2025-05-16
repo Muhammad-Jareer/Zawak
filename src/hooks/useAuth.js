@@ -8,7 +8,6 @@ export const useAuth = (componentName) => {
   const { user, isAuthenticated, loading } = useSelector((state) => state.auth);
   const [error, setError] = useState(null);
   const dispatch = useDispatch();
-  console.log("useAuth hook is called", componentName);
 
   useEffect(() => {
     if (user) {
@@ -16,10 +15,10 @@ export const useAuth = (componentName) => {
     }
     const fetch = async () => {
       if (!user) {
-        console.log("Fetching user ...", componentName);
         const res = await get_user();
         if (res) {
           dispatch(login(res.user));
+          console.log("User fetched from API", res.user);
           return;
         } else {
           dispatch(logout());

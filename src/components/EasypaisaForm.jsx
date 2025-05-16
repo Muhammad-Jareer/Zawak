@@ -1,11 +1,13 @@
 import { useState } from "react";
 import axios from "axios";
 import api from "../lib/api";
+import { useNavigate } from "react-router-dom";
 
 const EasypaisaForm = ({orderId}) => {
   const [formData, setFormData] = useState({ transId: "", accountName: "" });
   const [file, setFile] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -32,6 +34,9 @@ const EasypaisaForm = ({orderId}) => {
       });
 
       console.log(res.data);
+      if(res.status){
+        navigate("/order-done");
+      }
     } catch (error) {
       console.error("Upload error:", error);
     } finally {

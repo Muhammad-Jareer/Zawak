@@ -18,13 +18,12 @@ import {
   queryProducts,
 } from "../api/product";
 import { addItemToCart, getCart } from "../api/cart";
-import { toast } from "react-toastify";
-import { initialize } from "../store/slices/cartSlice";
+import { useCart } from "../hooks/useCart";
 
 function Shop() {
   const dispatch = useDispatch();
   const location = useLocation();
-  const cartState = useSelector((state) => state.cart);
+  const { cart } = useCart();
 
   const [visibleCount, setVisibleCount] = useState(10);
   const [totalCount, setTotalCount] = useState(0)
@@ -138,15 +137,6 @@ function Shop() {
   };
 
   const handleAddToCart = async (product) => {
-    if (!cartState) {
-      const cart = await getCart();
-      if (!cart) return;
-      dispatch(
-        initialize({
-          ...cart,
-        })
-      );
-    }
     if (product && product.price) {
       const res = await addItemToCart(product);
       console.log("res is: ", res);

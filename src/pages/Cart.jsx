@@ -4,26 +4,15 @@ import { Link } from 'react-router-dom';
 import { Minus, Plus, Trash2 } from 'lucide-react';
 import { removeFromCart, updateQuantity, initialize } from '../store/slices/cartSlice';
 import { api_updateQuantity, getCart, removeItemFromCart } from '../api/cart';
+import { useCart } from '../hooks/useCart';
 
 function Cart() {
   const dispatch = useDispatch();
-  // const cartItems = useSelector((state) => state.cart.items);
-  const cartState = useSelector((state) => state.cart)
+  const {cart} = useCart();
 
   useEffect(() => {
           window.scrollTo(0, 0);
-  }, [cartState]);
-
-    async function f() {
-      if(!cartState){
-        const cart = await getCart();
-        if(!cart) return;
-        dispatch(initialize({
-          ...cart
-        }))
-      }     
-    }
-    f();    
+  }, [cart]);  
 
   const handleUpdateQuantity = (id, operation, quantity) => {
     const res = api_updateQuantity(id, operation)
@@ -32,13 +21,12 @@ function Cart() {
   };
 
   const handleRemoveItem = async (id) => {
-    console.log("item to del is: ", id)
     const res = await removeItemFromCart(id)
     if(res)
      dispatch(removeFromCart(id));
   };
 
-  if (!cartState || cartState.items.length === 0) {
+  if (!cart || cart.items.length === 0) {
     return (
       <div className="container mx-auto px-4 text-center py-16 mt-16">
         <h1 className="font-serif text-3xl mb-4">Your Cart is Empty</h1>
@@ -56,7 +44,7 @@ function Cart() {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div className="md:col-span-2 space-y-4">
-          {cartState && cartState.items && cartState?.items.map((item, idx) => (
+          {cart && cart.items && cart?.items.map((item, idx) => (
             <div key={idx} className="bg-white rounded-lg shadow-md p-4 flex items-center">
               <img
                 src={item?.productId?.image}
@@ -97,7 +85,7 @@ function Cart() {
           <div className="space-y-2 mb-4">
             <div className="flex justify-between">
               <span>Subtotal</span>
-              <span>${(cartState.items.reduce((sum, item) => sum + item.price, 0)).toFixed(2)}</span>
+              <span>${(cart.items.reduce((sum, item) => sum + item.price, 0)).toFixed(2)}</span>
             </div>
             <div className="flex justify-between">
               <span>Shipping</span>
@@ -107,7 +95,7 @@ function Cart() {
           <div className="border-t pt-4 mb-6">
             <div className="flex justify-between font-semibold">
               <span>Total</span>
-              <span>${(cartState.items.reduce((sum, item) => sum + item.price, 0)).toFixed(2)}</span>
+              <span>${(cart.items.reduce((sum, item) => sum + item.price, 0)).toFixed(2)}</span>
             </div>
           </div>
           <Link to="/place-order-cart" className="w-full btn btn-primary">

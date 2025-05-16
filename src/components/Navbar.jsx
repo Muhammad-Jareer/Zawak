@@ -4,9 +4,11 @@ import { useSelector } from 'react-redux';
 import { ShoppingBag, Heart, User, Menu, X } from 'lucide-react';
 import Logo from '../assets/logo.png';
 import { useAuth } from '../hooks/useAuth';
+import { useCart } from '../hooks/useCart';
 
 const Navbar = () => {
-  const cart = useSelector((state) => state.cart);
+  const {cart, cartLoading} = useCart()
+  console.log("cart loading is ", cartLoading)
   const wishlistItems = useSelector((state) => state.wishlist.items);
   const [user, isAuthenticated, loading] = useAuth("nav");
 
@@ -100,7 +102,7 @@ const Navbar = () => {
 
           {/* Desktop Icons (Hidden on small devices) */}
           <div className="hidden md:flex items-center space-x-4">
-          {loading && <img src='/circleLoader.gif' alt='Loading...' className='w-10 h-10' />}
+          {loading && <img src='/circleLoader.gif' alt='Loading...' className='w-6 h-6' />}
             {(!loading && isAuthenticated) && (<><Link to="/wishlist" className="p-2 hover:text-primary-600 transition-colors relative">
               <Heart size={20} />
               {wishlistItems.length > 0 && (
@@ -111,9 +113,10 @@ const Navbar = () => {
             </Link>
             <Link to="/cart" className="p-2 hover:text-primary-600 transition-colors relative">
               <ShoppingBag size={20} />
-              {cart && cart.items.length > 0 && (
+              {cartLoading && !cart && <img src='/circleLoader.gif' alt='Loading...' className='w-4 h-4' />}
+              {!cartLoading && cart && cart?.items.length > 0 && (
                 <span className="absolute -top-1 -right-1 bg-primary-600 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
-                  {cart.items.length}
+                  {cart?.items.length}
                 </span>
               )}
             </Link>

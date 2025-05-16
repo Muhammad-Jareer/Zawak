@@ -26,7 +26,6 @@ export const getCart = async (item) => {
         }
     } catch (error) {
         console.log(error)
-        toast.error("Something went wrong!")
     }
 };
 

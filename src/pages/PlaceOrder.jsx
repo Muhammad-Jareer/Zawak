@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { products } from "../data/products";
-import { CreditCard, Hand, HandCoins, Loader, Loader2, Save } from "lucide-react";
+import { CreditCard, Hand, HandCoins, Loader, Save } from "lucide-react";
 import { getProductDetails } from "../api/product";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { placeOrder } from "../api/order";
 import { toast } from "react-toastify";
-import { get_user } from "../api/auth";
-import { logout } from "../store/slices/authSlice";
 import { api_saveAddress } from "../api/user";
 import { useAuth } from "../hooks/useAuth";
 
@@ -16,7 +13,6 @@ function PlaceOrder() {
   const [product, setProduct] = useState(null);
   const [user, isAuthenticated] = useAuth("placeorder");
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const [savingAddress, setSavingAddress] = useState(false)
   const [shippingAddress, setShippingAddress] = useState({
     street: "",
@@ -92,7 +88,7 @@ function PlaceOrder() {
       return;
     }
     if(makeOrder && paymentMethod === "ONLINE"){
-      navigate(`payonline-easyjazz?orderId=${makeOrder._id}`);
+      navigate(`/payonline-easyjazz?orderId=${makeOrder._id}`);
       return;
     }
     if (makeOrder) {

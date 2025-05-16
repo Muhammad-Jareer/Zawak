@@ -1,10 +1,13 @@
 import { useState } from "react";
 import axios from "axios";
+import api from "../lib/api";
+import { useNavigate } from "react-router-dom";
 
-const BankAccountForm = () => {
+const EasypaisaForm = ({orderId}) => {
   const [formData, setFormData] = useState({ transId: "", accountName: "" });
   const [file, setFile] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -21,14 +24,19 @@ const BankAccountForm = () => {
     try {
       const fData = new FormData();
       fData.append("image", file);
-      fData.append("transId", formData.transId);
-      fData.append("accountName", formData.accountName);
+      fData.append("transactionId", formData.transId);
+      fData.append("senderAccountName", formData.accountName);
+      fData.append("orderId", orderId);
+      fData.append("paymentMethod", "BANKACCOUNT");
 
-      const res = await axios.post('http://localhost:8000/api/v1/payment/pay', fData, {
+      const res = await api.post('http://localhost:8000/api/v1/payment/pay', fData, {
         headers: { "Content-Type": "multipart/form-data" }
       });
 
       console.log(res.data);
+      if(res.status){
+        navigate("/order-done");
+      }
     } catch (error) {
       console.error("Upload error:", error);
     } finally {
@@ -76,7 +84,7 @@ const BankAccountForm = () => {
 
         <div className=" lg:min-w-[50%] flex flex-col justify-center items-center">
           <h2 className="text-2xl font-bold font-sans text-center my-2">Sample Screenshot</h2>
-          <img src="/bankaccountsample.jpg" alt="Screenshot Sample Image" className="h-[700px] w-[400px]" />
+          <img src="/jazzcash-sample-screenshot.jpg" alt="Screenshot Sample Image" className="h-[700px] w-[400px]" />
         </div>
       </div>
 
@@ -118,4 +126,4 @@ const BankAccountForm = () => {
   );
 };
 
-export default BankAccountForm;
+export default EasypaisaForm;

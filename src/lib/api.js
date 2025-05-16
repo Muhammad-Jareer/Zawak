@@ -8,15 +8,6 @@ const api = axios.create({
   }, 
 });
 
-api.interceptors.request.use((req)=> {
-  const accessToken = localStorage.getItem('accessToken');
-  if(accessToken){
-    req.headers.Authorization = `Bearer ${accessToken}`
-  }
-
-  return req;
-})
-
 // Request Interceptor: Attach access token
 api.interceptors.request.use((req) => {
   const accessToken = localStorage.getItem('accessToken');

@@ -11,14 +11,15 @@ import { logout } from "../store/slices/authSlice";
 import { getCart } from "../api/cart";
 import { clearCart } from "../store/slices/cartSlice";
 import { api_saveAddress } from "../api/user";
+import { useAuth } from "../hooks/useAuth";
 
 function PlaceOrderCart() {
   const { id } = useParams();
   const [cart, setCart] = useState(null);
-  const userState = useSelector((state) => state.auth.user);
+  const [user, isAuthenticated] = useAuth("PlaceOrderCart");
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [savingAddress, setSavingAddress] = useState(false)
+  const [savingAddress, setSavingAddress] = useState(false);
   const [shippingAddress, setShippingAddress] = useState({
     street: "",
     city: "",
@@ -34,13 +35,13 @@ function PlaceOrderCart() {
       if (cart) setCart(cart);
     }
     f();
-    
-    if(userState.address){
+
+    if (user) {
       setShippingAddress({
-        street: userState.address.street,
-        city: userState.address.city,
-        knownPlace: userState.address.knownPlace,
-        postalCode: userState.address.postalCode,
+        street: user.address.street,
+        city: user.address.city,
+        knownPlace: user.address.knownPlace,
+        postalCode: user.address.postalCode,
         country: shippingAddress.country,
       });
     }
@@ -57,19 +58,12 @@ function PlaceOrderCart() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    let user;
-    if (!userState) {
-      user = await get_user();
-      if (!user) {
-        toast.error("please login!");
-        dispatch(logout());
-        return;
-      }
-      dispatch(login(user.user));
+    if (!user) {
+      return
     }
     const { city, country, knownPlace, postalCode, street } = shippingAddress;
     if (
-      !userState ||
+      !user ||
       city === "" ||
       country === "" ||
       knownPlace === "" ||
@@ -78,26 +72,26 @@ function PlaceOrderCart() {
     )
       return;
     const formData = {
-      user: userState._id || user._id,
-        items: [
+      user: user._id || user._id,
+      items: [
         //   {
         //     product: product._id,
         //     quantity: 1,
         //     price: product.price,
         //   },
-        ],
-        totalAmount: cart.total,
-        shippingAddress,
-        paymentMethod,
-        price: cart.total,
+      ],
+      totalAmount: cart.total,
+      shippingAddress,
+      paymentMethod,
+      price: cart.total,
     };
 
-    cart.items.forEach(item => {
-        formData.items.push({
-            product: item.productId._id,
-            quantity: item.quantity,
-            price: item.total
-        })
+    cart.items.forEach((item) => {
+      formData.items.push({
+        product: item.productId._id,
+        quantity: item.quantity,
+        price: item.total,
+      });
     });
 
     console.log("formdata is: ", formData);
@@ -107,12 +101,16 @@ function PlaceOrderCart() {
       navigate("/login");
       return;
     }
+    if (makeOrder && paymentMethod === "ONLINE") {
+      navigate(`/payonline-easyjazz?orderId=${makeOrder._id}`);
+      return;
+    }
     if (makeOrder) {
-        dispatch(clearCart())
-        navigate("/order-done");
-    };
+      dispatch(clearCart());
+      navigate("/order-done");
+    }
   };
-  
+
   const saveAddress = async () => {
     if (
       shippingAddress.city === "" ||
@@ -125,9 +123,9 @@ function PlaceOrderCart() {
       return;
     }
     setSavingAddress(true);
-    await api_saveAddress(shippingAddress); 
+    await api_saveAddress(shippingAddress);
     setSavingAddress(false);
-  }
+  };
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg space-y-6 mt-16 px-10">
@@ -263,8 +261,12 @@ function PlaceOrderCart() {
           </div>
         </form>
         <button onClick={saveAddress} className="flex-1 btn btn-primary mt-4">
-              {savingAddress ? <Loader className="w-4 h-4 mr-2"/> : <Save className="w-4 h-4 mr-2" /> } 
-              {savingAddress ? "Saving..." : "Save"}
+          {savingAddress ? (
+            <Loader className="w-4 h-4 mr-2" />
+          ) : (
+            <Save className="w-4 h-4 mr-2" />
+          )}
+          {savingAddress ? "Saving..." : "Save"}
         </button>
       </div>
 
@@ -275,12 +277,6 @@ function PlaceOrderCart() {
         </h3>
         <form action="#" method="POST" className="space-y-4 mt-4">
           <div className="space-y-2">
-            <label
-              htmlFor="paymentMethod"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Just COD available for now
-            </label>
             <div className="flex gap-2 flex-wrap justify-center max-w-3xl p-4 md:p-12">
               <button
                 type="button"
@@ -288,6 +284,16 @@ function PlaceOrderCart() {
               >
                 <HandCoins />
                 Pay On Delivery
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setPaymentMethod("ONLINE");
+                }}
+                className="text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40 me-2 mb-2"
+              >
+                <CreditCard />
+                Pay Online (Easypaisa JazzCash)
               </button>
             </div>
           </div>
