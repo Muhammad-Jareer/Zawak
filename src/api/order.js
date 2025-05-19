@@ -30,3 +30,20 @@ export const getUserOrders = async (id) => {
         toast.error("Something went wrong!")
     }
 };
+
+export const cancelOrder = async (id) => {
+    console.log("id is: ", id)
+    if(!id) return
+    console.log("making request to: ", `/order/${id}/cancel`)
+    try {
+        const response = await api.patch(`/order/${id}/cancel`);
+        if(response.data.status){
+            return true
+        }
+        console.log("res is: ", response.data)
+    } catch (error) {
+        console.log(error)
+        toast.error("Something went wrong!")
+        return false
+    }
+};
