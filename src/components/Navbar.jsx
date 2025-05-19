@@ -5,6 +5,7 @@ import { ShoppingBag, Heart, User, Menu, X } from 'lucide-react';
 import Logo from '../assets/logo.png';
 import { useAuth } from '../hooks/useAuth';
 import { useCart } from '../hooks/useCart';
+import { Loader2 } from 'lucide-react';
 
 const Navbar = () => {
   const {cart, cartLoading} = useCart()
@@ -102,7 +103,7 @@ const Navbar = () => {
 
           {/* Desktop Icons (Hidden on small devices) */}
           <div className="hidden md:flex items-center space-x-4">
-          {loading && <img src='/circleLoader.gif' alt='Loading...' className='w-6 h-6' />}
+          {loading && <Loader2 className='w-6 h-6 animate-spin' />}
             {(!loading && isAuthenticated) && (<><Link to="/wishlist" className="p-2 hover:text-primary-600 transition-colors relative">
               <Heart size={20} />
               {wishlistItems.length > 0 && (
@@ -112,8 +113,8 @@ const Navbar = () => {
               )}
             </Link>
             <Link to="/cart" className="p-2 hover:text-primary-600 transition-colors relative">
-              <ShoppingBag size={20} />
-              {cartLoading && !cart && <img src='/circleLoader.gif' alt='Loading...' className='w-4 h-4' />}
+              
+              {cartLoading ? <Loader2 className='w-4 h-4 animate-spin' /> : <ShoppingBag size={20} />}
               {!cartLoading && cart && cart?.items.length > 0 && (
                 <span className="absolute -top-1 -right-1 bg-primary-600 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
                   {cart?.items.length}

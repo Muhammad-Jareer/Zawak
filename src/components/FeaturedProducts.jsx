@@ -9,6 +9,8 @@ import 'swiper/css'
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import { getFeaturedProducts } from "../api/product.js";
+import { addItemToCart } from "../api/cart.js";
+import FeaturedProductsSkeleton from "./skeletons/FeaturedProductsSkeleton.jsx";
 
 const FeaturedProducts = ({}) => {
     const dispatch = useDispatch();
@@ -21,6 +23,7 @@ const FeaturedProducts = ({}) => {
         if (window.innerWidth >= 425) return 3;
         return 2; // For screens up to 425px
       };
+    const [loading, setLoading] = useState(false)
     
     const [slidesPerView, setSlidesPerView] = useState(getSlidesPerView);
 
@@ -38,6 +41,7 @@ const FeaturedProducts = ({}) => {
     useEffect(() => {
         // fetch the products
         const asyncfunc = async () => {
+            setLoading(true)
             const featuredProducts = await getFeaturedProducts();
             if(featuredProducts === 'ERROR'){
                 setErrorOccured(true)
@@ -45,17 +49,10 @@ const FeaturedProducts = ({}) => {
             }
             if(featuredProducts)
                 setFeaturedProducts(featuredProducts);
+            setLoading(false)
         };
         asyncfunc();
     }, []);
-        
-
-    const handleAddToCart = (product) => {
-        if (product && product.price) {
-          dispatch({ type: "cart/addToCart", payload: { ...product, quantity: 1 } });
-          setPopup({ show: true, type: "cart", itemName: product.name });
-        }
-      };
     
     const handleAddToWishlist = (product) => {
         if (product && product.name) {
@@ -65,6 +62,9 @@ const FeaturedProducts = ({}) => {
     };
         
 
+    if(loading){
+        return <FeaturedProductsSkeleton />
+    }
 
   return (
     <div className="relative">
@@ -82,7 +82,6 @@ const FeaturedProducts = ({}) => {
                     <Product
                         key={product._id}
                         product={product}
-                        handleAddToCart={handleAddToCart}
                         handleAddToWishlist={handleAddToWishlist}
                         enableButtons={false}
                     />

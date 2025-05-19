@@ -2,15 +2,20 @@ import { Heart, ShoppingBag, Eye } from "lucide-react";
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import ImageComponent from "./ImageComponent";
+import { addItemToCart } from "../api/cart";
+import { useNavigate } from "react-router-dom";
+import { useCart } from "../hooks/useCart";
+import { Loader2 } from "lucide-react";
 
 const Product = ({
   product,
-  handleAddToCart,
   handleAddToWishlist,
   setModalProduct,
   enableButtons,
 }) => {
   const [isSmallDevice, setIsSmallDevice] = useState(window.innerWidth <= 425);
+  const navigate = useNavigate();
+  const {handleAddToCart, addingItemToCart} = useCart();
 
   // Update isSmallDevice state on window resize
   useEffect(() => {
@@ -42,7 +47,7 @@ const Product = ({
                 onClick={() => handleAddToCart(product)}
                 className="text-primary-600 hover:text-primary-700"
               >
-                {isSmallDevice ? <ShoppingBag size={12} /> : <ShoppingBag size={20} />}
+                {addingItemToCart ? <Loader2 className="animate-spin" /> : isSmallDevice ? <ShoppingBag size={12} /> : <ShoppingBag size={20} />}
               </button>
               <button
                 onClick={() => handleAddToWishlist(product)}

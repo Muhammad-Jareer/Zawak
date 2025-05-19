@@ -5,10 +5,11 @@ import { Minus, Plus, Trash2 } from 'lucide-react';
 import { removeFromCart, updateQuantity, initialize } from '../store/slices/cartSlice';
 import { api_updateQuantity, getCart, removeItemFromCart } from '../api/cart';
 import { useCart } from '../hooks/useCart';
+import { Loader2 } from 'lucide-react';
 
 function Cart() {
   const dispatch = useDispatch();
-  const {cart} = useCart();
+  const {cart, cartLoading, removingFromCart, handleRemoveItem} = useCart();
 
   useEffect(() => {
           window.scrollTo(0, 0);
@@ -20,13 +21,15 @@ function Cart() {
     dispatch(updateQuantity({ id, quantity }));
   };
 
-  const handleRemoveItem = async (id) => {
-    const res = await removeItemFromCart(id)
-    if(res)
-     dispatch(removeFromCart(id));
-  };
+  if(cartLoading){
+    return (
+      <div className='w-full h-screen border-2 border-red-700'>
+        Loading   
+      </div>
+    )
+  }
 
-  if (!cart || cart.items.length === 0) {
+  if (!cart || cart?.items.length === 0) {
     return (
       <div className="container mx-auto px-4 text-center py-16 mt-16">
         <h1 className="font-serif text-3xl mb-4">Your Cart is Empty</h1>
@@ -73,7 +76,7 @@ function Cart() {
                   onClick={() => handleRemoveItem(item?.productId._id)}
                   className="p-1 rounded-md text-red-500 hover:bg-red-50"
                 >
-                  <Trash2 className="w-4 h-4" />
+                  {removingFromCart && removingFromCart === item?.productId._id ? <Loader2 className='w-4 h-4 animate-spin' /> : <Trash2 className="w-4 h-4" />}
                 </button>
               </div>
             </div>

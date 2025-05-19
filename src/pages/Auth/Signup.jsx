@@ -29,12 +29,10 @@ function Signup() {
     setSubmitting(true)
     const res = await api_signup(formData);
     setSubmitting(false)
-    if(res && res?.status && res?.user){
-      localStorage.setItem('accessToken', res.user.token)
-      dispatch(login({
-        email: formData.email,
-        name: 'John Doe',
-      }));
+    if(res && res?.status && res?.token){
+      localStorage.setItem('accessToken', res.token)
+      // console.log(...res?.user)
+      dispatch(login(res?.user));
       navigate('/profile');
     }
   };

@@ -3,22 +3,26 @@ import { get_user } from "../api/auth";
 import { login, logout } from "../store/slices/authSlice";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
+import { useRef } from "react";
 
 export const useAuth = (componentName) => {
   const { user, isAuthenticated, loading } = useSelector((state) => state.auth);
   const [error, setError] = useState(null);
   const dispatch = useDispatch();
+  const hasFetched = useRef(false);
 
   useEffect(() => {
-    if (user) {
+    if (user || hasFetched.current) {
       return;
     }
     const fetch = async () => {
-      if (!user) {
+      if (!user && !hasFetched.current) {
+        console.log
+        hasFetched.current = true;
         const res = await get_user();
         if (res) {
+          console.log("res is: ", res)
           dispatch(login(res.user));
-          console.log("User fetched from API", res.user);
           return;
         } else {
           dispatch(logout());

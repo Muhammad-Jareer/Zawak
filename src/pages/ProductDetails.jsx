@@ -12,6 +12,7 @@ import RecentlyViewed from '../components/RecentlyViewed';
 import SimilarProducts from '../components/SimilarProducts';
 import { getProductDetails } from '../api/product';
 import { addItemToCart, getCart } from '../api/cart';
+import { useCart } from '../hooks/useCart';
 
 function ProductDetails() {
   const { id } = useParams();
@@ -24,6 +25,7 @@ function ProductDetails() {
   const recentlyViewed = useSelector((state) => state.product.recentlyViewed);
   const [popup, setPopup] = useState({ show: false, type: "", itemName: "" });
   const cartState = useSelector(state => state.cart)
+  const {addingItemToCart, handleAddToCart} = useCart();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -61,31 +63,6 @@ function ProductDetails() {
   // Handle clicking on a variant image
   const handleVariantClick = (image) => {
     setMainImage(image);
-  };
-
-  // Handle adding the product to the cart
-  const handleAddToCart = async () => {
-    if (!cartState) {
-      const cart = await getCart();
-      if (!cart) return;
-      dispatch(
-        initialize({
-          ...cart,
-        })
-      );
-    }
-    if (product && product.price) {
-      const res = await addItemToCart(product);
-      console.log("res is: ", res);
-      if (res === 401) return navigate("/login");
-      if (res) {
-        dispatch({
-          type: "cart/addToCart",
-          payload: { ...product, quantity: 1 },
-        });
-        setPopup({ show: true, type: "cart", itemName: product.name });
-      }
-    }
   };
 
   // Handle adding the product to the wishlist
@@ -167,7 +144,7 @@ function ProductDetails() {
               {/* Action Buttons */}
               <div className="flex flex-col md:flex-row gap-4">
                 <button onClick={handleAddToCart} className="flex-1 btn btn-primary">
-                  <ShoppingBag className="w-4 h-4 mr-2" />
+                  {addingItemToCart ? <Loader className="animate-spin" /> : <ShoppingBag className="w-4 h-4 mr-2" />}
                   Add to Cart
                 </button>
                 <Link className="flex-1 btn btn-primary" to={`/place-order/${product._id}`}>

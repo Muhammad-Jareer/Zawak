@@ -16,7 +16,7 @@ function SearchBar({ query, onChange, inputRef, className }) {
                 onClick={() => onChange(query)}
                 className="absolute right-3 p-2 text-primary-600 hover:text-primary-700 focus:outline-none"
             >
-                <Search className="w-6 h-6" />
+                <Search className="w-6 h-6 mr-4" />
             </button>
         </div>
     );

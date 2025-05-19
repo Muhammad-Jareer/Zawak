@@ -19,12 +19,13 @@ import {
 } from "../api/product";
 import { addItemToCart, getCart } from "../api/cart";
 import { useCart } from "../hooks/useCart";
+import ShopSkeleton from "../components/skeletons/ShopSkeleton";
 
 function Shop() {
   const dispatch = useDispatch();
   const location = useLocation();
-  const { cart } = useCart();
 
+  const [loading, setLoading] = useState(false)
   const [visibleCount, setVisibleCount] = useState(10);
   const [totalCount, setTotalCount] = useState(0)
   const [productsState, setProductsState] = useState([]);
@@ -136,21 +137,6 @@ function Shop() {
     );
   };
 
-  const handleAddToCart = async (product) => {
-    if (product && product.price) {
-      const res = await addItemToCart(product);
-      console.log("res is: ", res);
-      if (res === 401) return navigate("/login");
-      if (res) {
-        dispatch({
-          type: "cart/addToCart",
-          payload: { ...product, quantity: 1 },
-        });
-        setPopup({ show: true, type: "cart", itemName: product.name });
-      }
-    }
-  };
-
   const handleAddToWishlist = (product) => {
     if (product && product.name) {
       dispatch({ type: "wishlist/addToWishlist", payload: product });
@@ -178,9 +164,11 @@ function Shop() {
   // INITIAL FETCH
   useEffect(() => {
     const fetchProducts = async () => {
+      setLoading(true)
       const {products, totalCount} = await getAllProducts(0, visibleCount);
       setProductsState((pre) => pre.concat(products));
       setTotalCount(totalCount)
+      setLoading(false)
     };
 
     fetchProducts();
@@ -203,6 +191,10 @@ function Shop() {
 
     return {products, totalCount};
   };
+
+  if(loading){
+    return <ShopSkeleton />
+  }
 
   return (
     <div className="container mx-auto px-4 mt-16 relative font-serif">
@@ -297,7 +289,6 @@ function Shop() {
             <Product
               key={idx}
               product={product}
-              handleAddToCart={handleAddToCart}
               handleAddToWishlist={handleAddToWishlist}
               setModalProduct={setModalProduct}
               enableButtons={true}

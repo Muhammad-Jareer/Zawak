@@ -9,6 +9,8 @@ import ImageComponent from '../components/ImageComponent.jsx';
 import Shop from '../pages/Shop.jsx'
 import { Suspense } from 'react';
 import { queryProducts } from '../api/product.js';
+import { Loader } from '../components/Loader.jsx';
+import FeaturedProductsSkeleton from '../components/skeletons/FeaturedProductsSkeleton.jsx';
 const FeaturedProducts = lazy(()=> import('../components/FeaturedProducts.jsx'))
 
 function Home() {
@@ -120,7 +122,7 @@ function Home() {
                 </div>
                 <div className="absolute inset-0 flex items-center justify-center text-center text-white z-20">
                     <div className="relative w-full max-w-md">
-                        <div className="relative">
+                        <div className="relative px-4">
                             <SearchBar
                                 query={query}
                                 onChange={handleInputChange}
@@ -187,7 +189,7 @@ function Home() {
                 <Catelog />
             </section>
             {/* <FeaturedProducts /> */}
-            <Suspense fallback={<div>Loading Featured Products...</div>}>
+            <Suspense fallback={<FeaturedProductsSkeleton />}>
                 <FeaturedProducts />
             </Suspense>
         </div>
