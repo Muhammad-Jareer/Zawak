@@ -36,7 +36,7 @@ function PlaceOrderCart() {
     }
     f();
 
-    if (user) {
+    if (user && user.address) {
       setShippingAddress({
         street: user.address.street,
         city: user.address.city,
