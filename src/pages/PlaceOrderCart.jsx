@@ -12,6 +12,11 @@ import { getCart } from "../api/cart";
 import { clearCart } from "../store/slices/cartSlice";
 import { api_saveAddress } from "../api/user";
 import { useAuth } from "../hooks/useAuth";
+import api from "../lib/api";
+
+import { loadStripe } from '@stripe/stripe-js';
+
+const stripePromise = loadStripe('pk_test_51RRAv8PoYTLMhP3Rsv7UTdw4395fvI84ikh5eYxDXEtslW4VLLaqG3Y4H6iOaMB1rhNJ17eHQe5sghStx12P1nW800qApZq507');
 
 function PlaceOrderCart() {
   const { id } = useParams();
@@ -27,7 +32,7 @@ function PlaceOrderCart() {
     postalCode: "",
     country: "Pakistan",
   });
-  const [paymentMethod, setPaymentMethod] = useState("COD");
+  const [paymentMethod, setPaymentMethod] = useState("STRIPE");
 
   useEffect(() => {
     async function f() {
@@ -56,10 +61,21 @@ function PlaceOrderCart() {
     }));
   };
 
+  const handleStripePayment = async () => {
+    console.log("handle with stripe is called");
+    const res = await api.post("/payment/create-checkout-session", {
+      items: cart.items,
+    });
+    console.log("response is: ", res.data.id);
+
+    const stripe = await stripePromise;
+    stripe.redirectToCheckout({ sessionId: res.data.id });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!user) {
-      return
+      return;
     }
     const { city, country, knownPlace, postalCode, street } = shippingAddress;
     if (
@@ -101,11 +117,16 @@ function PlaceOrderCart() {
       navigate("/login");
       return;
     }
+    if (makeOrder && paymentMethod === "STRIPE") {
+      console.log("yes")
+      await handleStripePayment();
+      return;
+    }
     if (makeOrder && paymentMethod === "ONLINE") {
       navigate(`/payonline-easyjazz?orderId=${makeOrder._id}`);
       return;
     }
-    if (makeOrder) {
+    if (makeOrder && paymentMethod === "COD") {
       dispatch(clearCart());
       navigate("/order-done");
     }
@@ -288,12 +309,24 @@ function PlaceOrderCart() {
               <button
                 type="button"
                 onClick={() => {
+                  console.log("nooo")
                   setPaymentMethod("ONLINE");
                 }}
                 className="text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40 me-2 mb-2"
               >
                 <CreditCard />
                 Pay Online (Easypaisa JazzCash)
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  console.log('wow')
+                  setPaymentMethod("STRIPE");
+                }}
+                className="text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40 me-2 mb-2"
+              >
+                <CreditCard />
+                Pay With Stripe
               </button>
             </div>
           </div>
