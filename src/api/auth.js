@@ -9,7 +9,8 @@ export const api_signup = async (userData) => {
             return response.data;
         }
     } catch (error) {
-        toast.error(error.response.data.message)
+        toast.error(error.response ? error.response.data.message : "Signup failed, please try again");
+        return null;
     }
 };
 
@@ -45,7 +46,8 @@ export const api_login = async (credentials) => {
             return response.data;
         }
     } catch (error) {
-        toast.error(error.response.data.message)
+        toast.error(error.response ? error.response.data.message : "Login failed, please try again");
+        return null;
     }
 };
 

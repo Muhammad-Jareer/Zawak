@@ -102,10 +102,12 @@ function App() {
           />
 
           <Route
-            path="/place-order/:id"
+            path="/place-order"
             element={
               <Suspense fallback={<Loading />}>
+                <AuthGuard>
                 <PlaceOrder />
+                </AuthGuard>
               </Suspense>
             }
           />

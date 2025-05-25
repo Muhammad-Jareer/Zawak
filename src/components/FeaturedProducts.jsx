@@ -62,7 +62,7 @@ const FeaturedProducts = ({}) => {
     };
         
 
-    if(loading){
+    if(loading && !errorOccured){
         return <FeaturedProductsSkeleton />
     }
 

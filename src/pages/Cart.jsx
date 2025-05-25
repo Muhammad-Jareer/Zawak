@@ -146,7 +146,7 @@ function Cart() {
               </span>
             </div>
           </div>
-          <Link to="/place-order-cart" className="w-full btn btn-primary">
+          <Link to="/place-order" className="w-full btn btn-primary">
             Proceed to Checkout
           </Link>
         </div>

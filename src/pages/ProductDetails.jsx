@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { Heart, Minus, Plus, ShoppingBag, ArrowLeft, ShoppingCart } from 'lucide-react';
+import { Heart, Minus, Plus, ShoppingBag, ArrowLeft, ShoppingCart, Loader2 } from 'lucide-react';
 import AddToCartWishlistPopup from "../components/AddToCartWishlistPopup";
 import { addToCart, initialize } from '../store/slices/cartSlice';
 import { addToWishlist } from '../store/slices/wishlistSlice';
@@ -143,11 +143,11 @@ function ProductDetails() {
 
               {/* Action Buttons */}
               <div className="flex flex-col md:flex-row gap-4">
-                <button onClick={handleAddToCart} className="flex-1 btn btn-primary">
-                  {addingItemToCart ? <Loader className="animate-spin" /> : <ShoppingBag className="w-4 h-4 mr-2" />}
+                <button onClick={() => {handleAddToCart(product)}} className="flex-1 btn btn-primary">
+                  {addingItemToCart ? <Loader2 className="animate-spin" /> : <ShoppingBag className="w-4 h-4 mr-2" />}
                   Add to Cart
                 </button>
-                <Link className="flex-1 btn btn-primary" to={`/place-order/${product._id}`}>
+                <Link className="flex-1 btn btn-primary" to={`/place-order?id=${product._id}`}>
                   <ShoppingCart className="w-4 h-4 mr-2" />
                   Buy Now
                 </Link>

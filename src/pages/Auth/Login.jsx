@@ -26,6 +26,7 @@ function Login() {
       }));
       navigate('/shop');
     }
+    setSubmitting(false)
   };
 
   const handleChange = (e) => {

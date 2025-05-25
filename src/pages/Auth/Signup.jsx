@@ -35,6 +35,7 @@ function Signup() {
       dispatch(login(res?.user));
       navigate('/profile');
     }
+    setSubmitting(false)
   };
 
   const handleChange = (e) => {
