@@ -1,32 +1,34 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { login } from '../../store/slices/authSlice';
-import { api_login } from '../../api/auth';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { login } from "../../store/slices/authSlice";
+import { api_login } from "../../api/auth";
 
 function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
   });
-  const [submitting, setSubmitting] = useState(false)
+  const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitting(true)
-    const res = await api_login(formData)
-    setSubmitting(false)
-    if(res && res?.status && res?.access_token){
-      console.log(res)
-      localStorage.setItem('accessToken', res.access_token)
-      dispatch(login({
-        ...res?.user,
-      }));
-      navigate('/shop');
+    setSubmitting(true);
+    const res = await api_login(formData);
+    setSubmitting(false);
+    if (res && res?.status && res?.access_token) {
+      console.log(res);
+      localStorage.setItem("accessToken", res.access_token);
+      dispatch(
+        login({
+          ...res?.user,
+        })
+      );
+      navigate("/shop");
     }
-    setSubmitting(false)
+    setSubmitting(false);
   };
 
   const handleChange = (e) => {
@@ -40,10 +42,13 @@ function Login() {
     <div className="container mx-auto px-4 py-16">
       <div className="max-w-md mx-auto bg-white rounded-lg shadow-md p-8">
         <h1 className="font-serif text-3xl mb-8 text-center">Sign In</h1>
-        
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700"
+            >
               Email
             </label>
             <input
@@ -56,9 +61,12 @@ function Login() {
               required
             />
           </div>
-          
+
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700"
+            >
               Password
             </label>
             <input
@@ -71,32 +79,27 @@ function Login() {
               required
             />
           </div>
-          
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                id="remember"
-                className="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
-              />
-              <label htmlFor="remember" className="ml-2 block text-sm text-gray-700">
-                Remember me
-              </label>
-            </div>
-            
-            <Link to="/forgot-password" className="text-sm text-primary-600 hover:text-primary-500">
+
+          <div className="flex items-center justify-end">
+            <Link
+              to="/forgot-password"
+              className="text-sm text-primary-600 hover:text-primary-500"
+            >
               Forgot password?
             </Link>
           </div>
-          
+
           <button type="submit" className="w-full btn btn-primary">
-            {submitting? 'Submitting ...' : 'Sign In'}
+            {submitting ? "Submitting ..." : "Sign In"}
           </button>
         </form>
-        
+
         <p className="mt-4 text-center text-sm text-gray-600">
-          Don't have an account?{' '}
-          <Link to="/signup" className="text-primary-600 hover:text-primary-500">
+          Don't have an account?{" "}
+          <Link
+            to="/signup"
+            className="text-primary-600 hover:text-primary-500"
+          >
             Sign up
           </Link>
         </p>
