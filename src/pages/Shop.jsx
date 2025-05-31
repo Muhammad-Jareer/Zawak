@@ -20,6 +20,7 @@ import {
 import { addItemToCart, getCart } from "../api/cart";
 import { useCart } from "../hooks/useCart";
 import ShopSkeleton from "../components/skeletons/ShopSkeleton";
+import { toast } from "react-toastify";
 
 function Shop() {
   const dispatch = useDispatch();
@@ -178,7 +179,7 @@ function Shop() {
     const { category, subCategory, tag, priceRange, sortBy } = filters;
     const pRange = priceRange.split("-")
 
-    const {products, totalCount} = await getFilteredProducts(
+    const res = await getFilteredProducts(
       category,
       subCategory,
       tag,
@@ -189,6 +190,12 @@ function Shop() {
       limit
     );
 
+    if(res === 'ERROR'){
+      toast.error("Filtered Not Applied");
+      return;
+    }
+
+    const {products, totalCount} = res
     return {products, totalCount};
   };
 

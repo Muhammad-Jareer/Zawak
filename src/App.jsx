@@ -224,7 +224,7 @@ function App() {
         </Routes>
       </main>
       <Footer />
-      <ToastContainer />
+      <ToastContainer position="bottom-right" />
     </div>
   );
 }

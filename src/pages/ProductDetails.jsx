@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Heart, Minus, Plus, ShoppingBag, ArrowLeft, ShoppingCart, Loader2 } from 'lucide-react';
@@ -9,14 +9,15 @@ import { addToRecentlyViewed } from '../store/slices/productSlice';
 import { products } from '../data/products';
 import ImageComponent from '../components/ImageComponent';
 import RecentlyViewed from '../components/RecentlyViewed';
-import SimilarProducts from '../components/SimilarProducts';
+const SimilarProducts = lazy(() => import('../components/SimilarProducts'))
 import { getProductDetails } from '../api/product';
 import { addItemToCart, getCart } from '../api/cart';
 import { useCart } from '../hooks/useCart';
+import SimilarProductsSkeleton from '../components/skeletons/SimilarProductsSkeleton';
+import { Loader } from '../components/Loader';
 
 function ProductDetails() {
   const { id } = useParams();
-  console.log("id is: ", id)
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [quantity, setQuantity] = useState(1);
@@ -26,19 +27,30 @@ function ProductDetails() {
   const [popup, setPopup] = useState({ show: false, type: "", itemName: "" });
   const cartState = useSelector(state => state.cart)
   const {addingItemToCart, handleAddToCart} = useCart();
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     window.scrollTo(0, 0);
     async function f() {
+      setLoading(true);
       const foundProduct = await getProductDetails(id);
       if (foundProduct) {
+        console.log("founde porduct is: ", foundProduct)
         setProduct(foundProduct);
         setMainImage(foundProduct.image);
         dispatch(addToRecentlyViewed(foundProduct));
       }
+      setLoading(false);
     }
     f();    
   }, [id, dispatch]);
+
+  if(loading) {
+    return  <div className="text-center py-10 text-gray-500 min-h-screen w-full flex items-center justify-center gap-4 -translate-y-24">
+        <Loader />
+        <h2 className="text-3xl text-primary-700 font-bold">ZAWAK IS LOADING</h2>
+      </div>
+  }
 
   if (!product) {
     return (
@@ -70,11 +82,6 @@ function ProductDetails() {
     dispatch(addToWishlist(product));
     setPopup({ show: true, type: "wishlist", itemName: product.name });
   };
-
-  // Get similar products
-  const similarProducts = products
-    .filter((p) => p.category === product.category && p.id !== product.id)
-    .slice(0, 4);
 
   return (
     <div className="container mx-auto px-4 mt-16">
@@ -170,7 +177,9 @@ function ProductDetails() {
       </div>
 
       {/* Similar Products */}
-      <SimilarProducts similarProducts={similarProducts} navigate={navigate} />
+      <Suspense fallback={<SimilarProductsSkeleton />}>
+      <SimilarProducts category={product.category} subCategory={product.sub_category} tag={product.tags[0]} />
+      </Suspense>
 
       {/* Recently Viewed */}
       <RecentlyViewed recentlyViewed={recentlyViewed} navigate={navigate} />

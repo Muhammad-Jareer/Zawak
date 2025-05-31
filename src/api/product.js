@@ -36,7 +36,7 @@ export const getFilteredProducts = async (category, subCategory, tag, minPrice, 
         }
     } catch (error) {
         console.log(error)
-        toast.error("Filters Not Applied")
+        return 'ERROR'
     }
 };
 

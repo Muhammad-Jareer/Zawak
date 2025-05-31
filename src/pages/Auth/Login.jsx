@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { login } from "../../store/slices/authSlice";
 import { api_login } from "../../api/auth";
+import { Loader2 } from "lucide-react";
 
 function Login() {
   const dispatch = useDispatch();
@@ -90,7 +91,7 @@ function Login() {
           </div>
 
           <button type="submit" className="w-full btn btn-primary">
-            {submitting ? "Submitting ..." : "Sign In"}
+            {submitting ? <Loader2 className="animate-spin w-6 h-6" /> : "Sign In"}
           </button>
         </form>
 
