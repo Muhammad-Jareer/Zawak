@@ -1,20 +1,30 @@
-import React, { useState, useEffect, lazy, Suspense } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { Heart, Minus, Plus, ShoppingBag, ArrowLeft, ShoppingCart, Loader2 } from 'lucide-react';
+import React, { useState, useEffect, lazy, Suspense } from "react";
+import { useParams, useNavigate, Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  Heart,
+  Minus,
+  Plus,
+  ShoppingBag,
+  ArrowLeft,
+  ShoppingCart,
+  Loader2,
+  MoreVertical,
+} from "lucide-react";
 import AddToCartWishlistPopup from "../components/AddToCartWishlistPopup";
-import { addToCart, initialize } from '../store/slices/cartSlice';
-import { addToWishlist } from '../store/slices/wishlistSlice';
-import { addToRecentlyViewed } from '../store/slices/productSlice';
-import { products } from '../data/products';
-import ImageComponent from '../components/ImageComponent';
-import RecentlyViewed from '../components/RecentlyViewed';
-const SimilarProducts = lazy(() => import('../components/SimilarProducts'))
-import { getProductDetails } from '../api/product';
-import { addItemToCart, getCart } from '../api/cart';
-import { useCart } from '../hooks/useCart';
-import SimilarProductsSkeleton from '../components/skeletons/SimilarProductsSkeleton';
-import { Loader } from '../components/Loader';
+import { addToCart, initialize } from "../store/slices/cartSlice";
+import { addToWishlist } from "../store/slices/wishlistSlice";
+import { addToRecentlyViewed } from "../store/slices/productSlice";
+import { products } from "../data/products";
+import ImageComponent from "../components/ImageComponent";
+import RecentlyViewed from "../components/RecentlyViewed";
+const SimilarProducts = lazy(() => import("../components/SimilarProducts"));
+import { getProductDetails } from "../api/product";
+import { addItemToCart, getCart } from "../api/cart";
+import { useCart } from "../hooks/useCart";
+import SimilarProductsSkeleton from "../components/skeletons/SimilarProductsSkeleton";
+import { Loader } from "../components/Loader";
+import Markdown from 'react-markdown';
 
 function ProductDetails() {
   const { id } = useParams();
@@ -25,9 +35,9 @@ function ProductDetails() {
   const [product, setProduct] = useState(null);
   const recentlyViewed = useSelector((state) => state.product.recentlyViewed);
   const [popup, setPopup] = useState({ show: false, type: "", itemName: "" });
-  const cartState = useSelector(state => state.cart)
-  const {addingItemToCart, handleAddToCart} = useCart();
-  const [loading, setLoading] = useState(false)
+  const cartState = useSelector((state) => state.cart);
+  const { addingItemToCart, handleAddToCart } = useCart();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -35,21 +45,25 @@ function ProductDetails() {
       setLoading(true);
       const foundProduct = await getProductDetails(id);
       if (foundProduct) {
-        console.log("founde porduct is: ", foundProduct)
+        console.log("founde porduct is: ", foundProduct);
         setProduct(foundProduct);
         setMainImage(foundProduct.image);
         dispatch(addToRecentlyViewed(foundProduct));
       }
       setLoading(false);
     }
-    f();    
+    f();
   }, [id, dispatch]);
 
-  if(loading) {
-    return  <div className="text-center py-10 text-gray-500 min-h-screen w-full flex items-center justify-center gap-4 -translate-y-24">
+  if (loading) {
+    return (
+      <div className="text-center py-10 text-gray-500 min-h-screen w-full flex items-center justify-center gap-4 -translate-y-24">
         <Loader />
-        <h2 className="text-3xl text-primary-700 font-bold">ZAWAK IS LOADING</h2>
+        <h2 className="text-3xl text-primary-700 font-bold">
+          ZAWAK IS LOADING
+        </h2>
       </div>
+    );
   }
 
   if (!product) {
@@ -57,7 +71,7 @@ function ProductDetails() {
       <div className="container mx-auto px-4 py-16 text-center">
         <h1 className="font-serif text-3xl mb-8">Product Not Found</h1>
         <button
-          onClick={() => navigate('/shop')}
+          onClick={() => navigate("/shop")}
           className="btn btn-primary inline-flex items-center"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
@@ -128,7 +142,9 @@ function ProductDetails() {
             </div>
             <div className="space-y-6">
               <h1 className="font-serif text-3xl">{product.name}</h1>
-              <p className="text-2xl text-primary-600 font-semibold">${product.price}</p>
+              <p className="text-2xl text-primary-600 font-semibold">
+                ${product.price}
+              </p>
               <p className="text-gray-700">{product.description}</p>
 
               {/* Quantity Controls */}
@@ -150,15 +166,30 @@ function ProductDetails() {
 
               {/* Action Buttons */}
               <div className="flex flex-col md:flex-row gap-4">
-                <button onClick={() => {handleAddToCart(product)}} className="flex-1 btn btn-primary">
-                  {addingItemToCart ? <Loader2 className="animate-spin" /> : <ShoppingBag className="w-4 h-4 mr-2" />}
+                <button
+                  onClick={() => {
+                    handleAddToCart(product);
+                  }}
+                  className="flex-1 btn btn-primary"
+                >
+                  {addingItemToCart ? (
+                    <Loader2 className="animate-spin" />
+                  ) : (
+                    <ShoppingBag className="w-4 h-4 mr-2" />
+                  )}
                   Add to Cart
                 </button>
-                <Link className="flex-1 btn btn-primary" to={`/place-order?id=${product._id}`}>
+                <Link
+                  className="flex-1 btn btn-primary"
+                  to={`/place-order?id=${product._id}`}
+                >
                   <ShoppingCart className="w-4 h-4 mr-2" />
                   Buy Now
                 </Link>
-                <button onClick={handleAddToWishlist} className="btn btn-outline p-2">
+                <button
+                  onClick={handleAddToWishlist}
+                  className="btn btn-outline p-2"
+                >
                   <Heart className="w-4 h-4" />
                 </button>
               </div>
@@ -171,14 +202,35 @@ function ProductDetails() {
                   <li>{product.description}</li>
                 </ul>
               </div>
+
+              {/* Read More About */}
+              <div className="flex gap-4 ">
+              <button className="inline-flex items-center justify-center px-4 py-1 rounded-md font-medium transition-colors text-xs btn-primary">
+                Read More 
+              </button>
+              <p className="text-gray-700 text-xs">Read more about this product like <br/> it's history, what it is used for etc.</p>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
+      {/* Read More Section */}
+      {product.about && <div className="mb-16">
+        <h2 className="font-serif text-2xl mb-4">Read More About {product.name}</h2>
+        <Markdown >
+          {product.about }
+        </Markdown>
+      </div>}
+
+
       {/* Similar Products */}
       <Suspense fallback={<SimilarProductsSkeleton />}>
-      <SimilarProducts category={product.category} subCategory={product.sub_category} tag={product.tags[0]} />
+        <SimilarProducts
+          category={product.category}
+          subCategory={product.sub_category}
+          tag={product.tags[0]}
+        />
       </Suspense>
 
       {/* Recently Viewed */}

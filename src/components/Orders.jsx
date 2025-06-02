@@ -9,10 +9,13 @@ const Orders = () => {
   const navigate = useNavigate();
   const [user] = useAuth();
   const [cancellingOrder, setCancellingOrder] = useState(null) // holds the order id
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function fetchOrders() {
+      setLoading(true);
       const userOrders = await getUserOrders(user._id);
+      setLoading(false);
       if (userOrders === 'NOT_AUTHENTICATED') return navigate('/login');
       if (userOrders) setOrders(userOrders);
     }
@@ -32,12 +35,20 @@ const Orders = () => {
     setCancellingOrder(null)
   };
 
+  if(loading){
+    return (
+      <div className="flex items-center justify-center bg-gray-50 min-h-screen py-10 px-4 sm:px-6 lg:px-8">
+        <Loader2 className="w-12 h-12 animate-spin text-primary-600" />
+      </div>
+    );
+  }
+
   return (
     <div className="bg-gray-50 min-h-screen py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-5xl mx-auto">
         <h1 className="text-3xl font-bold text-primary-700 mb-8">Your Orders</h1>
 
-        {orders.length === 0 ? (
+        {!loading && orders && orders.length === 0 ? (
           <p className="text-gray-600 text-center">No orders found.</p>
         ) : (
           orders.map((order) => (

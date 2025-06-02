@@ -13,6 +13,7 @@ export const usePlaceOrder = (user, items, totalAmount, price, paymentMethod) =>
     country: "Pakistan",
   });
 
+  const [savingOrder, setSavingOrder] = useState(false)
   const navigate = useNavigate();
   const [error, setError] = useState(null);
   const hasFetched = useRef(false);
@@ -64,6 +65,8 @@ export const usePlaceOrder = (user, items, totalAmount, price, paymentMethod) =>
       street === ""
     )
       return;
+
+    setSavingOrder(true);
     const formData = {
       user: user._id,
       items: [],
@@ -81,9 +84,8 @@ export const usePlaceOrder = (user, items, totalAmount, price, paymentMethod) =>
       });
     });
 
-    console.log("formdata is: ", formData);
-
     const makeOrder = await placeOrder(formData);
+    setSavingOrder(false);
     if (makeOrder.status === "NOT_AUTHENTICATED") {
       navigate("/login");
       return;
@@ -111,5 +113,5 @@ export const usePlaceOrder = (user, items, totalAmount, price, paymentMethod) =>
     }
   }, []);
 
-  return {shippingAddress, setShippingAddress, saveAddress, savingAddress, handleShippingAddressChange, handleSubmit  };
+  return {shippingAddress, setShippingAddress, saveAddress, savingAddress, handleShippingAddressChange, handleSubmit, savingOrder };
 };

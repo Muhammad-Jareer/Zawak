@@ -43,7 +43,7 @@ function PlaceOrder() {
   }
 
 
-  const {shippingAddress, setShippingAddress, savingAddress, saveAddress, handleShippingAddressChange, handleSubmit} = usePlaceOrder(user, items, totalAmount, price, paymentMethod);
+  const {shippingAddress, setShippingAddress, savingAddress, saveAddress, handleShippingAddressChange, handleSubmit, savingOrder} = usePlaceOrder(user, items, totalAmount, price, paymentMethod);
 
 
   useEffect(() => {
@@ -75,8 +75,6 @@ function PlaceOrder() {
       }
     }
   }, []);
-
-  console.log("shippingAddress", shippingAddress);
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg space-y-6 mt-16 px-10">
@@ -268,9 +266,9 @@ function PlaceOrder() {
           <button
             type="submit"
             onClick={handleSubmit}
-            className="w-full px-6 py-3 text-white bg-primary-500 hover:bg-primary-600 rounded-lg font-semibold focus:outline-none focus:ring-2 focus:ring-primary-500"
+            className="w-full flex justify-center px-6 py-3 text-white bg-primary-500 hover:bg-primary-600 rounded-lg font-semibold focus:outline-none focus:ring-2 focus:ring-primary-500"
           >
-            Confirm Order
+            {savingOrder ? <Loader2 className="animate-spin"/> : 'Confirm Order'}
           </button>
         </form>
       </div>
