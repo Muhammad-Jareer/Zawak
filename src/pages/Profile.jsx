@@ -6,6 +6,8 @@ import UserDetails from "../components/UserDetails";
 import AccountSettings from "../components/AccountSettings";
 import Orders from "../components/Orders";
 import { useAuth } from "../hooks/useAuth";
+import { api_logout } from "../api/auth";
+import { Loader2 } from "lucide-react";
 
 function Profile() {
   const dispatch = useDispatch();
@@ -20,6 +22,7 @@ function Profile() {
     phone: user?.phone || "",
   });
   const navigate = useNavigate();
+  const [loggingOut, setLoggingOut] = useState(false)
 
   useEffect(() => {
     if (user) {
@@ -53,9 +56,13 @@ function Profile() {
     setEditMode(false);
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    setLoggingOut(true);
+    const res = await api_logout();
+    if (!res) return;
     localStorage.removeItem("accessToken");
     dispatch(logout());
+    setLoggingOut(false);
     navigate("/login");
   };
 
@@ -90,9 +97,9 @@ function Profile() {
               </div>
               <button
                 onClick={handleLogout}
-                className="mt-4 sm:mt-0 sm:ml-auto px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition duration-200"
+                className="mt-4 sm:mt-0 sm:ml-auto px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition duration-200 flex gap-2"
               >
-                Sign Out
+                {loggingOut && <Loader2 className="animate-spin" />} Sign Out
               </button>
             </div>
 

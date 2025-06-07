@@ -51,6 +51,19 @@ export const api_login = async (credentials) => {
     }
 };
 
+export const api_logout = async () => {
+    try {
+        const response = await api.post('/auth/logout');
+        if(response.status === 200){
+            toast.success(`You have logout successfully`)
+            return true;
+        }
+    } catch (error) {
+        toast.error(error.response ? error.response.data.message : "Login failed, please try again");
+        return false;
+    }
+};
+
 
 export const forget_password = async (email) => {
     try {

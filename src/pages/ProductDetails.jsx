@@ -37,6 +37,7 @@ function ProductDetails() {
   const [popup, setPopup] = useState({ show: false, type: "", itemName: "" });
   const cartState = useSelector((state) => state.cart);
   const { addingItemToCart, handleAddToCart } = useCart();
+  const [openReadAbout, setOpenReadAbout] = useState(false)
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -205,7 +206,7 @@ function ProductDetails() {
 
               {/* Read More About */}
               <div className="flex gap-4 ">
-              <button className="inline-flex items-center justify-center px-4 py-1 rounded-md font-medium transition-colors text-xs btn-primary">
+              <button onClick={() => setOpenReadAbout(pre => !pre)} className="inline-flex items-center justify-center px-4 py-1 rounded-md font-medium transition-colors text-xs btn-primary">
                 Read More 
               </button>
               <p className="text-gray-700 text-xs">Read more about this product like <br/> it's history, what it is used for etc.</p>
@@ -216,9 +217,155 @@ function ProductDetails() {
       </div>
 
       {/* Read More Section */}
-      {product.about && <div className="mb-16">
+      {product.about && openReadAbout && <div className="mb-16">
         <h2 className="font-serif text-2xl mb-4">Read More About {product.name}</h2>
-        <Markdown >
+        <Markdown components={{
+          // Headings
+          h1: ({ node, ...props }) => (
+            <h1 
+              className="text-3xl sm:text-4xl font-bold text-gray-900 mb-6 pb-2 border-b border-gray-200" 
+              {...props} 
+            />
+          ),
+          h2: ({ node, ...props }) => (
+            <h2 
+              className="text-2xl sm:text-3xl font-semibold text-gray-800 mb-5 mt-8" 
+              {...props} 
+            />
+          ),
+          h3: ({ node, ...props }) => (
+            <h3 
+              className="text-xl sm:text-2xl font-semibold text-gray-700 mb-4 mt-6" 
+              {...props} 
+            />
+          ),
+          h4: ({ node, ...props }) => (
+            <h4 
+              className="text-lg sm:text-xl font-medium text-gray-700 mb-3 mt-5" 
+              {...props} 
+            />
+          ),
+          
+          // Text elements
+          p: ({ node, ...props }) => (
+            <p 
+              className="text-gray-700 mb-4 leading-relaxed" 
+              {...props} 
+            />
+          ),
+          strong: ({ node, ...props }) => (
+            <strong 
+              className="font-semibold text-gray-900" 
+              {...props} 
+            />
+          ),
+          em: ({ node, ...props }) => (
+            <em 
+              className="italic" 
+              {...props} 
+            />
+          ),
+          blockquote: ({ node, ...props }) => (
+            <blockquote 
+              className="border-l-4 border-gray-300 pl-4 my-4 text-gray-600 italic" 
+              {...props} 
+            />
+          ),
+          
+          // Lists
+          ul: ({ node, ...props }) => (
+            <ul 
+              className="list-disc pl-6 my-4 space-y-1" 
+              {...props} 
+            />
+          ),
+          ol: ({ node, ...props }) => (
+            <ol 
+              className="list-decimal pl-6 my-4 space-y-1" 
+              {...props} 
+            />
+          ),
+          li: ({ node, ...props }) => (
+            <li 
+              className="text-gray-700 mb-1" 
+              {...props} 
+            />
+          ),
+          
+          // Tables
+          table: ({ node, ...props }) => (
+            <div className="overflow-x-auto my-6 shadow-sm rounded-lg">
+              <table 
+                className="min-w-full divide-y divide-gray-200" 
+                {...props} 
+              />
+            </div>
+          ),
+          thead: ({ node, ...props }) => (
+            <thead 
+              className="bg-gray-50" 
+              {...props} 
+            />
+          ),
+          tbody: ({ node, ...props }) => (
+            <tbody 
+              className="bg-white divide-y divide-gray-200" 
+              {...props} 
+            />
+          ),
+          tr: ({ node, ...props }) => (
+            <tr 
+              className="hover:bg-gray-50" 
+              {...props} 
+            />
+          ),
+          th: ({ node, ...props }) => (
+            <th 
+              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" 
+              {...props} 
+            />
+          ),
+          td: ({ node, ...props }) => (
+            <td 
+              className="px-6 py-4 whitespace-nowrap text-sm text-gray-700" 
+              {...props} 
+            />
+          ),
+          
+          // Media
+          img: ({ node, ...props }) => (
+            <img 
+              {...props} 
+              className="my-6 rounded-lg shadow-md w-full max-w-2xl mx-auto" 
+              alt={props.alt || 'Product detail'} 
+              loading="lazy"
+            />
+          ),
+          
+          // Links
+          a: ({ node, ...props }) => (
+            <a 
+              className="text-blue-600 hover:text-blue-800 font-medium hover:underline" 
+              {...props} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+            />
+          ),
+          
+          // Code
+          code: ({ node, ...props }) => (
+            <code 
+              className="bg-gray-100 px-2 py-1 rounded text-red-600 text-sm font-mono" 
+              {...props} 
+            />
+          ),
+          pre: ({ node, ...props }) => (
+            <pre 
+              className="bg-gray-100 p-4 rounded-lg overflow-x-auto text-sm my-4 font-mono" 
+              {...props} 
+            />
+          ),
+        }}>
           {product.about }
         </Markdown>
       </div>}
