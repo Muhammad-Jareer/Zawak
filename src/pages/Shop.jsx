@@ -21,26 +21,29 @@ import { addItemToCart, getCart } from "../api/cart";
 import { useCart } from "../hooks/useCart";
 import ShopSkeleton from "../components/skeletons/ShopSkeleton";
 import { toast } from "react-toastify";
+import { useProducts } from "../hooks/useProducts";
 
 function Shop() {
   const dispatch = useDispatch();
   const location = useLocation();
 
-  const [loading, setLoading] = useState(false)
-  const [visibleCount, setVisibleCount] = useState(10);
-  const [totalCount, setTotalCount] = useState(0)
-  const [productsState, setProductsState] = useState([]);
+  const {products: productsState, totalCount, isLoading: loading, filters, loadMoreProducts} = useProducts();
+
+  // const [loading, setLoading] = useState(false)
+  // const [visibleCount, setVisibleCount] = useState(10);
+  // const [totalCount, setTotalCount] = useState(0)
+  // const [productsState, setProductsState] = useState([]);
   const [modalProduct, setModalProduct] = useState(null);
   const [showFilter, setShowFilter] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const [popup, setPopup] = useState({ show: false, type: "", itemName: "" });
-  const [filters, setFilters] = useState({
-    category: "",
-    subCategory: "",
-    tag: "",
-    priceRange: "",
-    sortBy: "",
-  });
+  // const [filters, setFilters] = useState({
+  //   category: "",
+  //   subCategory: "",
+  //   tag: "",
+  //   priceRange: "",
+  //   sortBy: "",
+  // });
 
   const [searchResults, setSearchResults] = useState([]);
   const [query, setQuery] = useState("");
@@ -51,20 +54,6 @@ function Shop() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [location]);
-
-  useEffect(() => {
-    async function f() {
-      const { category, tag, priceRange, sortBy } = filters;
-      if (!category && !tag && !priceRange && !sortBy) return;
-
-      console.log("visible count is: ", visibleCount)
-      const {products, totalCount} = await filterProducts(0, visibleCount);
-      setProductsState(products);
-      setTotalCount(totalCount)
-      setShowFilter(false);
-    }
-    f();
-  }, [filters]);
 
   useEffect(() => {
     const asyncfunc = async () => {
@@ -146,58 +135,60 @@ function Shop() {
   };
 
   const fetchMoreData = async () => {
-    const { category, tag, priceRange, sortBy } = filters;
-    if (!category && !tag && !priceRange && !sortBy) {
-      const {products} = await getAllProducts(visibleCount, 10);
-      setProductsState((pre) => pre.concat(products));
-      setVisibleCount((prev) => prev + 10);
-      return;
-    }
+    // const { category, tag, priceRange, sortBy } = filters;
+    // if (!category && !tag && !priceRange && !sortBy) {
+    //   const {products} = await getAllProducts(visibleCount, 10);
+    //   setProductsState((pre) => pre.concat(products));
+    //   setVisibleCount((prev) => prev + 10);
+    //   return;
+    // }
     
-    const {products: filteredProducts, totalCount} = await filterProducts(visibleCount, 10);
-    setProductsState((pre) =>
-      pre.concat(filteredProducts)
-    );
-    setVisibleCount((prev) => prev + 10);
-    return;
+    // const {products: filteredProducts, totalCount} = await filterProducts(visibleCount, 10);
+    // setProductsState((pre) =>
+    //   pre.concat(filteredProducts)
+    // );
+    // setVisibleCount((prev) => prev + 10);
+    // return;
+    console.log("fetch more is called")
+    dispatch(loadMoreProducts())
   };
 
   // INITIAL FETCH
-  useEffect(() => {
-    const fetchProducts = async () => {
-      setLoading(true)
-      const {products, totalCount} = await getAllProducts(0, visibleCount);
-      setProductsState((pre) => pre.concat(products));
-      setTotalCount(totalCount)
-      setLoading(false)
-    };
+  // useEffect(() => {
+  //   const fetchProducts = async () => {
+  //     setLoading(true)
+  //     const {products, totalCount} = await getAllProducts(0, visibleCount);
+  //     setProductsState((pre) => pre.concat(products));
+  //     setTotalCount(totalCount)
+  //     setLoading(false)
+  //   };
 
-    fetchProducts();
-  }, []);
+  //   fetchProducts();
+  // }, []);
 
-  const filterProducts = async (skip, limit = 10) => {
-    const { category, subCategory, tag, priceRange, sortBy } = filters;
-    const pRange = priceRange.split("-")
+  // const filterProducts = async (skip, limit = 10) => {
+  //   const { category, subCategory, tag, priceRange, sortBy } = filters;
+  //   const pRange = priceRange.split("-")
 
-    const res = await getFilteredProducts(
-      category,
-      subCategory,
-      tag,
-      pRange[0] || '',
-      pRange[1] || '',
-      sortBy,
-      skip,
-      limit
-    );
+  //   const res = await getFilteredProducts(
+  //     category,
+  //     subCategory,
+  //     tag,
+  //     pRange[0] || '',
+  //     pRange[1] || '',
+  //     sortBy,
+  //     skip,
+  //     limit
+  //   );
 
-    if(res === 'ERROR'){
-      toast.error("Filtered Not Applied");
-      return;
-    }
+  //   if(res === 'ERROR'){
+  //     toast.error("Filtered Not Applied");
+  //     return;
+  //   }
 
-    const {products, totalCount} = res
-    return {products, totalCount};
-  };
+  //   const {products, totalCount} = res
+  //   return {products, totalCount};
+  // };
 
   if(loading){
     return <ShopSkeleton />
@@ -281,8 +272,6 @@ function Shop() {
       <Filter
         setShowFilter={setShowFilter}
         showFilter={showFilter}
-        filters={filters}
-        setFilters={setFilters}
       />
 
       <InfiniteScroll

@@ -11,7 +11,6 @@ export const useCart = () => {
   const hasFetched = useRef(false);
   const navigate = useNavigate();
 
-  const [cartLoading, setCartLoading] = useState(true);
   const [addingItemToCart, setAddingItemToCart] = useState(false);
   const [removingFromCart, setRemoveFromCart] = useState(null);
   const [error, setError] = useState(null);
@@ -51,26 +50,24 @@ export const useCart = () => {
 
   useEffect(() => {
     const fetchCart = async () => {
-      if (hasFetched.current) return;
-      hasFetched.current = true;
 
+      if(!cart && !hasFetched.current){
+      hasFetched.current = true;
       try {
-        setCartLoading(true);
         const fCart = await getCart();
         if (fCart) dispatch(initialize({ ...fCart }));
       } catch (err) {
         setError(err.message || "Failed to fetch cart");
-      } finally {
-        setCartLoading(false);
-      }
+      } 
     };
+  }
 
     fetchCart();
   }, [dispatch]);
 
   return {
     cart,
-    cartLoading,
+    cartLoading: !cart,
     error,
     handleAddToCart,
     addingItemToCart,

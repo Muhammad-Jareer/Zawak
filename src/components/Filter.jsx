@@ -1,96 +1,113 @@
 import React, { useState } from "react";
-import { ChevronRight, X, ArrowDown } from 'lucide-react';
+import { ChevronRight, X, ArrowDown } from "lucide-react";
 import clsx from "clsx";
+import { useProducts } from "../hooks/useProducts";
+import { useDispatch } from "react-redux";
+import { fetchProducts } from "../store/slices/productSlice";
+// import { setFilters } from "../store/slices/productSlice";
 
 const categories = [
   {
     name: "Home & Living",
-    subCategories: ["Home Decor", "Aromatherapy", "Show Case"]
+    subCategories: ["Home Decor", "Aromatherapy", "Show Case"],
   },
   {
     name: "Fashion",
-    subCategories: ["Decoration", "Jewelry", "Clothes"]
+    subCategories: ["Decoration", "Jewelry", "Clothes"],
   },
   {
     name: "Cultural",
-    subCategories: ["Beautiful", "Home Use"]
+    subCategories: ["Beautiful", "Home Use"],
   },
   {
     name: "Textile",
-    subCategories: ["For Home", "Amazing"]
+    subCategories: ["For Home", "Amazing"],
   },
   {
     name: "Accessories",
-    subCategories: ["Decoration", "Computer", "Kitchen"]
-  }
+    subCategories: ["Decoration", "Computer", "Kitchen"],
+  },
 ];
 
 const tags = ["featured", "best selling", "top rated"];
-
 const priceRanges = ["0 - 50", "50 - 100", "100 - 150", "150 - 200+"];
+const sortBy = [
+  "Price: Low to High",
+  "Price: High to Low",
+  "Alphabetical (A-Z)",
+  "Alphabetical (Z-A)",
+];
+const sortKeywords = ["price_asc", "price_desc", "name_asc", "name_desc"];
 
-const sortBy = ["Price: Low to High", "Price: High to Low", "Alphabetical (A-Z)", "Alphabetical (Z-A)"];
-const sortKeywords = ['price_asc', "price_desc", "name_asc", "name_desc"]
-
-const Filter = ({ showFilter, setShowFilter, filters, setFilters }) => {
+const Filter = ({ showFilter, setShowFilter }) => {
   const [expandedCategory, setExpandedCategory] = useState(null);
+  const { filters, changeFilters } = useProducts();
   const [tempFilters, setTempFilters] = useState({
     category: "",
     subCategory: "",
     tag: "",
     priceRange: "",
     sortBy: "",
-  })
+  });
+  const dispatch = useDispatch();
 
   const handleCategoryChange = (category, subCategory) => {
     // if already selected then unselect
-    if(tempFilters.category === category && tempFilters.subCategory === subCategory){
-      setTempFilters((prev) => ({...prev, category: "", subCategory: ""}))
-      return
+    if (
+      tempFilters.category === category &&
+      tempFilters.subCategory === subCategory
+    ) {
+      setTempFilters((prev) => ({ ...prev, category: "", subCategory: "" }));
+      return;
     }
 
     setTempFilters((prev) => ({ ...prev, category, subCategory }));
   };
 
   const handleTagChange = (tag) => {
-    if(tempFilters.tag === tag){
-      setTempFilters((prev) => ({...prev, tag: ""}))
-      return
+    if (tempFilters.tag === tag) {
+      setTempFilters((prev) => ({ ...prev, tag: "" }));
+      return;
     }
 
     setTempFilters((prev) => ({ ...prev, tag }));
   };
 
   const handlePriceRangeChange = (range) => {
-    if(tempFilters.priceRange === range){
-      setTempFilters((prev) => ({...prev, priceRange : ""}))
-      return
+    if (tempFilters.priceRange === range) {
+      setTempFilters((prev) => ({ ...prev, priceRange: "" }));
+      return;
     }
 
     setTempFilters((prev) => ({ ...prev, priceRange: range }));
   };
 
   const handleSortChange = (sort) => {
-    if(tempFilters.sortBy === sort){
-      setTempFilters((prev) => ({...prev, sortBy : ""}))
-      return
+    if (tempFilters.sortBy === sort) {
+      setTempFilters((prev) => ({ ...prev, sortBy: "" }));
+      return;
     }
 
     setTempFilters((prev) => ({ ...prev, sortBy: sort }));
   };
 
   const handleToggleCategory = (categoryName) => {
-    setExpandedCategory((prev) => (prev === categoryName ? null : categoryName));
+    setExpandedCategory((prev) =>
+      prev === categoryName ? null : categoryName
+    );
   };
 
-  const resetFilters = () => setFilters({
-    category: "",
-    subCategory: "",
-    tag: "",
-    priceRange: "",
-    sortBy: "",
-  })
-
+  const resetFilters = () =>{
+    changeFilters({
+      category: "",
+      subCategory: "",
+      tag: "",
+      priceRange: "",
+      sortBy: "",
+    });
+    dispatch(fetchProducts())
+    setShowFilter(false)
+}
   return (
     <>
       {showFilter && (
@@ -109,7 +126,9 @@ const Filter = ({ showFilter, setShowFilter, filters, setFilters }) => {
         <div className="pt-24 flex">
           <h2 className="font-semibold flex-1 font-serif text-2xl text-primary-600">
             Filters
-            <p className="text-sm text-gray-600 font-sans font-normal flex items-center gap-1">select and click on apply btn <ArrowDown size={15}/></p>
+            <p className="text-sm text-gray-600 font-sans font-normal flex items-center gap-1">
+              select and click on apply btn <ArrowDown size={15} />
+            </p>
           </h2>
           <button
             onClick={() => setShowFilter(!showFilter)}
@@ -121,7 +140,12 @@ const Filter = ({ showFilter, setShowFilter, filters, setFilters }) => {
 
         {/* Category Section */}
         <div className="my-8 flex flex-col">
-          <h3 className="text-lg font-semibold mb-2 text-primary-600">Categories <span className="text-gray-600 font-normal text-[12px] ml-2">{filters.category} - {filters.subCategory}</span></h3>
+          <h3 className="text-lg font-semibold mb-2 text-primary-600">
+            Categories{" "}
+            <span className="text-gray-600 font-normal text-[12px] ml-2">
+              {filters.category} - {filters.subCategory}
+            </span>
+          </h3>
           <ul className="grid grid-cols-1 gap-2 pl-2">
             {categories.map((category) => (
               <li key={category.name} className="relative">
@@ -129,7 +153,15 @@ const Filter = ({ showFilter, setShowFilter, filters, setFilters }) => {
                   onClick={() => handleToggleCategory(category.name)}
                   className="flex justify-between items-center cursor-pointer text-gray-600 hover:text-primary-600"
                 >
-                  <p className={clsx("hover:underline", tempFilters.category === category.name && "text-primary-600")}>{category.name}</p>
+                  <p
+                    className={clsx(
+                      "hover:underline",
+                      tempFilters.category === category.name &&
+                        "text-primary-600"
+                    )}
+                  >
+                    {category.name}
+                  </p>
                   <ChevronRight
                     className={`transform transition-transform ${
                       expandedCategory === category.name ? "rotate-90" : ""
@@ -141,8 +173,16 @@ const Filter = ({ showFilter, setShowFilter, filters, setFilters }) => {
                     {category.subCategories.map((subCategory, idx) => (
                       <li
                         key={idx}
-                        onClick={() => {handleCategoryChange(category.name, subCategory); setExpandedCategory(null)}}
-                        className={clsx("text-gray-600 hover:text-primary-600 cursor-pointer", tempFilters.subCategory === subCategory && tempFilters.category === category.name && "text-primary-600")}
+                        onClick={() => {
+                          handleCategoryChange(category.name, subCategory);
+                          setExpandedCategory(null);
+                        }}
+                        className={clsx(
+                          "text-gray-600 hover:text-primary-600 cursor-pointer",
+                          tempFilters.subCategory === subCategory &&
+                            tempFilters.category === category.name &&
+                            "text-primary-600"
+                        )}
                       >
                         {subCategory}
                       </li>
@@ -162,7 +202,11 @@ const Filter = ({ showFilter, setShowFilter, filters, setFilters }) => {
               <span
                 key={tag}
                 onClick={() => handleTagChange(tag)}
-                className={clsx("px-3 py-1 text-sm text-center border-2 border-gray-600 text-gray-600 rounded-full cursor-pointer hover:border-primary-600 hover:text-primary-600", tempFilters.tag === tag && "text-primary-600 border-primary-600")}
+                className={clsx(
+                  "px-3 py-1 text-sm text-center border-2 border-gray-600 text-gray-600 rounded-full cursor-pointer hover:border-primary-600 hover:text-primary-600",
+                  tempFilters.tag === tag &&
+                    "text-primary-600 border-primary-600"
+                )}
               >
                 {tag}
               </span>
@@ -178,7 +222,10 @@ const Filter = ({ showFilter, setShowFilter, filters, setFilters }) => {
               <li
                 key={range}
                 onClick={() => handlePriceRangeChange(range)}
-                className={clsx("text-gray-600 hover:text-primary-600 hover:underline cursor-pointer", tempFilters.priceRange === range && "text-primary-600")}
+                className={clsx(
+                  "text-gray-600 hover:text-primary-600 hover:underline cursor-pointer",
+                  tempFilters.priceRange === range && "text-primary-600"
+                )}
               >
                 {range}
               </li>
@@ -188,19 +235,23 @@ const Filter = ({ showFilter, setShowFilter, filters, setFilters }) => {
 
         {/* Sort By Section */}
         <div className="my-8">
-          <h3 className="text-lg font-semibold mb-2 text-primary-600">Sort By</h3>
+          <h3 className="text-lg font-semibold mb-2 text-primary-600">
+            Sort By
+          </h3>
           <ul className="space-y-2 pl-2">
             {sortBy.map((sort) => (
               <li
                 key={sort}
                 onClick={() => {
-                  const idx = sortBy.indexOf(sort)
-                  console.log("idx is: ", idx)
-                  const keyword = sortKeywords[idx]
-                  handleSortChange(keyword)
-                }
-                }
-                className={clsx("text-gray-600 hover:text-primary-600 hover:underline cursor-pointer", tempFilters.sortBy === sort && "text-primary-600")}
+                  const idx = sortBy.indexOf(sort);
+                  console.log("idx is: ", idx);
+                  const keyword = sortKeywords[idx];
+                  handleSortChange(keyword);
+                }}
+                className={clsx(
+                  "text-gray-600 hover:text-primary-600 hover:underline cursor-pointer",
+                  tempFilters.sortBy === sort && "text-primary-600"
+                )}
               >
                 {sort}
               </li>
@@ -210,8 +261,18 @@ const Filter = ({ showFilter, setShowFilter, filters, setFilters }) => {
 
         {/* btns */}
         <div className="mb-4 flex justify-end gap-4">
-          <button className="btn btn-outline" onClick={resetFilters}>Reset</button>
-          <button className="btn btn-primary" onClick={()=>{setFilters(tempFilters)}}>Apply</button>
+          <button className="btn btn-outline" onClick={resetFilters}>
+            Reset
+          </button>
+          <button
+            className="btn btn-primary"
+            onClick={() => {
+              changeFilters(tempFilters);
+              setShowFilter(false)
+            }}
+          >
+            Apply
+          </button>
         </div>
       </section>
     </>
