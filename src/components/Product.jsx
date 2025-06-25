@@ -15,7 +15,7 @@ const Product = ({
 }) => {
   const [isSmallDevice, setIsSmallDevice] = useState(window.innerWidth <= 425);
   const navigate = useNavigate();
-  const {handleAddToCart, addingItemToCart} = useCart();
+  const {addToCart:handleAddToCart, addingItemToCart} = useCart();
 
   // Update isSmallDevice state on window resize
   useEffect(() => {

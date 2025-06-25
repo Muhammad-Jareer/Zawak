@@ -17,11 +17,9 @@ export const useAuth = (componentName) => {
     }
     const fetch = async () => {
       if (!user && !hasFetched.current) {
-        console.log
         hasFetched.current = true;
         const res = await get_user();
         if (res) {
-          console.log("res is: ", res)
           dispatch(login(res.user));
           return;
         } else {

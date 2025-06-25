@@ -37,7 +37,7 @@ const SimilarProducts = ({category, subCategory, tag}) => {
             {similarProducts.map((item) => (
               <Link
                 to={`/product/${item.id}`}
-                key={item.id}
+                key={item._id}
                 className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer"
               >
                 <img

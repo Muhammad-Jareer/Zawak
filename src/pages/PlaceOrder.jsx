@@ -26,7 +26,7 @@ function PlaceOrder() {
   const [totalAmount, setTotalAmount] = useState(null);
   const [price, setPrice] = useState(null)
   const [user, isAuthenticated, loading] = useAuth("placeorder");
-  const {cart} = useCart();
+  const {items: cartItems, cartTotal} = useCart();
 
   const navigate = useNavigate();
 
@@ -67,11 +67,11 @@ function PlaceOrder() {
       )
       };
     })()} else {
-      if (cart && cart.items && cart.items.length > 0) {
-        console.log("cart", cart.items);
-        setitems(cart.items);
-        setTotalAmount(cart.total);
-        setPrice(cart.total);
+      if (cartItems && cartItems.length > 0) {
+        console.log("cart", cartItems);
+        setitems(cartItems);
+        setTotalAmount(cartTotal);
+        setPrice(cartTotal);
       }
     }
   }, []);

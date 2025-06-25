@@ -9,7 +9,6 @@ import { Loader2 } from 'lucide-react';
 
 const NavbarSkeleton = () => {
   const {cart, cartLoading} = useCart()
-  console.log("cart loading is ", cartLoading)
   const wishlistItems = useSelector((state) => state.wishlist.items);
   const [user, isAuthenticated, loading] = useAuth("nav");
 

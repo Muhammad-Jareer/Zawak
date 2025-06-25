@@ -9,11 +9,16 @@ import {
   selectTotalCount,
   selectFilters,
   filterProducts,
-  setFilters
+  setFilters,
+  setActiveCategory
 } from "../store/slices/productSlice";
+import { useParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 export const useProducts = () => {
   const dispatch = useDispatch();
+  const [params] = useSearchParams();
+  const category = params.get("category");
   const products = useSelector(selectAllProducts);
   const filters = useSelector(selectFilters);
   const totalCount = useSelector(selectTotalCount);
@@ -32,6 +37,9 @@ export const useProducts = () => {
   useEffect(() => {
     if (status === "idle" && !hasFetched.current) {
       hasFetched.current = true;
+      if(category && category !== '') {
+        dispatch(setActiveCategory(category));
+      }
       dispatch(fetchProducts());
     }
   }, [status, dispatch]);

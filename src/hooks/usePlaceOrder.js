@@ -2,6 +2,7 @@ import { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { api_saveAddress } from "../api/user";
 import { placeOrder } from "../api/order";
+import { useCart } from "./useCart";
 
 export const usePlaceOrder = (user, items, totalAmount, price, paymentMethod) => {
   const [savingAddress, setSavingAddress] = useState(false);
@@ -15,8 +16,7 @@ export const usePlaceOrder = (user, items, totalAmount, price, paymentMethod) =>
 
   const [savingOrder, setSavingOrder] = useState(false)
   const navigate = useNavigate();
-  const [error, setError] = useState(null);
-  const hasFetched = useRef(false);
+  const {clearCart} = useCart();
 
   const handleShippingAddressChange = (e) => {
     const { name, value } = e.target;
@@ -90,6 +90,7 @@ export const usePlaceOrder = (user, items, totalAmount, price, paymentMethod) =>
       navigate("/login");
       return;
     }
+    clearCart();
     if (makeOrder && paymentMethod === "ONLINE") {
       navigate(`/payonline-easyjazz?orderId=${makeOrder._id}`);
       return;

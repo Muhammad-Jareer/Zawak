@@ -8,8 +8,8 @@ import { useCart } from '../hooks/useCart';
 import { Loader2 } from 'lucide-react';
 
 const Navbar = () => {
-  const {cart, cartLoading} = useCart()
-  console.log("cart loading is ", cartLoading)
+  const {itemCount, isLoading: cartLoading, items} = useCart()
+  console.log('itemCount', itemCount)
   const wishlistItems = useSelector((state) => state.wishlist.items);
   const [user, isAuthenticated, loading] = useAuth("nav");
 
@@ -115,9 +115,9 @@ const Navbar = () => {
             <Link to="/cart" className="p-2 hover:text-primary-600 transition-colors relative">
               
               {cartLoading ? <Loader2 className='w-4 h-4 animate-spin' /> : <ShoppingBag size={20} />}
-              {!cartLoading && cart && cart?.items.length > 0 && (
+              {!cartLoading && items && items.length > 0 && (
                 <span className="absolute -top-1 -right-1 bg-primary-600 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
-                  {cart?.items.length}
+                  {items.length}
                 </span>
               )}
             </Link>
@@ -156,14 +156,14 @@ const Navbar = () => {
               </span>
             )}
           </Link>
-          <Link to="/cart" className="text-gray-600 hover:text-primary-600 transition-colors" onClick={closeMobileMenu}>
+          {/* <Link to="/cart" className="text-gray-600 hover:text-primary-600 transition-colors" onClick={closeMobileMenu}>
             Cart
             {cart && cart.items.length > 0 && (
               <span className="ml-2 text-xs bg-primary-600 text-white rounded-full px-2">
                 {cart.items.length}
               </span>
             )}
-          </Link>
+          </Link> */}
           <Link to="/profile" className="text-gray-600 hover:text-primary-600 transition-colors" onClick={closeMobileMenu}>
             Profile
           </Link> </>)

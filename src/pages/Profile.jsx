@@ -6,7 +6,7 @@ import UserDetails from "../components/UserDetails";
 import AccountSettings from "../components/AccountSettings";
 import Orders from "../components/Orders";
 import { useAuth } from "../hooks/useAuth";
-import { api_logout } from "../api/auth";
+import { api_logout, api_request_verification, api_reset_password } from "../api/auth";
 import { Loader2 } from "lucide-react";
 
 function Profile() {
@@ -15,6 +15,7 @@ function Profile() {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState("profile");
   const [editMode, setEditMode] = useState(false);
+  const [verifying, setVerifying] = useState(false)
   const [formData, setFormData] = useState({
     firstName: user?.firstName || "",
     lastName: user?.lastName || "",
@@ -95,12 +96,20 @@ function Profile() {
                 </h1>
                 <p className="text-gray-600">{user?.email}</p>
               </div>
+              <div className="flex gap-4 sm:flex-1">
+              {!user?.isVerified && <button
+                onClick={async ()=> {setVerifying(true); await api_request_verification(user?._id); setVerifying(false);}}
+                className="mt-4 sm:mt-0 sm:ml-auto px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition duration-200 flex gap-2"
+              >
+               {verifying? <Loader2 className="animate-spin" /> : "Please Verify"}
+              </button>}
               <button
                 onClick={handleLogout}
                 className="mt-4 sm:mt-0 sm:ml-auto px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition duration-200 flex gap-2"
               >
                 {loggingOut && <Loader2 className="animate-spin" />} Sign Out
               </button>
+              </div>
             </div>
 
             {/* Tab Navigation */}

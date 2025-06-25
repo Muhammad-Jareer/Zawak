@@ -185,9 +185,54 @@ function Home() {
                 </button>
             </section>
 
-            <section className="bg-accent-warm-beige">
-                <Catelog />
-            </section>
+            <section className="bg-accent-warm-beige py-12 px-4 sm:px-6 lg:px-8">
+  <div className="max-w-7xl mx-auto">
+    <h2 className="text-2xl md:text-3xl font-bold text-center mb-8">Shop by Category</h2>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+      {/* Cultural Card */}
+      <div 
+        className="relative h-64 rounded-lg shadow-md group cursor-pointer overflow-hidden"
+        onClick={() => navigate('/shop?category=Cultural')}
+      >
+        <ImageComponent
+          src="https://images.unsplash.com/photo-1605000797499-95a51c5269ae?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80"
+          alt="Cultural products"
+          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+        />
+        <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center p-4">
+          <div className="text-center">
+            <h3 className="text-2xl font-bold text-white mb-1">Cultural</h3>
+            <p className="text-white text-sm mb-3">Traditional artifacts</p>
+            <button className="px-4 py-1.5 bg-white text-gray-800 rounded-full text-sm font-medium hover:bg-opacity-90 transition">
+              Shop Now
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Antique Card */}
+      <div 
+        className="relative h-64 rounded-lg shadow-md group cursor-pointer overflow-hidden"
+        onClick={() => navigate('/shop?category=antique')}
+      >
+        <ImageComponent
+          src="https://images.unsplash.com/photo-1584917865442-de89df76afd3?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80"
+          alt="Antique products"
+          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+        />
+        <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center p-4">
+          <div className="text-center">
+            <h3 className="text-2xl font-bold text-white mb-1">Antique</h3>
+            <p className="text-white text-sm mb-3">Vintage treasures</p>
+            <button className="px-4 py-1.5 bg-white text-gray-800 rounded-full text-sm font-medium hover:bg-opacity-90 transition">
+              Shop Now
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
             {/* <FeaturedProducts /> */}
             <Suspense fallback={<FeaturedProductsSkeleton />}>
                 <FeaturedProducts />

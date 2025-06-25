@@ -1,77 +1,96 @@
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useRef, useState } from "react";
-import { initialize, removeFromCart } from "../store/slices/cartSlice";
-import { addItemToCart, getCart, removeItemFromCart } from "../api/cart";
+import { useEffect, useState } from "react";
+import { 
+  addToCart, 
+  removeFromCart,
+  fetchCart,
+  clearCart,
+  selectCartTotal
+} from "../store/slices/cartSlice";
+import { addItemToCart, removeItemFromCart } from "../api/cart";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 export const useCart = () => {
-  const cart = useSelector((state) => state.cart);
   const dispatch = useDispatch();
-  const hasFetched = useRef(false);
   const navigate = useNavigate();
+  const [removingFromCart, setRemovingFromCart] = useState('')
+  const [addingItemToCart, setAddingItemToCart] = useState('')
+  
+  // Select cart state from Redux
+  const cart = useSelector(state => state.cart);
+  const { items, loading, loaded, error } = cart;
 
-  const [addingItemToCart, setAddingItemToCart] = useState(false);
-  const [removingFromCart, setRemoveFromCart] = useState(null);
-  const [error, setError] = useState(null);
+  const cartTotal = useSelector(selectCartTotal)
 
   const handleAddToCart = async (product) => {
-    if (product && product.price) {
-      setAddingItemToCart(true);
-      try {
-        const res = await addItemToCart(product);
-        if (res === 401) return navigate("/login");
-        if (res) {
-          dispatch({
-            type: "cart/addToCart",
-            payload: { ...product, quantity: 1 },
-          });
-          toast.success("Item Added Successfully");
-        }
-      } catch (err) {
-        toast.error("Failed to add item to cart");
-      } finally {
-        setAddingItemToCart(false);
-      }
+    if (!product?.price) {
+      toast.error("Invalid product");
+      return;
     }
-  };
 
-  const handleRemoveItem = async (id) => {
-    setRemoveFromCart(id);
     try {
-      const res = await removeItemFromCart(id);
-      if (res) dispatch(removeFromCart(id));
+      setAddingItemToCart(product._id);
+      const res = await addItemToCart(product);
+      
+      if (res === 401) {
+        navigate("/login");
+        return;
+      }
+
+      if (res) {
+        dispatch(addToCart({ 
+          ...product, 
+          quantity: 1 
+        }));
+        toast.success("Item added to cart");
+      }
     } catch (err) {
-      toast.error("Failed to remove item from cart");
+      toast.error(err.message || "Failed to add item to cart");
     } finally {
-      setRemoveFromCart(null);
+      setAddingItemToCart('');
     }
   };
 
+  const handleRemoveItem = async (productId) => {
+    try {
+      setRemovingFromCart(productId);
+      const res = await removeItemFromCart(productId);
+      
+      if (res) {
+        dispatch(removeFromCart(productId));
+        toast.success("Item removed from cart");
+      }
+    } catch (err) {
+      toast.error(err.message || "Failed to remove item from cart");
+    } finally {
+      setRemovingFromCart('');
+    }
+  };
+
+  const handleClearCart = () => {
+    dispatch(clearCart());
+    toast.success("Cart cleared");
+  };
+
+  // Initialize cart if not loaded
   useEffect(() => {
-    const fetchCart = async () => {
-
-      if(!cart && !hasFetched.current){
-      hasFetched.current = true;
-      try {
-        const fCart = await getCart();
-        if (fCart) dispatch(initialize({ ...fCart }));
-      } catch (err) {
-        setError(err.message || "Failed to fetch cart");
-      } 
-    };
-  }
-
-    fetchCart();
-  }, [dispatch]);
+    if (!loaded && !loading) {
+      dispatch(fetchCart());
+    }
+  }, [dispatch, loaded, loading]);
 
   return {
-    cart,
-    cartLoading: !cart,
+    items,
+    cartTotal,
+    isLoading: loading,
+    isLoaded: loaded,
     error,
-    handleAddToCart,
-    addingItemToCart,
-    handleRemoveItem,
+    addToCart: handleAddToCart,
+    removeFromCart: handleRemoveItem,
+    clearCart: handleClearCart,
+    isEmpty: items.length === 0,
     removingFromCart,
+    addingItemToCart
   };
 };

@@ -1,31 +1,30 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import {
-  removeFromCart,
   updateQuantity,
-  initialize,
 } from "../store/slices/cartSlice";
-import { api_updateQuantity, getCart, removeItemFromCart } from "../api/cart";
+import { api_updateQuantity } from "../api/cart";
 import { useCart } from "../hooks/useCart";
 import { Loader2 } from "lucide-react";
 import { Loader } from "../components/Loader";
 
 function Cart() {
   const dispatch = useDispatch();
-  const { cart, cartLoading, removingFromCart, handleRemoveItem } = useCart();
+  const { items, isLoading, removeFromCart:handleRemoveItem, removingFromCart } = useCart();  
+  const [updatingQuantity, setUpdatingQuantity] = useState(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [cart]);
+  }, [items]);
 
   const handleUpdateQuantity = (id, operation, quantity) => {
     const res = api_updateQuantity(id, operation);
-    if (res) dispatch(updateQuantity({ id, quantity }));
+    if(res) dispatch(updateQuantity({ id, quantity }));
   };
 
-  if (cartLoading) {
+  if (isLoading) {
     return (
       <div className="text-center py-10 text-gray-500 min-h-screen w-full flex items-center justify-center gap-4 -translate-y-24">
         <Loader />
@@ -36,7 +35,7 @@ function Cart() {
     );
   }
 
-  if (!cart || cart?.items.length === 0) {
+  if (!items || items.length === 0) {
     return (
       <div className="container mx-auto px-4 text-center py-16 mt-16">
         <h1 className="font-serif text-3xl mb-4">Your Cart is Empty</h1>
@@ -58,9 +57,8 @@ function Cart() {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div className="md:col-span-2 space-y-4">
-          {cart &&
-            cart.items &&
-            cart?.items.map((item, idx) => (
+          {items &&
+            items.map((item, idx) => (
               <div
                 key={idx}
                 className="bg-white rounded-lg shadow-md p-4 flex items-center"
@@ -125,7 +123,7 @@ function Cart() {
               <span>Subtotal</span>
               <span>
                 $
-                {cart.items
+                {items
                   .reduce((sum, item) => sum + item.price, 0)
                   .toFixed(2)}
               </span>
@@ -140,7 +138,7 @@ function Cart() {
               <span>Total</span>
               <span>
                 $
-                {cart.items
+                {items
                   .reduce((sum, item) => sum + item.price, 0)
                   .toFixed(2)}
               </span>

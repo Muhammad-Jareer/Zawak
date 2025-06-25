@@ -91,3 +91,18 @@ export const api_reset_password = async (token, pass) => {
         return false
     }
 }
+
+export const api_request_verification = async (userId) => {
+    try {
+        const response = await api.post('/auth/request-verification', { userId });
+        console.log("res is: ", response)
+        if(response.status === 200) {
+            toast.success("Please Check Your Email Box")
+            return true
+        }
+    } catch (error) {
+        toast.error("Something went wrong!")
+        console.log(error)
+        return false
+    }
+}

@@ -12,7 +12,7 @@ import {
   MoreVertical,
 } from "lucide-react";
 import AddToCartWishlistPopup from "../components/AddToCartWishlistPopup";
-import { addToCart, initialize } from "../store/slices/cartSlice";
+import { addToCart } from "../store/slices/cartSlice";
 import { addToWishlist } from "../store/slices/wishlistSlice";
 import { addToRecentlyViewed } from "../store/slices/productSlice";
 import { products } from "../data/products";
@@ -36,7 +36,7 @@ function ProductDetails() {
   const recentlyViewed = useSelector((state) => state.product.recentlyViewed);
   const [popup, setPopup] = useState({ show: false, type: "", itemName: "" });
   const cartState = useSelector((state) => state.cart);
-  const { addingItemToCart, handleAddToCart } = useCart();
+  const { addingItemToCart, addToCart: handleAddToCart } = useCart();
   const [openReadAbout, setOpenReadAbout] = useState(false)
   const [loading, setLoading] = useState(false);
 
@@ -46,7 +46,6 @@ function ProductDetails() {
       setLoading(true);
       const foundProduct = await getProductDetails(id);
       if (foundProduct) {
-        console.log("founde porduct is: ", foundProduct);
         setProduct(foundProduct);
         setMainImage(foundProduct.image);
         dispatch(addToRecentlyViewed(foundProduct));

@@ -1,9 +1,9 @@
 import { toast } from 'react-toastify';
 import api from '../lib/api';
 
-export const getAllProducts = async (skip, limit) => {
+export const getAllProducts = async (skip, limit, activeCategory) => {
     try {
-        const response = await api.get(`/product/gps?skip=${skip}&limit=${limit}`);
+        const response = await api.get(`/product/gps?skip=${skip}&limit=${limit}&category=${activeCategory}`);
         if(response.status === 200){
             console.log(response.data);
             return response.data;

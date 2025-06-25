@@ -6,8 +6,8 @@ export const fetchProducts = createAsyncThunk(
   "products/fetchProducts",
   async (_, { getState }) => {
     const { product } = getState();
-    const { visibleCount } = product;
-    const { products, totalCount } = await getAllProducts(0, visibleCount);
+    const { visibleCount, activeCategory } = product;
+    const { products, totalCount } = await getAllProducts(0, visibleCount, activeCategory);
     return { products, totalCount };
   }
 );
@@ -80,6 +80,7 @@ const initialState = {
   },
   visibleCount: 10,
   recentlyViewed: [],
+  activeCategory: "",
 };
 
 export const productSlice = createSlice({
@@ -91,6 +92,9 @@ export const productSlice = createSlice({
     },
     setFilters: (state, action) => {
       state.filters = action.payload
+    },
+    setActiveCategory: (state, action) => {
+      state.activeCategory = action.payload;
     },
     addToRecentlyViewed: (state, action) => {
       const exists = state.recentlyViewed.find(
@@ -133,7 +137,7 @@ export const productSlice = createSlice({
   },
 });
 
-export const { addToRecentlyViewed, setFilters } = productSlice.actions;
+export const { addToRecentlyViewed, setFilters, setActiveCategory } = productSlice.actions;
 
 export const selectAllProducts = (state) => state.product.productsList;
 export const selectTotalCount = (state) => state.product.totalCount;
