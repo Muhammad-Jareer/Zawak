@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import { NavLink, Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { ShoppingBag, Heart, User, Menu, X } from 'lucide-react';
@@ -8,10 +8,9 @@ import { useCart } from '../hooks/useCart';
 import { Loader2 } from 'lucide-react';
 
 const Navbar = () => {
-  const {itemCount, isLoading: cartLoading, items} = useCart()
-  console.log('itemCount', itemCount)
   const wishlistItems = useSelector((state) => state.wishlist.items);
-  const [user, isAuthenticated, loading] = useAuth("nav");
+  const [user, isAuthenticated, loading] = useAuth()
+  const {itemCount, isLoading: cartLoading, items} = useCart();
 
   // State to toggle mobile menu visibility
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -170,7 +169,7 @@ const Navbar = () => {
             }
             
              {!loading && !isAuthenticated && <Link to="/login" className='text-gray-600 hover:text-primary-600 transition-colors border border-primary-600 px-3 py-1 rounded-full'>Login</Link>}
-            
+            ;
         </div>
       </div>
     </nav>
