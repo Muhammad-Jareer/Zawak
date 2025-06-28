@@ -10,7 +10,9 @@ import {
   selectFilters,
   filterProducts,
   setFilters,
-  setActiveCategory
+  setActiveCategory,
+  setStatus,
+  selectActiveCategory,
 } from "../store/slices/productSlice";
 import { useParams } from "react-router-dom";
 import { useSearchParams } from "react-router-dom";
@@ -23,12 +25,13 @@ export const useProducts = () => {
   const totalCount = useSelector(selectTotalCount);
   const status = useSelector(selectProductStatus);
   const error = useSelector(selectProductError);
+  const activeCategory = useSelector(selectActiveCategory);
   const hasFetched = useRef(false);
   const prevCategory = useRef(category);
 
   const changeFilters = (filters) => {
-    dispatch(setFilters(filters))
-  }
+    dispatch(setFilters(filters));
+  };
 
   useEffect(() => {
     dispatch(filterProducts());
@@ -36,15 +39,17 @@ export const useProducts = () => {
 
   useEffect(() => {
     // If category changed, reset hasFetched and fetch new products
-    if (category !== prevCategory.current) {
+    if (category !== activeCategory) {
       hasFetched.current = false;
       prevCategory.current = category;
-        dispatch(setActiveCategory(category));
+      dispatch(setActiveCategory(category));
+      dispatch((state) => state.visibleCount = 10); // Reset visible count to 10
+      dispatch(fetchProducts());
     }
 
     if (status === "idle" && !hasFetched.current) {
       hasFetched.current = true;
-      if (category && category !== '') {
+      if (category && category !== "") {
         dispatch(setActiveCategory(category));
       }
       dispatch(fetchProducts());
@@ -60,6 +65,6 @@ export const useProducts = () => {
     error,
     isSuccess: status === "succeeded",
     loadMoreProducts,
-    changeFilters
+    changeFilters,
   };
 };
