@@ -14,7 +14,6 @@ import {
 } from "../store/slices/productSlice";
 import { useParams } from "react-router-dom";
 import { useSearchParams } from "react-router-dom";
-
 export const useProducts = () => {
   const dispatch = useDispatch();
   const [params] = useSearchParams();
@@ -25,24 +24,32 @@ export const useProducts = () => {
   const status = useSelector(selectProductStatus);
   const error = useSelector(selectProductError);
   const hasFetched = useRef(false);
+  const prevCategory = useRef(category);
 
   const changeFilters = (filters) => {
     dispatch(setFilters(filters))
   }
 
   useEffect(() => {
-      dispatch(filterProducts());
+    dispatch(filterProducts());
   }, [filters]);
 
   useEffect(() => {
+    // If category changed, reset hasFetched and fetch new products
+    if (category !== prevCategory.current) {
+      hasFetched.current = false;
+      prevCategory.current = category;
+        dispatch(setActiveCategory(category));
+    }
+
     if (status === "idle" && !hasFetched.current) {
       hasFetched.current = true;
-      if(category && category !== '') {
+      if (category && category !== '') {
         dispatch(setActiveCategory(category));
       }
       dispatch(fetchProducts());
     }
-  }, [status, dispatch]);
+  }, [status, dispatch, category]);
 
   return {
     products,

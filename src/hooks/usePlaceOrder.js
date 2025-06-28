@@ -3,8 +3,16 @@ import { useNavigate } from "react-router-dom";
 import { api_saveAddress } from "../api/user";
 import { placeOrder } from "../api/order";
 import { useCart } from "./useCart";
+import { applyCoupon } from "../api/coupon";
 
-export const usePlaceOrder = (user, items, totalAmount, price, paymentMethod) => {
+export const usePlaceOrder = (
+  user,
+  items,
+  totalAmount,
+  price,
+  paymentMethod,
+  setTotalAmount
+) => {
   const [savingAddress, setSavingAddress] = useState(false);
   const [shippingAddress, setShippingAddress] = useState({
     street: "",
@@ -14,9 +22,15 @@ export const usePlaceOrder = (user, items, totalAmount, price, paymentMethod) =>
     country: "Pakistan",
   });
 
-  const [savingOrder, setSavingOrder] = useState(false)
+  const [coupon, setCoupon] = useState("");
+  const [couponLoading, setCouponLoading] = useState(false);
+  const [couponError, setCouponError] = useState("");
+  const [couponSuccess, setCouponSuccess] = useState("");
+  const [discount, setDiscount] = useState(0);
+
+  const [savingOrder, setSavingOrder] = useState(false);
   const navigate = useNavigate();
-  const {clearCart} = useCart();
+  const { clearCart } = useCart();
 
   const handleShippingAddressChange = (e) => {
     const { name, value } = e.target;
@@ -50,6 +64,30 @@ export const usePlaceOrder = (user, items, totalAmount, price, paymentMethod) =>
     setSavingAddress(false);
   };
 
+  const handleApplyCoupon = async () => {
+    setCouponLoading(true);
+    setCouponError("");
+    setCouponSuccess("");
+    try {
+      // You may need to adjust the API call according to your backend
+      const res = await applyCoupon({
+        code: coupon,
+        userId: user._id,
+        total: totalAmount,
+      });
+      if (res && res.discountAmount) {
+        setDiscount(res.discountAmount);
+        setTotalAmount(totalAmount - res.discountAmount);
+        setCouponSuccess(`Coupon applied! You saved $${res.discountAmount}`);
+      } else {
+        setCouponError(res?.message || "Invalid coupon");
+      }
+    } catch (err) {
+      setCouponError("Failed to apply coupon");
+    }
+    setCouponLoading(false);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!user) {
@@ -73,7 +111,8 @@ export const usePlaceOrder = (user, items, totalAmount, price, paymentMethod) =>
       totalAmount,
       shippingAddress,
       paymentMethod,
-      price
+      price,
+      couponCode: coupon,
     };
 
     items.forEach((item) => {
@@ -103,7 +142,6 @@ export const usePlaceOrder = (user, items, totalAmount, price, paymentMethod) =>
 
   useEffect(() => {
     if (user && user.address) {
-        console.log("user address is: ", user.address);
       setShippingAddress({
         street: user.address.street,
         city: user.address.city,
@@ -114,5 +152,19 @@ export const usePlaceOrder = (user, items, totalAmount, price, paymentMethod) =>
     }
   }, []);
 
-  return {shippingAddress, setShippingAddress, saveAddress, savingAddress, handleShippingAddressChange, handleSubmit, savingOrder };
+  return {
+    shippingAddress,
+    setShippingAddress,
+    saveAddress,
+    savingAddress,
+    handleShippingAddressChange,
+    handleSubmit,
+    savingOrder,
+    coupon,
+    setCoupon,
+    couponError,
+    couponLoading, 
+    handleApplyCoupon,
+    couponSuccess
+  };
 };

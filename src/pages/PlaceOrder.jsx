@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { CreditCard, Hand, HandCoins, Loader, Loader2, Save } from "lucide-react";
+import {
+  CreditCard,
+  Hand,
+  HandCoins,
+  Loader,
+  Loader2,
+  Save,
+} from "lucide-react";
 import { getProductDetails } from "../api/product";
 import { useDispatch } from "react-redux";
 import { placeOrder } from "../api/order";
@@ -19,54 +26,72 @@ const stripePromise = loadStripe(
 function PlaceOrder() {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-  const id = searchParams.get('id');
+  const id = searchParams.get("id");
 
   const [paymentMethod, setPaymentMethod] = useState("COD");
   const [items, setitems] = useState(null);
   const [totalAmount, setTotalAmount] = useState(null);
-  const [price, setPrice] = useState(null)
+  const [price, setPrice] = useState(null);
   const [user, isAuthenticated, loading] = useAuth("placeorder");
-  const {items: cartItems, cartTotal} = useCart();
+  const { items: cartItems, cartTotal } = useCart();
 
   const navigate = useNavigate();
 
-  if(loading) {
-    return <div className="text-center py-10 text-gray-500 min-h-screen w-full flex items-center justify-center gap-4 -translate-y-24">
-      <Loader />
-      <h2 className="text-3xl text-primary-700 font-bold">ZAWAK IS LOADING</h2>
-    </div>
+  if (loading) {
+    return (
+      <div className="text-center py-10 text-gray-500 min-h-screen w-full flex items-center justify-center gap-4 -translate-y-24">
+        <Loader />
+        <h2 className="text-3xl text-primary-700 font-bold">
+          ZAWAK IS LOADING
+        </h2>
+      </div>
+    );
   }
 
-  if(!loading && !isAuthenticated) {
+  if (!loading && !isAuthenticated) {
     navigate("/login");
     return null;
   }
 
-
-  const {shippingAddress, setShippingAddress, savingAddress, saveAddress, handleShippingAddressChange, handleSubmit, savingOrder} = usePlaceOrder(user, items, totalAmount, price, paymentMethod);
-
+  const {
+    shippingAddress,
+    setShippingAddress,
+    savingAddress,
+    saveAddress,
+    handleShippingAddressChange,
+    handleSubmit,
+    savingOrder,
+    coupon,
+    couponError,
+    couponLoading,
+    setCoupon,
+    handleApplyCoupon,
+    couponSuccess
+  } = usePlaceOrder(user, items, totalAmount, price, paymentMethod, setTotalAmount);
 
   useEffect(() => {
-    if(id){
-    (async function f() {
-      const product = await getProductDetails(id);
-      if (product) {
-        setitems([
-          {
-            quantity: 1,
-            price: product.price,
-            total: product.price,
-            productId: {
-              _id: product._id,
-              name: product.name,
-            }
-          }
-        ],
-        setTotalAmount(product.price),
-        setPrice(product.price),
-      )
-      };
-    })()} else {
+    if (id) {
+      (async function f() {
+        const product = await getProductDetails(id);
+        if (product) {
+          setitems(
+            [
+              {
+                quantity: 1,
+                price: product.price,
+                total: product.price,
+                productId: {
+                  _id: product._id,
+                  name: product.name,
+                },
+              },
+            ],
+            setTotalAmount(product.price),
+            setPrice(product.price)
+          );
+        }
+      })();
+    } else {
       if (cartItems && cartItems.length > 0) {
         console.log("cart", cartItems);
         setitems(cartItems);
@@ -82,6 +107,28 @@ function PlaceOrder() {
       <h2 className="text-3xl font-semibold text-center text-primary-600">
         Complete Your Order
       </h2>
+      
+      {/* <!-- Coupon Section --> */}
+      <div className="flex flex-col justify-center md:flex-row items-center gap-4 mb-4">
+        <input
+          type="text"
+          placeholder="Enter coupon code"
+          value={coupon}
+          onChange={e => setCoupon(e.target.value)}
+          className="border px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+        />
+        <button
+          type="button"
+          onClick={handleApplyCoupon}
+          className="btn btn-primary flex items-center"
+          disabled={(couponSuccess && couponSuccess !== "") || !coupon ? true: false}
+        >
+          {couponLoading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
+          Apply Coupon
+        </button>
+      </div>
+      {couponError && <div className="text-red-500 mb-2">{couponError}</div>}
+      {couponSuccess && <div className="text-green-600 mb-2">{couponSuccess}</div>}
 
       {/* <!-- Cart Summary --> */}
       {items && totalAmount && price && (
@@ -115,100 +162,102 @@ function PlaceOrder() {
         <h3 className="text-xl font-medium  text-primary-500">
           Shipping Information
         </h3>
-       {shippingAddress && <form action="#" method="POST" className="space-y-4 mt-4">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div>
-              <label
-                htmlFor="street"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Street Address
-              </label>
-              <input
-                type="text"
-                id="street"
-                name="street"
-                value={shippingAddress.street}
-                onChange={handleShippingAddressChange}
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-                required
-              />
+        {shippingAddress && (
+          <form action="#" method="POST" className="space-y-4 mt-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div>
+                <label
+                  htmlFor="street"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Street Address
+                </label>
+                <input
+                  type="text"
+                  id="street"
+                  name="street"
+                  value={shippingAddress.street}
+                  onChange={handleShippingAddressChange}
+                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  required
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="city"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  City
+                </label>
+                <input
+                  type="text"
+                  id="city"
+                  name="city"
+                  value={shippingAddress.city}
+                  onChange={handleShippingAddressChange}
+                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  required
+                />
+              </div>
             </div>
-            <div>
-              <label
-                htmlFor="city"
-                className="block text-sm font-medium text-gray-700"
-              >
-                City
-              </label>
-              <input
-                type="text"
-                id="city"
-                name="city"
-                value={shippingAddress.city}
-                onChange={handleShippingAddressChange}
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-                required
-              />
-            </div>
-          </div>
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div>
-              <label
-                htmlFor="state"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Known Place
-              </label>
-              <input
-                type="text"
-                id="state"
-                name="knownPlace"
-                value={shippingAddress.knownPlace}
-                onChange={handleShippingAddressChange}
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-                required
-              />
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div>
+                <label
+                  htmlFor="state"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Known Place
+                </label>
+                <input
+                  type="text"
+                  id="state"
+                  name="knownPlace"
+                  value={shippingAddress.knownPlace}
+                  onChange={handleShippingAddressChange}
+                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  required
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="postalCode"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Postal Code
+                </label>
+                <input
+                  type="text"
+                  id="postalCode"
+                  name="postalCode"
+                  value={shippingAddress.postalCode}
+                  onChange={handleShippingAddressChange}
+                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  required
+                />
+              </div>
             </div>
-            <div>
-              <label
-                htmlFor="postalCode"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Postal Code
-              </label>
-              <input
-                type="text"
-                id="postalCode"
-                name="postalCode"
-                value={shippingAddress.postalCode}
-                onChange={handleShippingAddressChange}
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-                required
-              />
-            </div>
-          </div>
 
-          <div>
-            <label
-              htmlFor="country"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Country
-            </label>
-            <input
-              disabled
-              type="text"
-              id="country"
-              name="country"
-              value={shippingAddress.country}
-              onChange={handleShippingAddressChange}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-              required
-            />
-          </div>
-        </form>}
+            <div>
+              <label
+                htmlFor="country"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Country
+              </label>
+              <input
+                disabled
+                type="text"
+                id="country"
+                name="country"
+                value={shippingAddress.country}
+                onChange={handleShippingAddressChange}
+                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                required
+              />
+            </div>
+          </form>
+        )}
         <button onClick={saveAddress} className="flex-1 btn btn-primary mt-4">
           {savingAddress ? (
             <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -268,7 +317,11 @@ function PlaceOrder() {
             onClick={handleSubmit}
             className="w-full flex justify-center px-6 py-3 text-white bg-primary-500 hover:bg-primary-600 rounded-lg font-semibold focus:outline-none focus:ring-2 focus:ring-primary-500"
           >
-            {savingOrder ? <Loader2 className="animate-spin"/> : 'Confirm Order'}
+            {savingOrder ? (
+              <Loader2 className="animate-spin" />
+            ) : (
+              "Confirm Order"
+            )}
           </button>
         </form>
       </div>

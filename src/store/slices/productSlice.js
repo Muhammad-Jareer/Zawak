@@ -137,7 +137,7 @@ export const productSlice = createSlice({
   },
 });
 
-export const { addToRecentlyViewed, setFilters, setActiveCategory } = productSlice.actions;
+export const { addToRecentlyViewed, setFilters, setActiveCategory} = productSlice.actions;
 
 export const selectAllProducts = (state) => state.product.productsList;
 export const selectTotalCount = (state) => state.product.totalCount;
@@ -145,5 +145,6 @@ export const selectProductStatus = (state) => state.product.status;
 export const selectProductError = (state) => state.product.error;
 export const selectRecentlyViewed = (state) => state.product.recentlyViewed;
 export const selectFilters = (state) => state.product.filters;
+export const selectActiveCategory = (state) => state.product.activeCategory;
 
 export default productSlice.reducer;
