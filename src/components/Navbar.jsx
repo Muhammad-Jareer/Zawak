@@ -52,7 +52,7 @@ const Navbar = () => {
 
           {/* Desktop Navigation Links */}
           <div className="hidden md:flex items-center space-x-8">
-            <NavLink to="/shop" 
+            <NavLink to="/shop?category=cultural" 
              className={({ isActive }) =>
               isActive
                 ? "text-primary-700 transition-colors"

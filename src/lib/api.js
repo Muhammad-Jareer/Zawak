@@ -5,7 +5,8 @@ let axiosInstance = null;
 const createApiInstance = () => {
   if (!axiosInstance) {
     axiosInstance = axios.create({
-      baseURL: 'http://localhost:8000/api/v1/',
+      // baseURL: import.meta.env.VITE_Backend_API_URL,
+      baseURL: "http://31.97.145.126:3202/api/v1",
       withCredentials: true,
       headers: {
         'Content-Type': "application/json",

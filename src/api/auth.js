@@ -31,6 +31,7 @@ export const get_user = async () => {
     try {
         const response = await api.get('/auth/user')
         if(response.status === 200)
+            console.log("got user: ", response.data)
             return response.data
         return null
     } catch (error) {

@@ -22,6 +22,7 @@ import { useCart } from "../hooks/useCart";
 import ShopSkeleton from "../components/skeletons/ShopSkeleton";
 import { toast } from "react-toastify";
 import { useProducts } from "../hooks/useProducts";
+import { useDebounce } from "../hooks/useDebounce";
 
 function Shop() {
   const dispatch = useDispatch();
@@ -50,6 +51,9 @@ function Shop() {
   const [activeIndex, setActiveIndex] = useState(null);
   const searchInputRef = useRef(null);
   const navigate = useNavigate();
+  
+  // Add debouncing to search query
+  const debouncedQuery = useDebounce(query, 500);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -57,16 +61,15 @@ function Shop() {
 
   useEffect(() => {
     const asyncfunc = async () => {
-      if (query.trim() === "") {
+      if (debouncedQuery.trim() === "") {
         setSearchResults([]);
       } else {
-        const filteredProducts = await queryProducts(query);
-        console.log("filtered products are : ", filteredProducts);
+        const filteredProducts = await queryProducts(debouncedQuery);
         setSearchResults(filteredProducts);
       }
     };
     asyncfunc();
-  }, [query]);
+  }, [debouncedQuery]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -135,21 +138,6 @@ function Shop() {
   };
 
   const fetchMoreData = async () => {
-    // const { category, tag, priceRange, sortBy } = filters;
-    // if (!category && !tag && !priceRange && !sortBy) {
-    //   const {products} = await getAllProducts(visibleCount, 10);
-    //   setProductsState((pre) => pre.concat(products));
-    //   setVisibleCount((prev) => prev + 10);
-    //   return;
-    // }
-    
-    // const {products: filteredProducts, totalCount} = await filterProducts(visibleCount, 10);
-    // setProductsState((pre) =>
-    //   pre.concat(filteredProducts)
-    // );
-    // setVisibleCount((prev) => prev + 10);
-    // return;
-    console.log("fetch more is called")
     dispatch(loadMoreProducts())
   };
 

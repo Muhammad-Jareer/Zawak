@@ -29,7 +29,7 @@ const EasypaisaForm = ({orderId}) => {
       fData.append("orderId", orderId);
       fData.append("paymentMethod", "EASYPAISA");
 
-      const res = await api.post('http://localhost:8000/api/v1/payment/pay', fData, {
+      const res = await api.post('/payment/pay', fData, {
         headers: { "Content-Type": "multipart/form-data" }
       });
 

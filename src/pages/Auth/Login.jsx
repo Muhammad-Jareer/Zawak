@@ -20,14 +20,13 @@ function Login() {
     const res = await api_login(formData);
     setSubmitting(false);
     if (res && res?.status && res?.access_token) {
-      console.log(res);
       localStorage.setItem("accessToken", res.access_token);
       dispatch(
         login({
           ...res?.user,
         })
       );
-      navigate("/shop");
+      navigate("/shop?category=Cultural");
     }
     setSubmitting(false);
   };

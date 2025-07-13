@@ -11,6 +11,7 @@ import { Suspense } from 'react';
 import { queryProducts } from '../api/product.js';
 import { Loader } from '../components/Loader.jsx';
 import FeaturedProductsSkeleton from '../components/skeletons/FeaturedProductsSkeleton.jsx';
+import { useDebounce } from '../hooks/useDebounce';
 const FeaturedProducts = lazy(()=> import('../components/FeaturedProducts.jsx'))
 
 function Home() {
@@ -20,6 +21,9 @@ function Home() {
     const [activeIndex, setActiveIndex] = useState(null);
     const navigate = useNavigate();
     const searchInputRef = useRef(null);
+    
+    // Add debouncing to search query
+    const debouncedQuery = useDebounce(query, 500);
 
     const heroImages = [first_hero, second_hero, third_hero, fourth_hero, fifth_hero, sixth_hero];
     const totalSlides = heroImages.length;
@@ -33,17 +37,27 @@ function Home() {
     }, []);
 
     useEffect(() => {
+        let isMounted = true;
+        
         const asyncfunc = async () => {
-            if (query.trim() === '') {
-                setSearchResults([]);
+            if (debouncedQuery.trim() === '') {
+                if (isMounted) {
+                    setSearchResults([]);
+                }
             } else {
-                const filteredProducts = await queryProducts(query);
-                console.log("filtered products are : ", filteredProducts)
-                setSearchResults(filteredProducts);
+                const filteredProducts = await queryProducts(debouncedQuery);
+                if (isMounted) {
+                    setSearchResults(filteredProducts);
+                }
             }
         }
         asyncfunc();
-    }, [query]);
+        
+        // Cleanup function
+        return () => {
+            isMounted = false;
+        };
+    }, [debouncedQuery]);
 
     useEffect(() => {
         const handleKeyDown = (e) => {
@@ -213,7 +227,7 @@ function Home() {
       {/* Antique Card */}
       <div 
         className="relative h-64 rounded-lg shadow-md group cursor-pointer overflow-hidden"
-        onClick={() => navigate('/shop?category=antique')}
+        onClick={() => navigate('/shop?category=Antique')}
       >
         <ImageComponent
           src="https://images.unsplash.com/photo-1584917865442-de89df76afd3?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80"
