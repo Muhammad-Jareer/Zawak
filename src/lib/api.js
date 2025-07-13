@@ -16,6 +16,7 @@ const createApiInstance = () => {
 
     // Request Interceptor: Attach access token
     axiosInstance.interceptors.request.use((req) => {
+      console.log("Making request to:", req.url); // Debug log
       const accessToken = localStorage.getItem('accessToken');
       if (accessToken) {
         req.headers.Authorization = `Bearer ${accessToken}`;
@@ -27,6 +28,7 @@ const createApiInstance = () => {
     axiosInstance.interceptors.response.use(
       response => response,
       async (error) => {
+        console.log("API Error:", error.response?.status, error.message); // Debug log
         const originalRequest = error.config;
 
         if (error.response?.status === 401 && !originalRequest._retry) {
