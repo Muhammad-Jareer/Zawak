@@ -44,7 +44,9 @@ const createApiInstance = () => {
             }
           } catch (refreshErr) {
             console.log('Refresh token failed', refreshErr);
-            // Handle logout/redirect here if needed
+          // If both original request and refresh token request failed,
+          // throw error to the original calling function
+          throw new Error('Authentication failed');
           }
         }
         return Promise.reject(error);

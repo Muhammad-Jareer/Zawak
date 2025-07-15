@@ -16,9 +16,6 @@ export const useAuth = (componentName) => {
     if (!user && !hasFetched.current) {
       hasFetched.current = true;
       
-      // Create abort controller for cleanup
-      abortController.current = new AbortController();
-      
       try {
         const res = await get_user();
         if (res ) {

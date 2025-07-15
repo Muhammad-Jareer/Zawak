@@ -31,11 +31,12 @@ export const get_user = async () => {
     try {
         const response = await api.get('/auth/user')
         if(response.status === 200)
-            console.log("got user: ", response.data)
             return response.data
         return null
     } catch (error) {
-        // console.log("error while getting user ", error)
+        console.log("it's working it's workin")
+        // return null
+        throw new Error("Authentication failed")
     }
 }
 
