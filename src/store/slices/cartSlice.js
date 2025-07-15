@@ -15,6 +15,7 @@ export const fetchCart = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await getCart();
+      if(!response) throw new Error();
       return response;
     } catch (err) {
       return rejectWithValue(err.response?.data || 'Failed to fetch cart');
@@ -74,7 +75,7 @@ export const cartSlice = createSlice({
       .addCase(fetchCart.fulfilled, (state, action) => {
         state.loading = false;
         state.loaded = true;
-        state.items = action.payload.items || [];
+        state.items = action.payload?.items || [];
       })
       .addCase(fetchCart.rejected, (state, action) => {
         state.loading = false;
